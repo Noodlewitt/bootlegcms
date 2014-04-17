@@ -1,0 +1,71 @@
+/*
+some standard import files - plugins, bootstrap etc..  
+*/
+ 
+//probably a bootstrap theme in here.
+@import '../vendor/bootstrap-sass/lib/bootstrap.scss'; 
+/*@import '../vendor/PixelAdmin-1.2.1/styles/bootstrap.scss'; 
+@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin.scss'; 
+@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/widgets/widgets.scss'; 
+@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/rtl/rtl.scss';
+@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/themes/themes.scss'; 
+*/ 
+
+//JS Tree css
+@import '../vendor/jstree/dist/themes/default/style.css';
+//fileupload from blueimp
+@import '../vendor/blueimp-file-upload/css/jquery.fileupload.css'; 
+ 
+
+
+/*
+CMS SCSS in here 
+TODO: figure out a nice way of formatting this correctly. 
+*/  
+ 
+/*
+Some globals
+*/
+
+$cms_image_location: "/cms/img/";   //us this for any image locations.. we can s3 it later.
+
+$cms_menu_bg_color: #1C1C1C;
+$cms_menu_text_color: #F8F8F8;
+
+$cms_main_bg_color: #F8F8F8;
+$cms_main_text_color: #F8F8F8;  
+
+.fullheight{   
+    height:100%;
+    overflow: auto; 
+}
+
+.mainmenu{ 
+    background: $cms_menu_bg_color;
+    color: $cms_menu_text_color;
+}
+
+form.main-form{
+    ul{
+        list-style:none;
+        padding:0;
+        
+        li{
+            
+            div.upload{
+                
+                table.uploaded{
+                    td.preview-wrap{
+                        text-align:center;
+                     
+                        span.preview img{
+                            max-height: 100px;
+                            max-width: 100px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

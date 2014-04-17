@@ -1,0 +1,175 @@
+//
+// Themes / Adminflare / Main menu
+// --------------------------------------------------
+
+
+// Background and borders
+//
+
+#main-menu-bg,
+.mmc-dropdown-open > ul {
+  background: #2b2b2b url("#{$images-path}/themes/adminflare/menu-bg.png");
+}
+
+#main-menu-bg,
+&.right-to-left.main-menu-right #main-menu-bg {
+  border-left: none;
+  border-right: 1px solid #1d1d1d;
+}
+
+&.main-menu-right #main-menu-bg,
+&.right-to-left #main-menu-bg {
+  border-left: 1px solid #1d1d1d;
+  border-right: none;
+}
+
+
+// Main menu
+//
+
+#main-menu {
+  .navigation a:hover {
+    color: #fff !important;
+  }
+
+
+  // Navigation
+  //
+
+  .navigation {
+    @include box-shadow(0 1px 0 #313131);
+
+    // Nav items
+    li {
+      border-top: 1px solid #313131;
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    a {
+      color: #aaaaaa;
+      text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.6);
+      @include transition(color .2s);
+    }
+
+    // Active nav item
+    li.active {
+      border-top: none;
+      background: #242424;
+      background: rgba(0, 0, 0, 0.15);
+      @include box-shadow(0px 1px 6px inset rgba(0, 0, 0, 0.25) !important);
+
+      & > a,
+      & > a:hover {
+        color: #75c6f3 !important;
+      }
+    }
+  }
+
+
+  // Submenus
+  //
+
+  .mm-dropdown.open {
+    border-bottom: none;
+
+    & > a {
+      border-bottom: 1px solid #1f1f1f;
+    }
+  }
+
+   .navigation .mm-dropdown.active {
+    border-top: 1px solid #313131;
+    background: none;
+
+    > a,
+    > a:hover {
+      color: #fff !important;
+    }
+  }
+
+
+  // Dropdowns
+  //
+
+  .mmc-dropdown-open {
+    & > a {
+      color: #fff !important;
+    }
+
+    & > ul {
+      top: -2px;
+    }
+  }
+
+  .mmc-title {
+    color: #fff;
+    border-bottom: 1px solid #1f1f1f;
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+
+  // Top-placed dropdowns
+  .mmc-dropdown-open.top {
+    .mmc-title {
+      padding-top: 0;
+    }
+
+    > ul {
+      top: auto;
+      bottom: -1px;
+    }
+  }
+
+  // Main menu content blocks
+  .menu-content {
+    border: none;
+    margin-top: -8px;
+
+    .btn-outline {
+      border-color: lighten(#2b2b2b, 5%);
+      color: #aaa;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    &.top {
+      border-bottom: 1px solid #1f1f1f;
+      margin-top: 0;
+    }
+  }
+}
+
+
+// Rigth-to-left
+//
+
+&.right-to-left {
+  #main-menu-bg {
+    border-right: none;
+    border-left: 1px solid rgb(29, 29, 29);
+  }
+}
+
+
+// Dropdown highlights
+//
+
+// Highlight opened dropdown
+.mmc-dropdown-open .mm-dropdown.open > a,
+&.mme #main-menu .mm-dropdown.open > a {
+  color: #fff;
+}
+
+@media (min-width: $screen-tablet) {
+  // Highlight expanded submenus
+  #main-menu .mm-dropdown.open > a {
+    color: #fff;
+  }
+
+  // Unhighlight expanded submenus in collapsed mode
+  &.mmc #main-menu .navigation > .mm-dropdown.open > a {
+    color: #aaaaaa;
+  }
+}
