@@ -62,6 +62,6 @@ return array(
     | information: http://docs.aws.amazon.com/aws-sdk-php-2/guide/latest/configuration.html#using-a-custom-configuration-file
     |
     */
-    'config_file' => null,
+    'config_file' => app_path().'/components/aws.php',
 
 );

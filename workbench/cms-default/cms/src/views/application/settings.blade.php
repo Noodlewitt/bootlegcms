@@ -1,8 +1,14 @@
 @extends('cms::layouts.scaffold')
 
 @section('main')
-<div class="col-md-10 fullheight">
-    <h1>Applicaiton Settings</h1>
+<div id="content-wrapper">
+    <div class="page-header">	
+        <div class="row">
+            <!-- Page header, center on small screens -->
+            <h1 class="col-xs-12 col-sm-4 text-center text-left-sm"><i class="fa fa-cogs page-header-icon"></i>&nbsp;&nbsp;Settings</h1>
+            {{ link_to_action('UsersController@anyCreate', 'Create User', null, array('class'=>'btn btn-primary pull-right')) }}
+        </div>
+    </div>
     {{ Form::model($application, array('method' => 'PATCH', 'action' => array('ApplicationController@anyUpdate'))) }}
     <ul>
         <li class="form-group">

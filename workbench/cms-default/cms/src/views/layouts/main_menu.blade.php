@@ -1,10 +1,37 @@
-<div class="col-md-2 fullheight mainmenu">
-    <ul class="nav nav-pills nav-stacked">
-        <li class="active">{{ link_to_action('UsersController@anyDashboard', 'Dashboard', null, array()) }}</li>
-        <li>{{ link_to_action('ContentsController@anyIndex', 'Content', null, array()) }}</li>
-        <li>{{ link_to_action('UsersController@anyIndex', 'Users', null, array()) }}</li>
-        <li>{{ link_to_action('ApplicationController@anySettings', 'Settings', null, array()) }}</li>
-        <li>{{ link_to_action('UsersController@anyLogout', 'Logout', null, array()) }}</li>
-    </ul>
+<div id="main-menu" role="navigation" class="">
+    <div id="main-menu-inner">
+        <ul class="navigation">
 
+            <li class="{{Request::is(Utils::cmsRoute.'users/dashboard*')?'active':''}}">
+                <a href="{{action('UsersController@anyDashboard', array())}}">
+                    <i class="menu-icon fa fa-dashboard"></i>
+                    <span class="mm-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="{{Request::is(Utils::cmsRoute.'content/*')?'active':''}}">
+                <a href="{{action('ContentsController@anyIndex', array())}}">
+                    <i class="menu-icon fa fa-th-large"></i>
+                    <span class="mm-text">Content</span>
+                </a>
+            </li>
+            <li class="{{Request::is(Utils::cmsRoute.'users/index*')?'active':''}}">
+                <a href="{{action('UsersController@anyIndex', array())}}">
+                    <i class="menu-icon fa fa-users"></i>
+                    <span class="mm-text">Users</span>
+                </a>
+            </li>
+            <li class="{{Request::is(Utils::cmsRoute.'application/settings*')?'active':''}}">
+                <a href="{{action('ApplicationController@anySettings', array())}}">
+                    <i class="menu-icon fa fa-cogs"></i>
+                    <span class="mm-text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{action('UsersController@anyLogout', array())}}">
+                    <i class="menu-icon fa fa-power-off"></i>
+                    <span class="mm-text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>

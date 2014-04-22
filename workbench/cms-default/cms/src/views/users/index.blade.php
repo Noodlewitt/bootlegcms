@@ -2,8 +2,14 @@
 
 
 @section('main')
-<div class="col-md-10 fullheight">
-<h1>All users</h1>
+<div id="content-wrapper">
+<div class="page-header">	
+    <div class="row">
+        <!-- Page header, center on small screens -->
+        <h1 class="col-xs-12 col-sm-4 text-center text-left-sm"><i class="fa fa-users page-header-icon"></i>&nbsp;&nbsp;Users</h1>
+        {{ link_to_action('UsersController@anyCreate', 'Create User', null, array('class'=>'btn btn-primary pull-right')) }}
+    </div>
+</div>
 
 {{ link_to_action('UsersController@anyCreate', 'Create User') }}
 

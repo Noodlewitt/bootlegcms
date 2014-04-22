@@ -284,30 +284,6 @@ class Content extends Contentwrap{ //Eloquent {
         }
     }
     
-    //returns a setting from the name.
-    public function getSetting($name){
-        
-        if(is_null($this->_settings)){
-            $this->_settings = $this->setting()->get();
-        }
-        
-        $settings = $this->_settings->filter(function($setting) use ($name){
-            if(@$setting->name == $name){
-                return($setting);
-            }
-        });
-        if(is_null($settings)){
-            return(false);
-        }
-        else{
-            if(count($settings) > 1){
-                return(@$settings);
-            }
-            else{
-                return(@$settings->first());
-            }        
-        }      
-    }
     
     
     /*TODO: figure out this better.*/
@@ -334,5 +310,15 @@ class Content extends Contentwrap{ //Eloquent {
             },';
         }
         $data[count($data)] = rtrim($data[count($data)], ',');
+    }
+    
+    /*
+     * returns a single setting given the name;
+     */
+    public function getSetting($getSetting){
+        return($this->setting->filter(function($model) use(&$getSetting){
+            return $model->name === $getSetting;
+            
+        })->first()->value);
     }
 }

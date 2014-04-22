@@ -1,7 +1,5 @@
 <?php
 $niceName = preg_replace('/\s+/', '', $setting->name);
-$c = new Content();
-$c->getAWSPolicy();
 if(@$setting->value){
     $url = $setting->value;
 

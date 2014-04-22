@@ -81,7 +81,7 @@ class PageController extends BaseController {
             else{
                 $package = 'cms';
             }
-
+            
             //share these accross everything.
             View::share('content', $content);           
             View::share('application', $application);

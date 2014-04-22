@@ -40,11 +40,11 @@ class Application extends Eloquent {
                 $application = Session::get('application');
             }
             else{
-                $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->first();
+                $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->with('setting')->first();
             }
         }
         else{
-            $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->first();
+            $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->with('setting')->first();
         }
         
         if($setsession && !Session::get('application')){
@@ -54,28 +54,13 @@ class Application extends Eloquent {
         return($application);
     }
     
-    //returns a setting from the name.
-    public function getSetting($name){
-        
-        if(is_null($this->_settings)){
-            $this->_settings = $this->setting()->get();
-        }
-        
-        $settings = $this->_settings->filter(function($setting) use ($name){
-            if(@$setting->name == $name){
-                return($setting);
-            }
-        });
-        if(is_null($settings)){
-            return(false);
-        }
-        else{
-            if(count($settings) > 1){
-                return(@$settings);
-            }
-            else{
-                return(@$settings->first());
-            }        
-        }
+    /*
+     * returns a single setting given the name;
+     */
+    public function getSetting($getSetting){
+        return($this->setting->filter(function($model) use(&$getSetting){
+            return $model->name === $getSetting;
+            
+        })->first()->value);
     }
 }

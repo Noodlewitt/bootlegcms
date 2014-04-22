@@ -201,6 +201,8 @@ class ContentsController extends CMSController {
      * pass in a content_setting id to upload to.
      */
     public function postUpload($id){
+        $application = Application::getApplication();
+        $uploadFolder = @$application->getSetting('Upload Folder');
         $content_setting = Contentsetting::findOrFail($id);
         $niceName = preg_replace('/\s+/', '', $content_setting->name);
         
@@ -218,17 +220,49 @@ class ContentsController extends CMSController {
 
                     $fileId             = uniqid();
                     $extension          = $file->getClientOriginalExtension();
-                    $fileName           = $fileId.'.'.$extension;
+                    $fileName           = trim("$uploadFolder/$fileId.$extension", '/\ ');
                     $destinationPath    = base_path()."/uploads/";
                     $originalName       = $file->getClientOriginalName();
                     $mime_type          = $file->getMimeType();
                     $size               = $file->getSize();
                     $upload_success     = $file->move($destinationPath, $fileName);
                     
+                    $finalUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName";
                     
+                    //if s3 is enabled, we can upload to s3!
+                    //TODO: should this be shifted to some sort of plugin?
+                    if(@$application->getSetting('Enable s3')){
+                        
+                        //file and folder need to be concated and checked.
+                        if(@$application->getSetting('s3 Folder')){
+                            $pth = trim(@$application->getSetting('s3 Folder'),'/\ ').'/'.$fileName;
+                        }
+                        else{
+                            $pth = $fileName;
+                        }
+                        
+                        $s3 = AWS::get('s3');
+                        $s3->putObject(array(
+                            'Bucket'     => @$application->getSetting('s3 Bucket'),
+                            'Key'        => $pth,
+                            'SourceFile' => $destinationPath.$fileName,
+                            'ACL'=>'public-read' //todo: check this would be standard - would we ever need to have something else in here?
+                        ));
+                        if(@$application->getSetting('s3 Cloudfront Url')){
+                            $finalUrl = @$application->getSetting('s3 Cloudfront Url').$pth;
+                        }
+                        else{
+                            $finalUrl = "//".@$application->getSetting('s3 Bucket')."/$pth";
+                        }
+                        
+                        
+                        //todo: remove old file in /uploads?
+                    }
+                    
+                    //and we need to build the json response.
                     $fileObj = new stdClass();
                     $fileObj->name = $originalName;
-                    $fileObj->thumbnailUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName"; //todo
+                    $fileObj->thumbnailUrl = $finalUrl; //todo
                     $fileObj->deleteUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName"; //todo
                     $fileObj->deleteType = "DELETE";
                     
@@ -245,7 +279,5 @@ class ContentsController extends CMSController {
             exit();
             
         }
-    }
-    
-    
+    }    
 }

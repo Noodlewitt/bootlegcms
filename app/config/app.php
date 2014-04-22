@@ -108,6 +108,8 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
                 'Baum\BaumServiceProvider',
                 'JasonNZ\LaravelGrunt\LaravelGruntServiceProvider',
+                'Profiler\ProfilerServiceProvider',
+                'Aws\Laravel\AwsServiceProvider',
                // 'Way\Generators\GeneratorsServiceProvider',
 	),
 
@@ -174,7 +176,8 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
-                
+                'Profiler'        => 'Profiler\Facades\Profiler',
+                'AWS'             => 'Aws\Laravel\AwsFacade',
 
 	),
 
