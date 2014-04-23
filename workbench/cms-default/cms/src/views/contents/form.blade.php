@@ -1,8 +1,10 @@
 @include('cms::layouts.flash_messages')
 
-<h1>{{@$content->id?'Update':'Create'}} Content</h1>
+<h1>{{@$content->id?'Update':'Create'}} {{$content->name or 'Content'}}</h1>
 
 {{ Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('ContentsController@anyUpdate', @$content->id))) }}
+
+
 <ul>
         <li class="form-group">
             {{ Form::label('name', 'Name:') }}

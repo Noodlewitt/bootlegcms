@@ -1,15 +1,17 @@
 @extends('cms::layouts.bare')
 
 @section('main')
-{{ Form::open(array('controller' => 'users@anyLogin')) }}
+{{ Form::open(array('class'=>'form-signin')) }}
     <!-- username field -->
-    <p>{{ Form::label('email', 'Email') }}</p>
-    <p>{{ Form::text('email') }}</p>
+    <h2 class="form-signin-heading">Please sign in</h2>
+    {{ Form::label('email', 'Email') }}
+    {{ Form::text('email',null, array('placeholder'=>'Email Address','class'=>'form-control')) }}
     <!-- password field -->
-    <p>{{ Form::label('password', 'Password') }}</p>
-    <p>{{ Form::password('password') }}</p>
+    {{ Form::label('password', 'Password') }}
+    {{ Form::password('password', array('placeholder'=>'Password','class'=>'form-control')) }}
     <!-- submit button -->
-    <p>{{ Form::submit('Login') }}</p>
+    {{ Form::label('login', 'Login') }}
+    {{ Form::submit('Login', array('class'=>'btn btn-lg btn-primary btn-block')) }}
 {{ Form::close() }}
 
-@stop
+@stop      

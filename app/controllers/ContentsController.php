@@ -225,14 +225,15 @@ class ContentsController extends CMSController {
                     $originalName       = $file->getClientOriginalName();
                     $mime_type          = $file->getMimeType();
                     $size               = $file->getSize();
-                    $upload_success     = $file->move($destinationPath, $fileName);
+                    $upload_success     = $file->move($destinationPath.$uploadFolder, "$fileId.$extension");
                     
                     $finalUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName";
                     
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
                     if(@$application->getSetting('Enable s3')){
-                        
+
+                        //$uploadFolder
                         //file and folder need to be concated and checked.
                         if(@$application->getSetting('s3 Folder')){
                             $pth = trim(@$application->getSetting('s3 Folder'),'/\ ').'/'.$fileName;
@@ -249,7 +250,8 @@ class ContentsController extends CMSController {
                             'ACL'=>'public-read' //todo: check this would be standard - would we ever need to have something else in here?
                         ));
                         if(@$application->getSetting('s3 Cloudfront Url')){
-                            $finalUrl = @$application->getSetting('s3 Cloudfront Url').$pth;
+                            $cloudUrl = trim($application->getSetting('s3 Cloudfront Url'), " /");
+                            $finalUrl = "//$cloudUrl/$pth";
                         }
                         else{
                             $finalUrl = "//".@$application->getSetting('s3 Bucket')."/$pth";

@@ -81,6 +81,7 @@ return array(
             'public/cms_assets/vendor/bootstrap-sass/js/alert.js',
             'public/cms_assets/vendor/bootstrap-sass/js/modal.js',
             'public/cms_assets/vendor/bootstrap-sass/js/tab.js',
+            'public/cms_assets/vendor/bootstrap-sass/js/dropdown.js',
             
             //JSTREE
             'public/cms_assets/vendor/jstree/dist/jstree.js',

@@ -48,6 +48,10 @@ class UsersController extends CMSController {
         return $this->ajaxRender(View::make($this->application->cms_package.'::users.dashboard'));
     }
     
+    public function anySettings(){
+        return $this->ajaxRender(View::make($this->application->cms_package.'::users.dashboard'));
+    }
+    
 
     /**
      * Show the form for creating a new resource.

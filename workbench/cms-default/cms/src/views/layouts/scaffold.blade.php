@@ -16,16 +16,16 @@
         
     </head>
 
-    <body class="theme-asphalt main-menu-animated">
-
-        <div id="main-wrapper" class="">
-
-            @include('cms::layouts.nav')
-            @include('cms::layouts.main_menu')
-            <div id="main-menu-bg"></div>
-            @yield('main')
+    <body class="">
+        @include('cms::layouts.nav')
+        <div class="container-fluid">
+            <div class="row">
+                @include('cms::layouts.main_menu')
+                <div>
+                    @yield('main')
+                </div>
+            </div>
         </div>
-
     </body>
 
 </html>

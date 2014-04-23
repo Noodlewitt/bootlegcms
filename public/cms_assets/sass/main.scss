@@ -3,13 +3,14 @@ some standard import files - plugins, bootstrap etc..
 */
  
 //probably a bootstrap theme in here.
-//@import '../vendor/bootstrap-sass/lib/bootstrap.scss'; 
-@import '../vendor/PixelAdmin-1.2.1/styles/bootstrap.scss'; 
+@import '../vendor/bootstrap-sass/lib/bootstrap.scss'; 
+//@import "bootstrap";
+/*@import '../vendor/PixelAdmin-1.2.1/styles/bootstrap.scss'; 
 @import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin.scss'; 
 @import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/widgets/widgets.scss'; 
 @import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/rtl/rtl.scss';
 @import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/themes/themes.scss'; 
-
+*/
 
 //JS Tree css
 @import '../vendor/jstree/dist/themes/default/style.css';
@@ -35,15 +36,125 @@ $cms_menu_text_color: #F8F8F8;
 $cms_main_bg_color: #F8F8F8;
 $cms_main_text_color: #F8F8F8;  
 
-.fullheight{   
-    height:100%;
-    overflow: auto; 
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 50px;
 }
 
-.mainmenu{ 
-    background: $cms_menu_bg_color;
-    color: $cms_menu_text_color;
+
+/*fix for bootstrap bug. fix is apparently coming soon for this.*/
+.container-fluid {
+    padding: 0 15px;
 }
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 51px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto;
+ /* Scrollable contents if viewport is shorter than content. */
+        background-color: #f5f5f5;
+        border-right: 1px solid #eee;
+    }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+    margin-right: -21px;
+ /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
+}
+
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.nav-sidebar > .active > a {
+    color: #fff;
+    background-color: #428bca;
+}
+
+
+/*
+ * Main content
+ */
+
+.main {
+    padding: 20px;
+}
+
+@media (min-width: 768px) {
+    .main {
+        padding-right: 40px;
+        padding-left: 40px;
+    }
+}
+
+.main .page-header {
+    margin-top: 0;
+}
+
+
+.nav-sidebar {
+    .menu-additional{
+        position: absolute;
+        width: 100%;
+        padding: 15px;
+        bottom: 0;
+        h2{
+            font-size: 1.5em;
+        }
+    }    
+}
+
+.page-header{
+    margin: 0 -15px 20px -15px;
+}
+
+.treeContainer{
+    .page-header{ 
+        padding: 0 0 25px 0;
+        margin: 0;
+    }
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
 
 form.main-form{
     ul{

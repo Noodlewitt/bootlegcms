@@ -31,7 +31,30 @@ module.exports = function (grunt) {
 			// JavaScript settings
 			js: {
 				base: 'public/cms_assets/js',							// Base path to you JS folder
-				files: ['public/cms_assets/vendor/jquery/jquery.js','public/cms_assets/vendor/jquery-ui/ui/jquery-ui.js','public/cms_assets/vendor/bootstrap-sass/js/bootstrap.js','public/cms_assets/vendor/bootstrap-sass/js/alert.js','public/cms_assets/vendor/bootstrap-sass/js/modal.js','public/cms_assets/vendor/bootstrap-sass/js/tab.js','public/cms_assets/vendor/jstree/dist/jstree.js','public/cms_assets/vendor/blueimp-tmpl/js/tmpl.min.js','public/cms_assets/vendor/blueimp-load-image/js/load-image.min.js','public/cms_assets/vendor/blueimp-canvas-to-blob/js/canvas-to-blob.min.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.iframe-transport.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-process.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-image.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-audio.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-video.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-validate.js','public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-ui.js','public/cms_assets/vendor/tinymce-builded/js/tinymce/tinymce.jquery.js'],							// JavaScript files in order you'd like them concatenated and minified
+				files: [
+                                    'public/cms_assets/vendor/jquery/jquery.js',
+                                    'public/cms_assets/vendor/jquery-ui/ui/jquery-ui.js',
+                                    'public/cms_assets/vendor/bootstrap-sass/js/bootstrap.js',
+                                    'public/cms_assets/vendor/bootstrap-sass/js/alert.js',
+                                    'public/cms_assets/vendor/bootstrap-sass/js/modal.js',
+                                    'public/cms_assets/vendor/bootstrap-sass/js/tab.js',
+                                    'public/cms_assets/vendor/bootstrap-sass/js/dropdown.js',
+                                    'public/cms_assets/vendor/bootstrap-sass/js/collapse.js',
+                                    'public/cms_assets/vendor/bootstrap-sass/js/transition.js',
+                                    'public/cms_assets/vendor/jstree/dist/jstree.js',
+                                    'public/cms_assets/vendor/blueimp-tmpl/js/tmpl.min.js',
+                                    'public/cms_assets/vendor/blueimp-load-image/js/load-image.min.js',
+                                    'public/cms_assets/vendor/blueimp-canvas-to-blob/js/canvas-to-blob.min.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.iframe-transport.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-process.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-image.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-audio.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-video.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-validate.js',
+                                    'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-ui.js',
+                                    'public/cms_assets/vendor/tinymce-builded/js/tinymce/tinymce.jquery.js'
+                                ],							// JavaScript files in order you'd like them concatenated and minified
 				concat: '<%= options.js.base %>/concat.js',		// Name of the concatenated JavaScript file
 				min: '<%= options.publish %>/script.min.js'		// Name of the minified JavaScript file
 			},

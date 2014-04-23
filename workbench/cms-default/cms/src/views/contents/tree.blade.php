@@ -46,7 +46,10 @@ function renderTree( $tree = array()){
 
 // "$current" may contain category_id, lft, rgt for active list item
 ?>
-<input class='searchTree form-control' type='text' />
+<div class="page-header row searchTreeContainer">
+    <input class='searchTree form-control' placeholder='search' type='text' />    
+</div>
+
 <div class='tree'>
     {{renderTree($tree)}}
 </div>
