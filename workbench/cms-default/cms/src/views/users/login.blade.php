@@ -1,4 +1,4 @@
-@extends('cms::layouts.scaffold')
+@extends('cms::layouts.bare')
 
 @section('main')
 {{ Form::open(array('controller' => 'users@anyLogin')) }}
