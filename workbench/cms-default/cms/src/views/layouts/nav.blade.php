@@ -17,7 +17,10 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                      <li><a href="#">Hercules Street</a></li>
+                        @foreach($applications as $app)
+                        <li><a href="#">{{$app->name}}</a></li>  
+                        @endforeach
+                      
                     </ul>
                 </li>
         </ul> <!-- / .navbar-nav -->

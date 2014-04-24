@@ -9,6 +9,8 @@ class Content extends Contentwrap{ //Eloquent {
         
     public $policy, $signature;
     
+    protected $softDelete = true;
+    
     protected $scoped = array('application_id');
     
     protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.

@@ -85,6 +85,9 @@ function renderTree( $tree = array()){
         if(data.node.children.length > 0){
             //this item has sub items - we need to ask if we can delete:
         }
+        $.post(data.node.a_attr['data-destroy_url'], function(data){
+            alert('deleted.');
+        });
         console.log(data);
     });
 
