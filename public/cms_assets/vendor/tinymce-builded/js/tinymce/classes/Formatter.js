@@ -76,6 +76,19 @@ define("tinymce/Formatter", [
 
 		function defaultFormats() {
 			register({
+				
+				valigntop: [
+					{selector: 'td,th', styles: {'verticalAlign': 'top'}}
+				],
+
+				valignmiddle: [
+					{selector: 'td,th', styles: {'verticalAlign': 'middle'}}
+				],
+
+				valignbottom: [
+					{selector: 'td,th', styles: {'verticalAlign': 'bottom'}}
+				],
+
 				alignleft: [
 					{selector: 'figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li', styles: {textAlign: 'left'}, defaultBlock: 'div'},
 					{selector: 'img,table', collapsed: false, styles: {'float': 'left'}}
@@ -289,6 +302,16 @@ define("tinymce/Formatter", [
 					each(fmt.styles, function(value, name) {
 						dom.setStyle(elm, name, replaceVars(value, vars));
 					});
+
+					// Needed for the WebKit span spam bug
+					// TODO: Remove this once WebKit/Blink fixes this
+					if (fmt.styles) {
+						var styleVal = dom.getAttrib(elm, 'style');
+
+						if (styleVal) {
+							elm.setAttribute('data-mce-style', styleVal);
+						}
+					}
 
 					each(fmt.attributes, function(value, name) {
 						dom.setAttrib(elm, name, replaceVars(value, vars));

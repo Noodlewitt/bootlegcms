@@ -24,7 +24,16 @@ class UsersController extends CMSController {
     public function anyIndex()
     {
         $users = $this->user->all();
-        return $this->ajaxRender(View::make($this->application->cms_package.'::users.index', compact('users')));
+        
+         if (Request::ajax()){
+            $cont = View::make( $this->application->cms_package.'::users.index', compact('cont','users')) ;
+            return($cont);
+        }
+        else{
+            $cont = View::make( $this->application->cms_package.'::users.index', compact('cont','users') );
+            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        }
+        return($layout);
     }
     
     
@@ -45,11 +54,28 @@ class UsersController extends CMSController {
     
     
     public function anyDashboard(){
-        return $this->ajaxRender(View::make($this->application->cms_package.'::users.dashboard'));
+        
+        if (Request::ajax()){
+            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont')) ;
+            return($cont);
+        }
+        else{
+            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont') );
+            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        }
+        return($layout);
     }
     
     public function anySettings(){
-        return $this->ajaxRender(View::make($this->application->cms_package.'::users.dashboard'));
+        if (Request::ajax()){
+            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont')) ;
+            return($cont);
+        }
+        else{
+            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont') );
+            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        }
+        return($layout);
     }
     
 

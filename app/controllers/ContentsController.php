@@ -35,21 +35,26 @@ class ContentsController extends CMSController {
      */
     public function anyIndex(){
         
-        
         $root_node = Content::fromApplication()->whereNull('parent_id')->first();
-        
-        //$root_node->getTree(false);
-        
+
         $this->content = $this->content->findOrFail($root_node->id);
         
-        $tree = $root_node->getDescendants();
         
         $content_settings = $this->content->setting()->get();
         $content  = $this->content;
         
-
-        //var_dump($content->contenttype()->get());
-        return View::make($this->application->cms_package.'::contents.edit', compact('content', 'content_settings', 'tree'));
+        
+        if (Request::ajax()){
+            $cont = View::make( 'cms::contents.edit', compact('content', 'content_settings') );
+            return($cont);
+        }
+        else{
+            $tree = $root_node->getDescendants();
+            $cont = View::make( 'cms::contents.edit', compact('content', 'content_settings') );
+            $cont = View::make( 'cms::layouts.tree', compact('cont', 'tree'));
+            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        }
+        return($layout);
     }
     
 
@@ -78,13 +83,15 @@ class ContentsController extends CMSController {
      *
      * @return Response
      */
-    public function anyStore(){
+    public function anyStore($json = false){
         $input = Input::all();
-        
         $validation = Validator::make($input, Content::$rules);
         
         if ($validation->passes()){
-            $this->content->create($input);
+            $saved = array($this->content->create($input));
+            if($json){
+                return($this->renderTree($saved));
+            }
             return Redirect::action('ContentsController@anyIndex');
         }
         
@@ -103,7 +110,7 @@ class ContentsController extends CMSController {
      */
     public function anyEdit($id = false){
        
-        $root_node = Content::fromApplication()->whereNull('parent_id')->first();
+        $root_node = Content::getMainRoot();
         
         //$root_node->getTree(false);
         
@@ -125,6 +132,10 @@ class ContentsController extends CMSController {
      * @return Response
      */
     public function anyUpdate($id=false){
+        if(!@$id){
+            $input = array_except(Input::all(), '_method');
+            $id = $input['id'];
+        }
         if($id !== false){
             $input = array_except(Input::all(), '_method');
             
@@ -134,6 +145,9 @@ class ContentsController extends CMSController {
                 //we need to update the settings too:
                 $content = $this->content->find($id);
                 
+                if(@$input['parent_id'] == '#'){
+                    $input['parent_id'] = Content::getMainRoot();
+                }
                 $content->update($input);
                 
                 //TODO: take another look at a better way of doing this:
@@ -179,8 +193,45 @@ class ContentsController extends CMSController {
         return Redirect::action('ContentsController@anyIndex');
     }
     
+    //requests imediate descendents for given node
+    //TODO: recursive.
+    public function anyTree(){
+        
+        $id = Input::all();
+        if(@$id['id'] == '#'){
+            $id = '';
+        }
+        else{
+            $id = @$id['id'];
+        }
+        
+        if(!$id){
+            $id = Content::fromApplication()->whereNull('parent_id')->first()->id;
+        }
+        
+        $tree = Content::where('parent_id', '=', $id)
+                ->orderBy('position')
+                ->orderBy('name')->get();
+        
+
+        return($this->renderTree($tree));   
+    }
     
-    
+    public function renderTree($tree){
+        $json_out = array();
+        
+        foreach($tree as $treeItem){
+            $branch = new stdClass();
+            $branch->id = $treeItem->id;
+            $branch->text = $treeItem->name;
+            $branch->children = ($treeItem->rgt - $treeItem->lft > 1);
+            $json_out[] = $branch;
+        }
+        if(count($json_out) == 1){
+            return Response::json($json_out[0]);
+        }
+        return Response::json($json_out);
+    }
     
     
     /*retrieve uploaded file(s)*/
@@ -200,10 +251,15 @@ class ContentsController extends CMSController {
     /*
      * pass in a content_setting id to upload to.
      */
-    public function postUpload($id){
+    public function postUpload($id,  $type = "Contentsetting"){
         $application = Application::getApplication();
         $uploadFolder = @$application->getSetting('Upload Folder');
-        $content_setting = Contentsetting::findOrFail($id);
+        if($type == 'Applicationsetting'){
+            $content_setting = Applicationsetting::findOrFail($id);
+        }
+        else{
+            $content_setting = Contentsetting::findOrFail($id);
+        }
         $niceName = preg_replace('/\s+/', '', $content_setting->name);
         
         $files = (Input::file($niceName));
@@ -281,5 +337,5 @@ class ContentsController extends CMSController {
             exit();
             
         }
-    }    
+    }
 }

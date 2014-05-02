@@ -1,2 +1,2 @@
-{{ Form::label($setting->name, ucfirst($setting->name).':') }}
-{{ Form::textarea($setting->name, $setting->value) }}
+{{ Form::label('setting['.$setting->name.']', ucfirst($setting->name).':') }}
+{{ Form::textarea('setting['.$setting->name.']', $setting->value, array('class'=>'form-control')) }}

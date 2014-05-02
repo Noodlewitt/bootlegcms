@@ -14,37 +14,38 @@ if(@$setting->value){
     //TODO: handle multiple files here?
     $files = json_encode($files);   
 }
-   
 ?>
 <div class="wrap">
     <div class='upload {{$niceName}}' >    
         {{ Form::label('setting['.$setting->name.']', ucfirst($setting->name).':') }}
         {{ Form::hidden('setting['.$setting->name.']', $setting->value, array('class'=>'form-control file-url')) }}
-
+        
 
             <!-- Redirect browsers with JavaScript disabled to the origin page -->
             <noscript><input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"></noscript>
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
                 <div class="col-lg-7">
+                    <div class="btn-group">
                     <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="btn btn-success fileinput-button">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        <span>Add files...</span>
-                        <input type="file" name="{{$niceName}}[]" multiple>
-                    </span>
-                    <button type="submit" class="btn btn-primary start">
-                        <i class="glyphicon glyphicon-upload"></i>
-                        <span>Start upload</span>
-                    </button>
-                    <button type="reset" class="btn btn-warning cancel">
-                        <i class="glyphicon glyphicon-ban-circle"></i>
-                        <span>Cancel upload</span>
-                    </button>
-                    <button type="button" class="btn btn-danger delete">
-                        <i class="glyphicon glyphicon-trash"></i>
-                        <span>Delete</span>
-                    </button>
+                        <span class="btn btn-success fileinput-button">
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span>Add files...</span>
+                            <input type="file" name="{{$niceName}}[]" multiple>
+                        </span>
+                        <button type="submit" class="btn btn-primary start">
+                            <i class="glyphicon glyphicon-upload"></i>
+                            <span>Start upload</span>
+                        </button>
+                        <button type="reset" class="btn btn-warning cancel">
+                            <i class="glyphicon glyphicon-ban-circle"></i>
+                            <span>Cancel upload</span>
+                        </button>
+                        <button type="button" class="btn btn-danger delete">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            <span>Delete</span>
+                        </button>
+                    </div>
                     <input type="checkbox" class="toggle">
                     <!-- The global file processing state -->
                     <span class="fileupload-process"></span>
@@ -150,10 +151,13 @@ if(@$setting->value){
                 $form{{$niceName}}.fileupload({
                     // Uncomment the following to send cross-domain cookies:
                     //xhrFields: {withCredentials: true},
-                    url: "{{{action('ContentsController@postUpload', array('id'=>$setting->id))}}}",
+                    url: "{{{action('ContentsController@postUpload', array('id'=>$setting->id, 'type'=>get_class($setting)))}}}",
                     maxNumberOfFiles:1,
                     singleFileUploads:true,
                     limitConcurrentUploads:3,
+                    formData:{
+                        type: '{{get_class($setting)}}'
+                    },
                     disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
                     maxFileSize: 5000000,
                     acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,

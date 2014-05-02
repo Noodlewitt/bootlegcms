@@ -22,7 +22,7 @@
             <div class="row">
                 @include('cms::layouts.main_menu')
                 <div>
-                    @yield('main')
+                    {{$cont}}
                 </div>
             </div>
         </div>

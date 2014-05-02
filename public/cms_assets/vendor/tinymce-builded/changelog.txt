@@ -1,3 +1,30 @@
+Version 4.0.23 (2014-04-24)
+	Added isSameOrigin method to tinymce.util.URI it handles default protocol port numbers better. Patch contributed by Matt Whelan.
+	Fixed bug where IE 11 would add br elements to the end of the editor body element each time it was shown/hidden.
+	Fixed bug where the autolink plugin would produce an index out of range exception for some very specific HTML.
+	Fixed bug where the charmap plugin wouldn't properly insert non breaking space characters when selected.
+	Fixed bug where pasting from Excel 2011 on Mac didn't produce a proper table when using the paste plugin.
+	Fixed bug where drag/dropping inside a table wouldn't properly end the table cell selection.
+	Fixed bug where drag/dropping images within tables on Safari on Mac wouldn't work properly.
+	Fixed bug where editors couldn't be re-initialized if they where externally destroyed.
+	Fixed bug where inline editors would produce a range index exception when clicking on buttons like bold.
+	Fixed bug where the preview plugin wouldn't properly handle non encoded upper UTF-8 characters.
+	Fixed so document.currentScript is used when detecting the current script location. Patch contributed by Mickael Desgranges.
+	Fixed issue with the paste_webkit_styles option so is disabled by default since it might produce a lot of extra styles.
+Version 4.0.22 (2014-04-16)
+	Added lastLevel to BeforeAddUndo level event so it's easier to block undo level creation based.
+	Fixed so multiple list elements can be indented properly. Patch contributed by Dan Villiom Podlaski Christiansen.
+	Fixed bug where the selection would be at the wrong location sometimes for inline editor instances.
+	Fixed bug where drag/dropping content into an inline editor would fail on WebKit/Blink.
+	Fixed bug where table grid wouldn't work properly when the UI was rendered in for RTL mode.
+	Fixed bug where range normalization wouldn't handle mixed contentEditable nodes properly.
+	Fixed so the media plugin doesn't override the existing element rules you now need to manually whitelist non standard attributes.
+	Fixed so old language packs get properly loaded when the new longer language code format is used.
+	Fixed so all track changes junk such as comments, deletes etc gets removed when pasting from Word.
+	Fixed so non image data urls is blocked by default since they might contain scripts.
+	Fixed so it's possible to import styles from the current page stylesheets into an inline editor by using the importcss_file_filter.
+	Fixed bug where the spellchecker plugin wouldn't add undo levels for each suggestion replacement.
+	Reworked the default spellchecker RPC API to match the new PHP Spellchecker package. Fallback documented in the TinyMCE docs.
 Version 4.0.21 (2014-04-01)
 	Added new getCssText method to formatter to get the preview css text value for a format to be used in UI.
 	Added new table_grid option that allows you to disable the table grid and use a dialog.

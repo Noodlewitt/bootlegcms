@@ -1,7 +1,7 @@
 <?php
 
 class Content extends Contentwrap{ //Eloquent {
-    protected $fillable = array('name', 'identifier', 'parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -79,7 +79,6 @@ class Content extends Contentwrap{ //Eloquent {
         
 //        App::register($this->service_provider);
         
- 
         
         //we need to fill in all the defaults for this item..
         Content::creating(function($content){    
@@ -322,5 +321,10 @@ class Content extends Contentwrap{ //Eloquent {
             return $model->name === $getSetting;
             
         })->first()->value);
+    }
+    
+    
+    public static function getMainRoot(){
+        return(Content::fromApplication()->whereNull('parent_id')->first());
     }
 }

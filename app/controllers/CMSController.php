@@ -3,13 +3,15 @@
 class CMSController extends BaseController {
     
     public $application;
-        
+    
+    protected $layout = 'cms::layouts.master';
+    
     public function __construct() {
         parent::__construct();
         
         //todo:tidy up this vv
         $this->application = Application::getApplication();
-        
+                        
         $application = Application::getApplication();
         View::share('application', $application);
         $applications = Application::get();

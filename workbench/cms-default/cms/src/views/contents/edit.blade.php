@@ -1,11 +1,4 @@
-@extends('cms::layouts.scaffold')
-
-@section('main')
-<div class="col-sm-3 col-md-offset-2 col-md-2 sidebar treeContainer">
-        @include('cms::contents.tree', array('content'=>@$content, 'tree'=>@$tree))
-</div>
-
-<div class="col-md-offset-4 col-md-8">
+    <div class='overlay'></div>
     <div class="page-header row">
         <!-- Page header, center on small screens -->
         <h1 class="col-xs-12"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;Content {{ link_to_action('ContentsController@anyCreate', 'Create Content', null, array('class'=>'btn btn-primary pull-right')) }}</h1>
@@ -29,5 +22,3 @@
             </div>
         @show
     </div>
-</div>
-@stop

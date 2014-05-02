@@ -1,5 +1,6 @@
 <?php
 class Applicationsetting extends Eloquent {
+    protected $fillable = array('content_id', 'name', 'value', 'field_type');
     protected $table = 'application_settings';
     
     public function application(){

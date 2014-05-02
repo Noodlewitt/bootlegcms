@@ -1,6 +1,3 @@
-@extends('cms::layouts.scaffold')
-
-@section('main')
 <div class="col-md-offset-2 col-md-10">
     <div class="page-header row">	
             <!-- Page header, center on small screens -->
@@ -29,4 +26,3 @@
         </div>
     </div>
 </div>
-@stop

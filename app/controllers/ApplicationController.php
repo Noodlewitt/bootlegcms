@@ -11,7 +11,16 @@ class ApplicationController extends CmsController {
         //dd($this->application->cms_package);
         $application_settings = $this->application->setting()->get();
         $theme = $this->application->theme()->first();
-        return View::make($this->application->cms_package.'::application.settings', array('application'=>$this->application, 'application_settings'=>$application_settings, 'theme'=>$theme));
+        
+        if (Request::ajax()){
+            $cont = View::make( $this->application->cms_package.'::application.settings', compact('cont', 'application', 'application_settings', 'theme')) ;
+            return($cont);
+        }
+        else{
+            $cont = View::make( $this->application->cms_package.'::application.settings', compact('application', 'application_settings', 'theme') );
+            $layout = View::make( 'cms::layouts.master', compact('cont'));
+            return($layout);
+        }
     }
     
     public function anyUpdate(){

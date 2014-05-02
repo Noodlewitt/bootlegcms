@@ -4,7 +4,7 @@
 <ul>
     @foreach($links as $cont)
     <li>
-        <a href='{{$cont->slug}}'>dfs</a>
+        <a href='{{$cont->slug}}'>{{$cont->name}}</a>
     </li>
     @endforeach
 </ul>
