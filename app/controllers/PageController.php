@@ -89,7 +89,12 @@ class PageController extends BaseController {
                 $view = View::make("$package::".Input::get('view'));
             }
             else{
-                $view = View::make("$package::$layout")->nest('child', "$package::$view");
+                if (Request::ajax()){
+                    $view = View::make("$package::$view");
+                }
+                else{
+                    $view = View::make("$package::$layout")->nest('child', "$package::$view");
+                }
             }
 
             return($view);
