@@ -36,7 +36,7 @@
                             if($node.children.length > 0){
                                 //this item has sub items - TODO: we need to ask if we can delete:
                             }
-                            $.post($node.a_attr['data-destroy_url'],{
+                            $.post( "{{ action('ContentsController@anyDestroy') }}" ,{
                                 id: $node.id
                             }).done(function(data){
                                 //successfully deleted.

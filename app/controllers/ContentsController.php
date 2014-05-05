@@ -186,8 +186,17 @@ class ContentsController extends CMSController {
      * @param  int  $id
      * @return Response
      */
-    public function anyDestroy($id)
+    public function anyDestroy($id = null)
     {
+        if(!$id){
+            $id = Input::all();
+            if(@$id['id'] == '#'){
+                $id = '';
+            }
+            else{
+                $id = @$id['id'];
+            }
+        }
         $this->content->find($id)->delete();
 
         return Redirect::action('ContentsController@anyIndex');
