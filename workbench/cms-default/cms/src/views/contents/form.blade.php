@@ -20,13 +20,13 @@
             <label>Status:</label>
             <div class="radio">
                 <label>
-                    {{ Form::radio('status[]','0','',array('class'=>'')) }}
+                    {{ Form::radio('status','0','',array('class'=>'')) }}
                     Draft
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    {{ Form::radio('status[]','1','',array('class'=>'')) }}
+                    {{ Form::radio('status','1','',array('class'=>'')) }}
                     Published
                 </label>
             </div>

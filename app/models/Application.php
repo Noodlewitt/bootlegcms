@@ -20,24 +20,19 @@ class Application extends Eloquent {
         return $this->morphMany('Permission', 'controller');
     }
     
-    public static function getApplication($domain='', $folder = '', $getfromsession = true, $setsession = true){
+    public static function getApplication($domain='', $folder = '', $getFromSession = true, $setSession = true){
         //dd($_SERVER['SERVER_NAME']);
         if(!$domain){
-            $domain = trim($_SERVER['SERVER_NAME']);
+            $domain = ApplicationUrl::getDomain();
         }
 
         if(!$folder){
-            $folder = str_replace('public/index.php','',$_SERVER['SCRIPT_NAME']);
-            $folder = trim(str_replace('public/','',$folder),'/');
-            $folder = trim(str_replace('index.php','',$folder),'/');
-            if(!$folder){
-                $folder = '/';
-            }
+            $folder = ApplicationUrl::getFolder();
         }
                
-        if($getfromsession){
-            if(Session::get('application')){
-                $application = Session::get('application');
+        if($getFromSession){
+            if(Session::get('application'.$folder)){
+                $application = Session::get('application'.$folder);
             }
             else{
                 $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->with('setting')->first();
@@ -47,8 +42,8 @@ class Application extends Eloquent {
             $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->with('setting')->first();
         }
         
-        if($setsession && !Session::get('application')){
-            Session::put('application', $application);
+        if($setSession && !Session::get('application')){
+            Session::put('application'.$folder, $application);
         }
         
         return($application);

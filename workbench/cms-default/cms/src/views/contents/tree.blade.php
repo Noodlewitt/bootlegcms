@@ -12,7 +12,7 @@
             "check_callback" : true,
             "data":{
                 "url": function(node){
-                    return  'http://coolaccidents/cms/content/tree';
+                    return  '{{ action('ContentsController@anyTree') }}';
                 }, 
                 "data":function(node){
                     return {"id":node.id}

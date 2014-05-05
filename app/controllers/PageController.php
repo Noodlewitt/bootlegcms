@@ -23,28 +23,39 @@ class PageController extends BaseController {
 	 */
 	public function missingMethod($parameters = array()){
             
-            $application = Application::getApplication(null, null, false, true);
-
-            if(is_null($application)){
-                App::abort(404, 'Application not found');   //chuck 404 - we can't find the app
+            //$application = Application::getApplication(null, null, false, true);
+            //we can't use getApplication here because we need it fromurl
+            /*$applicationUrl = ApplicationUrl::with('application')->where('domain','=',"$domain")
+                          ->where('folder','LIKE',"$folder")->first();
+            $application = $applicationUrl->application;*/
+            
+            $applicationurl = ApplicationUrl::getApplicationUrl();
+            $application = $applicationurl->application;
+            
+            
+            
+            if(is_null($applicationurl->application)){
+                App::abort(404, "No Application found at url");   //chuck 404 - we can't find the app
             }
-
+            
             $slug = Request::url();
             $slug = Utils::stripProtocol($slug);
 
-            $slug_replace = trim($application->url->first()->domain.$application->url->first()->folder, "\/ ");
+            //dd($applicationurl->domain);
+            $slug_replace = trim($applicationurl->domain.$applicationurl->folder, "\/ ");
             $slug = str_replace($slug_replace,'',$slug);
-
+            
             if(!$slug){
                 $slug = "/";
             }
-
+           
             $content = Content::where('slug', '=', "$slug")
-                    ->where('application_id', '=', "$application->id")
+                    ->fromApplication()
                     ->first();
-
+           
+            //dd($slug);
             if(is_null($content)){
-                App::abort(404, 'Content not found'); //chuck 404 error.. WE HAVE NO SLUG THAT MATCHES WITHIN THIS APP
+                App::abort(404, "No content found at url:'$slug'"); //chuck 404 error.. WE HAVE NO SLUG THAT MATCHES WITHIN THIS APP
             }
 
             //permission check for content item.
