@@ -9,7 +9,9 @@ class ApplicationController extends CmsController {
     public function anySettings(){
         //$application = Application::getApplication();
         //dd($this->application->cms_package);
-        $application_settings = $this->application->setting()->get();
+        $app_settings = $this->application->setting()->get();
+        $application_settings = $app_settings->groupBy('section');
+        
         $theme = $this->application->theme()->first();
         
         if (Request::ajax()){

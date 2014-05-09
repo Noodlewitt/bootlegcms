@@ -4,16 +4,11 @@ some standard import files - plugins, bootstrap etc..
  
 //probably a bootstrap theme in here.
 @import '../vendor/bootstrap-sass/lib/bootstrap.scss'; 
-//@import "bootstrap";
-/*@import '../vendor/PixelAdmin-1.2.1/styles/bootstrap.scss'; 
-@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin.scss'; 
-@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/widgets/widgets.scss'; 
-@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/rtl/rtl.scss';
-@import '../vendor/PixelAdmin-1.2.1/styles/pixel-admin-scss/themes/themes.scss'; 
-*/
+
+@import '../vendor/fontawesome/scss/font-awesome.scss';
 
 //JS Tree css
-@import '../vendor/jstree/dist/themes/default/style.css';
+@import '../vendor/jstree/dist/themes/default/style.css'; 
 //fileupload from blueimp
 @import '../vendor/blueimp-file-upload/css/jquery.fileupload.css'; 
  
@@ -28,13 +23,8 @@ TODO: figure out a nice way of formatting this correctly.
 Some globals
 */
 
-$cms_image_location: "/cms/img/";   //us this for any image locations.. we can s3 it later.
 
-$cms_menu_bg_color: #1C1C1C;
-$cms_menu_text_color: #F8F8F8;
-
-$cms_main_bg_color: #F8F8F8;
-$cms_main_text_color: #F8F8F8;  
+$gutter-half: $grid-gutter-width/2;
 
 /*
  * Base structure
@@ -48,17 +38,13 @@ body {
 
 /*fix for bootstrap bug. fix is apparently coming soon for this.*/
 .container-fluid {
-    padding: 0 15px;
+    padding: 0 $gutter-half;
 }
 
 /*
  * Global add-ons
  */
 
-.sub-header {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
 
 
 /*
@@ -69,6 +55,7 @@ body {
 .sidebar {
     display: none;
 }
+
 
 @media (min-width: 768px) {
     .sidebar {
@@ -82,29 +69,10 @@ body {
         overflow-x: hidden;
         overflow-y: auto;
  /* Scrollable contents if viewport is shorter than content. */
-        background-color: #f5f5f5;
+        background-color: $well-bg;
         border-right: 1px solid #eee;
     }
 }
-
-/* Sidebar navigation */
-.nav-sidebar {
-    margin-right: -21px;
- /* 20px padding + 1px border */
-    margin-bottom: 20px;
-    margin-left: -20px;
-}
-
-.nav-sidebar > li > a {
-    padding-right: 20px;
-    padding-left: 20px;
-}
-
-.nav-sidebar > .active > a {
-    color: #fff;
-    background-color: #428bca;
-}
-
 
 /*
  * Main content
@@ -125,12 +93,6 @@ body {
     padding: 20px;
 }
 
-@media (min-width: 768px) {
-    .main {
-        padding-right: 40px;
-        padding-left: 40px;
-    }
-}
 
 .main .page-header {
     margin-top: 0;
@@ -140,9 +102,10 @@ body {
 .nav-sidebar {
     .menu-additional{
         position: absolute;
-        width: 100%;
-        padding: 15px;
+        left: 0;
+        padding: $gutter-half;
         bottom: 0;
+        right: 0;
         h2{
             font-size: 1.5em;
         }
@@ -150,15 +113,28 @@ body {
 }
 
 .page-header{
-    margin: 0 -15px 20px -15px;
+    margin-top: 0;
 }
 
 .treeContainer{
     overflow:auto;
+    bottom: 60px;
     .page-header{ 
-        padding: 0 0 25px 0;
+        padding: 0 $gutter-half $gutter-half $gutter-half;
         margin: 0;
+        margin-left: -$gutter-half;
+        margin-right: -$gutter-half;
     }
+}
+
+.treeOptions{
+    bottom: 0;
+    position: fixed;
+    height: 60px;
+    padding: $gutter-half;
+    background: $well-bg;
+    border-top: 1px solid $gray-lighter;
+    border-right: 1px solid $gray-lighter;
 }
 
 .vakata-context{
@@ -167,12 +143,16 @@ body {
 
 .form-signin {
     max-width: 330px;
-    padding: 15px;
+    padding: $gutter-half;
     margin: 0 auto;
 }
 
 
 form.main-form{
+    .edit-content-tab{
+        padding:$gutter-half 0 0 0;
+    }
+     
     ul{
         list-style:none;
         padding:0;

@@ -1,7 +1,7 @@
 <div class="col-md-offset-2 col-md-10">
     <div class="page-header row">	
             <!-- Page header, center on small screens -->
-            <h1 class="col-xs-12"><i class="glyphicon glyphicon-home"></i>&nbsp;&nbsp;Dashboard<a href="http://herc/cms/content/create" class="btn btn-primary pull-right">Create Page</a></h1>
+            <h1 class="col-xs-12"><i class="glyphicon glyphicon-home"></i>&nbsp;&nbsp;Dashboard</h1>
     </div>
     <div class="row">
         <div class="col-xs-6 col-sm-3 placeholder">

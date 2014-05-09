@@ -72,10 +72,7 @@
 
     $('.tree').on("rename_node.jstree", function (e, data) {
         if(isNaN(data.node.id)){
-
-
-            var parentnode = data.instance.get_node(data.node.parent);
-            
+            var parentnode = data.instance.get_node(data.node.parent);         
             $.post( "{{ action('ContentsController@anyStore', array('json'=>true)) }}" , {
                 name:data.text,
                 parent_id:parentnode.id

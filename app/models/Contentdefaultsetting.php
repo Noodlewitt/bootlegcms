@@ -5,8 +5,11 @@ class Contentdefaultsetting extends Eloquent {
   
     protected $table = 'content_default_settings';
     
-//    public function content(){
-//    	return $this->hasMany('Content','content_type');
-//    }
+    public function default_page(){
+        return $this->hasMany('Contentdefaultpage', 'content_type_id');
+    }
     
+    public function settings(){
+        return $this->hasMany('Contentsetting', 'default_id');
+    }
 }

@@ -1,24 +1,33 @@
 <?php
-$niceName = preg_replace('/\s+/', '', $setting->name);
-if(@$setting->value){
-    $url = $setting->value;
+$params = Contentsetting::parseParams($setting[0]);
+$niceName = preg_replace('/\s+/', '', $setting[0]->name);
+$files = array();
+foreach($setting as $field){
+    if(@$field->value){
+    
+        $url = $field->value;
 
-    $fileName = pathinfo($url,PATHINFO_FILENAME);
-    $fileObj = new stdClass();
-    $fileObj->name = $fileName;
-    $fileObj->thumbnailUrl = "$url"; //todo
-    $fileObj->deleteUrl = action('ContentsController@deleteUpload', array('id'=>$setting->id)); //todo
-    $fileObj->deleteType = "DELETE";
+        $fileName = pathinfo($url,PATHINFO_FILENAME);
+        $fileObj = new stdClass();
+        $fileObj->name = $fileName;
+        $fileObj->thumbnailUrl = "$url"; //todo
+        $fileObj->deleteUrl = action('ContentsController@deleteUpload', array('id'=>$field->id)); //todo
+        $fileObj->deleteType = "DELETE";
 
-    $files[] = $fileObj;
-    //TODO: handle multiple files here?
-    $files = json_encode($files);   
+        $files[] = $fileObj;
+        //TODO: handle multiple files here?
+        
+    }
 }
+$files = json_encode($files);   
 ?>
 <div class="wrap">
     <div class='upload {{$niceName}}' >    
-        {{ Form::label('setting['.$setting->name.']', ucfirst($setting->name).':') }}
-        {{ Form::hidden('setting['.$setting->name.']', $setting->value, array('class'=>'form-control file-url')) }}
+        {{ Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) }}
+        @foreach($setting as $field)
+            {{ Form::hidden("setting".$field->name."][".$field->id."]", $field->value, array('class'=>'form-control file-url')) }}
+        @endforeach
+        
         
 
             <!-- Redirect browsers with JavaScript disabled to the origin page -->
@@ -30,7 +39,7 @@ if(@$setting->value){
                     <!-- The fileinput-button span is used to style the file input field as button -->
                         <span class="btn btn-success fileinput-button">
                             <i class="glyphicon glyphicon-plus"></i>
-                            <span>Add files...</span>
+                            <span>Add file...</span>
                             <input type="file" name="{{$niceName}}[]" multiple>
                         </span>
                         <button type="submit" class="btn btn-primary start">
@@ -99,7 +108,7 @@ if(@$setting->value){
             <!-- The template to display files available for download -->
             <script id="{{uniqid()}}" class='download-template' type="text/x-tmpl">
             {% for (var i=0, file; file=o.files[i]; i++) { %}
-                <tr class="template-download fade">
+                <tr data-item_id="{%=i%}" class="template-download fade">
                     <td class="preview-wrap">
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
@@ -146,21 +155,21 @@ if(@$setting->value){
 
                 var $container{{$niceName}} = $('div.upload.{{$niceName}}');
                 var $form{{$niceName}} = $container{{$niceName}}.closest('div.wrap');
-
                 // Initialize the jQuery File Upload widget:
                 $form{{$niceName}}.fileupload({
                     // Uncomment the following to send cross-domain cookies:
                     //xhrFields: {withCredentials: true},
-                    url: "{{{action('ContentsController@postUpload', array('id'=>$setting->id, 'type'=>get_class($setting)))}}}",
-                    maxNumberOfFiles:1,
-                    singleFileUploads:true,
+                    url: "{{{action('ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>get_class($setting[0])))}}}",
+                    maxNumberOfFiles:{{$params->count or '1'}},
+                    singleFileUploads:{{$params->count>1?'true':'false'}},
                     limitConcurrentUploads:3,
                     formData:{
-                        type: '{{get_class($setting)}}'
+                        type: '{{get_class($setting[0])}}'
                     },
+                    autoUpload: true,
                     disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
-                    maxFileSize: 5000000,
-                    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                    maxFileSize: {{$params->parsedValidation['size'] * 1024}},
+                    acceptFileTypes: /(\.|\/)({{str_replace(',','|',$params->parsedValidation['mimes'])}})$/i,
 
                     fileInput: $('input[type=file]', $container{{$niceName}}),
 
@@ -176,8 +185,8 @@ if(@$setting->value){
                     setTimeout(function(){
                         $('input.file-url', $container{{$niceName}}).val($('span.preview img', $container{{$niceName}}).attr('src'));
                     }, 1000);
-                }).bind('fileuploaddestroyed', function (e, data) {
-                    $('input.file-url', $container{{$niceName}}).val('');
+                }).bind('fileuploaddestroyed', function (e, data) {                    
+                    $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id')).remove();
                 }); 
 
                 @if(@$files)

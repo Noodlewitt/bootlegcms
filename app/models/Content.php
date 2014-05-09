@@ -32,14 +32,14 @@ class Content extends Contentwrap{ //Eloquent {
     	return $this->belongsTo('Content');
     }
 
-    public function default_pages(){
+    public function default_page(){
         return $this->belongsTo('Contentdefaultpage', 'content_type_id');
     }
     
     public function default_fields(){
         return $this->belongsTo('Contentdefaultfield', 'content_type_id');
     }
-    
+        
     public function permission(){
         return $this->morphMany('Permission', 'controller');
     }
@@ -126,13 +126,7 @@ class Content extends Contentwrap{ //Eloquent {
                 $contentDefault->quantity = 1;
             }
             for($i=0; $i<$contentDefault->quantity; ++$i) { //TODO: fix this.
-                $contentFields = Contentdefaultfield::where('content_default_id','=', '');
-                $content = new Content();
-                $content->content_type_id = $contentDefault->id;
-                if(!$content->parent_id){
-                    $content->parent_id = $this->id;
-                }
-                $content->save();
+               //nothing here yet.. 
             }
         }
     }
@@ -162,13 +156,13 @@ class Content extends Contentwrap{ //Eloquent {
         //plug in the fields we wanted..
         foreach($contentDefaultFields as $contentDefaultField){
             
-            if(!$this->name)$this->name = $contentDefaultField->default_name;
-            if(!$this->view)$this->view = $contentDefaultField->default_view;
-            if(!$this->layout)$this->layout = $contentDefaultField->default_layout;
-            if(!$this->identifier)$this->identifier = $contentDefaultField->default_identifier;
+            if(!$this->name)$this->name = $contentDefaultField->name;
+            if(!$this->view)$this->view = $contentDefaultField->view;
+            if(!$this->layout)$this->layout = $contentDefaultField->layout;
+            if(!$this->identifier)$this->identifier = $contentDefaultField->identifier;
             
-            if(!$this->package)$this->package = $contentDefaultField->default_package;
-            if(!$this->service_provider)$this->service_provider = $contentDefaultField->default_service_provider;
+            if(!$this->package)$this->package = $contentDefaultField->package;
+            if(!$this->service_provider)$this->service_provider = $contentDefaultField->service_provider;
         }
         //work out the slug if not manually set
         if(!$this->slug){
@@ -234,10 +228,10 @@ class Content extends Contentwrap{ //Eloquent {
         foreach($contentDefaultSettings as $contentDefaultSetting){
             
             $data[] = array(
-                'name'=>$contentDefaultSetting->default_name, 
-                'value'=>$contentDefaultSetting->default_value,
-                'field_type'=>$contentDefaultSetting->default_field_type,
-                'field_parameters'=>$contentDefaultSetting->default_field_parameters,
+                'name'=>$contentDefaultSetting->name, 
+                'value'=>$contentDefaultSetting->value,
+                'field_type'=>$contentDefaultSetting->field_type,
+                'field_parameters'=>$contentDefaultSetting->field_parameters,
                 'content_id'=>$this->id
             );
         }

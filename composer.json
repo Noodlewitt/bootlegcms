@@ -6,8 +6,7 @@
 	"require": {
 		"laravel/framework": "4.1.*",
                 "loic-sharma/profiler": "dev-master",
-                "baum/baum": "~1.0",    
-                "jason-morton-nz/laravel-grunt": "dev-master",
+                "baum/baum": "~1.0",
                 "doctrine/dbal": "~2.3",
                 "aws/aws-sdk-php-laravel": "1.*",
                 "orangehill/iseed": "dev-master",

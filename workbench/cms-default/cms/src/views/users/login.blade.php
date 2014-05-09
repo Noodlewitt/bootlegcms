@@ -3,7 +3,7 @@
 @section('main')
 {{ Form::open(array('class'=>'form-signin')) }}
     <!-- username field -->
-    <h2 class="form-signin-heading">Please sign in</h2>
+    <h2 class="form-signin-heading text-center">Bootleg CMS</h2>
     {{ Form::label('email', 'Email') }}
     {{ Form::text('email',null, array('placeholder'=>'Email Address','class'=>'form-control')) }}
     <!-- password field -->

@@ -107,7 +107,8 @@ class PageController extends BaseController {
                     $view = View::make("$package::$layout")->nest('child', "$package::$view");
                 }
             }
-
+            //Access-Control-Allow-Origin: http://example.org
+            //$response->header('Content-Type', $value);
             return($view);
 	}
         

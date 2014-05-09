@@ -35,22 +35,54 @@ class ContentsController extends CMSController {
      */
     public function anyIndex(){
         
-        $root_node = Content::fromApplication()->whereNull('parent_id')->first();
+        $content = Content::with(array('setting.default_setting', 'default_page'))->fromApplication()->whereNull('parent_id')->first();
 
-        $this->content = $this->content->findOrFail($root_node->id);
+        $content_defaults = Contentdefaultsetting::where('content_type_id','=',@$content->default_page->id)->get();
+        $all_settings = $content_defaults;
+        
+        //$all_settings = $content_defaults->merge($content->setting);
+        
+        foreach($content_defaults as $key=>$cd){
+            
+            $fl = $content->setting->filter(function($d) use($cd){
+                return($cd->name===$d->name);
+            }); 
+            
+            //$fl would be items that should replace.
+            if($fl){
+                foreach($fl as $f){
+                    //use content->settings value (fl)
+                    $all_settings->push($f);
+                    $all_settings->forget($key);
+                }
+            }
+        }
         
         
-        $content_settings = $this->content->setting()->get();
-        $content  = $this->content;
+        //we now need to add the current settings if they don't exisit in the defaults.
+        foreach($content->setting as $setting){
+            $fl = $all_settings->filter(function($d) use($setting){
+                if($d->name===$setting->name){
+                    if($d->id === $setting->id){
+                        return(true);
+                    }
+                }
+                return(false);
+            }); 
+            if($fl->isEmpty()){
+                $all_settings->push($setting);
+            }
+        }
         
-        
+        $settings = $all_settings->groupBy('section');
+    
         if (Request::ajax()){
-            $cont = View::make( 'cms::contents.edit', compact('content', 'content_settings') );
+            $cont = View::make( 'cms::contents.edit', compact('content', 'settings') );
             return($cont);
         }
         else{
-            $tree = $root_node->getDescendants();
-            $cont = View::make( 'cms::contents.edit', compact('content', 'content_settings') );
+            $tree = $content->getDescendants();
+            $cont = View::make( 'cms::contents.edit', compact('content', 'content_defaults', 'settings') );
             $cont = View::make( 'cms::layouts.tree', compact('cont', 'tree'));
             $layout = View::make( 'cms::layouts.master', compact('cont'));
         }
@@ -86,7 +118,10 @@ class ContentsController extends CMSController {
     public function anyStore($json = false){
         $input = Input::all();
         $validation = Validator::make($input, Content::$rules);
-        
+        if($input['parent_id'] == '#'){
+            //we want this under the root.
+            $input['parent_id'] = Content::fromApplication()->whereNull('parent_id')->first()->id;
+        }
         if ($validation->passes()){
             $saved = array($this->content->create($input));
             if($json){
@@ -109,20 +144,66 @@ class ContentsController extends CMSController {
      * @return Response
      */
     public function anyEdit($id = false){
-       
-        $root_node = Content::getMainRoot();
+      
+        $content = Content::with(array('setting.default_setting', 'default_page'))->findOrFail($id);
         
-        //$root_node->getTree(false);
+        //foreach content_default_field on this content item, we want to 
+        //add a setting if it exists on the content item (replacing it if necisary)        
+        if(@$content->default_page->id){
+            $content_defaults = Contentdefaultsetting::where('content_type_id','=',$content->default_page->id)->get();
+            $all_settings = $content_defaults;
+
+            foreach($content_defaults as $key=>$cd){
+
+                $fl = $content->setting->filter(function($d) use($cd){
+                    return($cd->name===$d->name);
+                }); 
+
+                //$fl would be items that should replace.
+                if($fl){
+                    foreach($fl as $f){
+                        //use content->settings value (fl)
+                        $all_settings->push($f);
+                        $all_settings->forget($key);
+                    }
+                }
+            }
+        }
         
-        $this->content = $this->content->findOrFail($id);
-        
-        $tree = $root_node->getDescendants();
-        
-        $content_settings = $this->content->setting()->get();
-        $content  = $this->content;
-        
-        //var_dump($content->contenttype()->get());
-        return View::make($this->application->cms_package.'::contents.edit', compact('content', 'content_settings', 'tree'));
+        //we now need to add the current settings if they don't exisit in the defaults.
+        if(@$all_settings){
+            foreach($content->setting as $setting){
+
+                $fl = $all_settings->filter(function($d) use($setting){
+                    if($d->name===$setting->name){
+                        if($d->id === $setting->id){
+                            return(true);
+                        }
+                    }
+                    return(false);
+                }); 
+                if($fl->isEmpty()){
+                    $all_settings->push($setting);
+                }
+            }
+        }
+        else{
+            //if there's no defaults set for this we can just use what's on the content item already.
+            $all_settings = $content->setting;
+        }
+        $settings = $all_settings->groupBy('section');
+    
+        if (Request::ajax()){
+            $cont = View::make( 'cms::contents.edit', compact('content', 'settings') );
+            return($cont);
+        }
+        else{
+            $tree = $content->getDescendants();
+            $cont = View::make( 'cms::contents.edit', compact('content', 'content_defaults', 'settings') );
+            $cont = View::make( 'cms::layouts.tree', compact('cont', 'tree'));
+            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        }
+        return($layout);
     }
 
     /**
@@ -140,7 +221,6 @@ class ContentsController extends CMSController {
             $input = array_except(Input::all(), '_method');
             
             $validation = Validator::make($input, Content::$rules);
-        
             if ($validation->passes()){
                 //we need to update the settings too:
                 $content = $this->content->find($id);
@@ -150,22 +230,30 @@ class ContentsController extends CMSController {
                 }
                 $content->update($input);
                 
-                //TODO: take another look at a better way of doing this:
+                //TODO: take another look at a better way of doing this vv ..also VALIDATION!
                 //add any settings:
                 if(@$input['setting']){
-                    foreach($input['setting'] as $key=>$setting){
-                        $contentSetting = Contentsetting::firstOrNew(array(
-                            'name'=>$key, 
-                            'content_id'=> $content->id,
-                        ));
-                        $contentSetting->name = $key;
-                        $contentSetting->value = $setting;
-                        $contentSetting->content_id = $content->id;
-                        $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
-                        $contentSetting->save();
+                    foreach($input['setting'] as $name=>$settingGroup){
+                        foreach($settingGroup as $key=>$setting){
+                            //we want to delete this setting.
+                            if(is_array($setting) && array_key_exists('deleted',$setting)){
+                                $contentSetting = Contentsetting::destroy($key);
+                            }
+                            else{
+                                $contentSetting = Contentsetting::firstOrNew(array(
+                                    'name'=>$name, 
+                                    'content_id'=> $content->id,
+                                    'id'=> $key
+                                ));
+                                $contentSetting->name = $name;
+                                $contentSetting->value = $setting;
+                                $contentSetting->content_id = $content->id;
+                                $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
+                                $contentSetting->save();
+                            }
+                        }
                     }
                 }
-
                 return Redirect::action('ContentsController@anyEdit', $id)
                     ->with('success', 'Success, saved correctly');
             }
@@ -243,9 +331,10 @@ class ContentsController extends CMSController {
     }
     
     
-    /*retrieve uploaded file(s)*/
+    /*delete uploaded file(s)*/
     public function deleteUpload($id){
         $content_setting = Contentsetting::findOrFail($id);
+        $content_setting->delete();
         $delete = new stdClass();
         $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
         
