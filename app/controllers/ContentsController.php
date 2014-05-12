@@ -37,6 +37,7 @@ class ContentsController extends CMSController {
         
         $content = Content::with(array('setting.default_setting', 'default_page'))->fromApplication()->whereNull('parent_id')->first();
 
+
         $content_defaults = Contentdefaultsetting::where('content_type_id','=',@$content->default_page->id)->get();
         $all_settings = $content_defaults;
         
@@ -58,24 +59,24 @@ class ContentsController extends CMSController {
             }
         }
         
-        
         //we now need to add the current settings if they don't exisit in the defaults.
-        foreach($content->setting as $setting){
-            $fl = $all_settings->filter(function($d) use($setting){
-                if($d->name===$setting->name){
-                    if($d->id === $setting->id){
-                        return(true);
+        //if(@$content->setting){
+            foreach($content->setting as $setting){
+                $fl = $all_settings->filter(function($d) use($setting){
+                    if($d->name===$setting->name){
+                        if($d->id === $setting->id){
+                            return(true);
+                        }
                     }
+                    return(false);
+                }); 
+                if($fl->isEmpty()){
+                    $all_settings->push($setting);
                 }
-                return(false);
-            }); 
-            if($fl->isEmpty()){
-                $all_settings->push($setting);
             }
-        }
-        
+       // }
         $settings = $all_settings->groupBy('section');
-    
+        
         if (Request::ajax()){
             $cont = View::make( 'cms::contents.edit', compact('content', 'settings') );
             return($cont);
