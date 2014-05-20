@@ -4,5 +4,4 @@
         <h1 class="col-xs-12"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;Content</h1>
     </div>
     
-
-    @include('cms::contents.form', array('content'=>@$content))
+    @include($content->edit_package.'::'.$content->edit_view, array('content'=>@$content))

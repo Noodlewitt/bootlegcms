@@ -18,8 +18,11 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         @foreach($applications as $app)
-                        <li><a href="{{$app->url[0]->domain}}">{{$app->name}}</a></li>
+                            @if(@$app->url[0])
+                            <li><a href="{{$app->url[0]->domain}}">{{$app->name}}</a></li>
+                            @endif
                         @endforeach
+                        
                     </ul>
                 </li>
         </ul> <!-- / .navbar-nav -->

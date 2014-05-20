@@ -22,10 +22,10 @@ foreach($setting as $field){
 $files = json_encode($files);   
 ?>
 <div class="wrap">
-    <div class='upload {{$niceName}}' >    
+    <div class='upload {{$niceName}}' >   
         {{ Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) }}
         @foreach($setting as $field)
-            {{ Form::hidden("setting".$field->name."][".$field->id."]", $field->value, array('class'=>'form-control file-url')) }}
+            {{ Form::hidden("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control file-url')) }}
         @endforeach
         
         
@@ -182,11 +182,26 @@ $files = json_encode($files);
                 });
 
                 $form{{$niceName}}.bind('fileuploaddone', function (e, data) {
+                    //added file, we wait for 1 second for some reason                  
                     setTimeout(function(){
-                        $('input.file-url', $container{{$niceName}}).val($('span.preview img', $container{{$niceName}}).attr('src'));
+                        //and add in the image preview
+                        $input = $('input.file-url', $container{{$niceName}});
+                        if($input.length == 0){
+                            
+                        }
+                        $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
+                        //and remove deleted if it's there.
+                        var rpl = $input.attr('name').replace('[deleted]','');
+                        console.log(rpl);
+                        $input.attr('name',rpl);
+                        
                     }, 1000);
-                }).bind('fileuploaddestroyed', function (e, data) {                    
-                    $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id')).remove();
+                }).bind('fileuploaddestroyed', function (e, data) {     
+                    //on deleted, we remove the input file
+                    console.log(data.context);
+                    $inp = $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id'));
+                    $inp.attr('name',$inp.attr('name')+'[deleted]');
+                    //$('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id')).remove();
                 }); 
 
                 @if(@$files)

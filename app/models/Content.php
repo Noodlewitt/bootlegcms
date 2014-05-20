@@ -1,7 +1,7 @@
 <?php
 
-class Content extends Contentwrap{ //Eloquent {
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
+class Content extends Baum\Node{ //Eloquent {
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -13,7 +13,13 @@ class Content extends Contentwrap{ //Eloquent {
     
     protected $scoped = array('application_id');
     
-    protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.
+    protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.    
+    
+    protected $closure = '\contentClosure';
+    
+    //tmp for baum.
+    protected $parentColumn = 'parent_id';
+    
     
     public static $rules = array(
 		//'content' => 'required',
@@ -85,34 +91,6 @@ class Content extends Contentwrap{ //Eloquent {
             $content->loadDefaultValues();
         });
         
-        
-        Content::created(function($content){
-            //on save, calculate parent
-
-            if($content->parent_id){
-                $content->makeChildOf($content->parent_id);
-            }
-            else{
-                $content->parent_id=null;
-            }
-            $content->setDefaultSettings();
-        });
-        
-        Content::updating(function($content){
-            if(!$content->parent_id){
-                $content->parent_id=null;
-            }
-        });
-        
-        Content::updated(function($content){
-
-            //on update we want to re-calculate the parent 
-            if($content->parent_id){
-
-                $content->makeChildOf($content->parent_id);
-            }
-        });
-        
     }
     
     //Creates default pages recursivly.
@@ -173,8 +151,10 @@ class Content extends Contentwrap{ //Eloquent {
         $this->user_id = Auth::user()->id;
         
         //and the application:
-        $application = Application::getApplication();
-        $this->application_id = $application->id;
+        if(!$this->application_id){
+            $application = Application::getApplication();
+            $this->application_id = $application->id;
+        }
         
         //and the service_provider if not set
         if(!$this->service_provider){
@@ -182,6 +162,8 @@ class Content extends Contentwrap{ //Eloquent {
             $this->service_provider = @$parent->service_provider;
             
             //still nothing - set from application
+
+            $application = Application::getApplication();
             if($application->service_provider){
                 $this->service_provider = $application->service_provider;
             }
@@ -189,7 +171,7 @@ class Content extends Contentwrap{ //Eloquent {
             //still nothing - we have to set it to default.
             if(!$this->service_provider){
                 //last ditch attempt to put something sensible in here
-                $this->service_provider = 'CmsDefault\Cms\CmsServiceProvider';
+                $this->service_provider = 'Bootleg\Cms\CmsServiceProvider';
             }
         }
         
@@ -199,6 +181,7 @@ class Content extends Contentwrap{ //Eloquent {
             $this->package = @$parent->package;
             
             //still nothing - set from application
+            $application = Application::getApplication();
             if($application->package){
                 $this->package = $application->package;
             }
@@ -221,7 +204,7 @@ class Content extends Contentwrap{ //Eloquent {
     
     
     //saves default settings for page based off content_type_id
-    public function setDefaultSettings(){
+    /*public function setDefaultSettings(){
         $contentDefaultSettings = Contentdefaultsetting::where('content_type_id', '=', $this->content_type_id)->get();
         
         $data = array();
@@ -238,7 +221,7 @@ class Content extends Contentwrap{ //Eloquent {
         if(!empty($data)){
             Contentsetting::insert($data);
         }
-    }
+    }*/
     
     
     public function createSlug(){
@@ -320,5 +303,31 @@ class Content extends Contentwrap{ //Eloquent {
     
     public static function getMainRoot(){
         return(Content::fromApplication()->whereNull('parent_id')->first());
+    }
+    
+    /*duplicating $this app into $newApp*/
+    public static function doop($recursive, $themeContent, $parent, $newAppId){  
+        $newContent = $themeContent->replicate();
+        
+        //$input['']
+        
+        
+        if($themeContent->parent_id){
+            $newContent->parent_id = $parent->id;
+        }
+        
+        $newContent->application_id = $newAppId;
+        echo('duplicated ' . $newContent->name. "<br />");
+        
+        if($saved = $newContent->save()){
+            
+            dd($saved);
+            if(@$themeContent->children){
+                foreach($themeContent->children as $oldContent){
+                    Content::doop(true, $themeContent, $themeContent->id, $newAppId);               
+                    //exit();
+                }
+            }
+        }
     }
 }

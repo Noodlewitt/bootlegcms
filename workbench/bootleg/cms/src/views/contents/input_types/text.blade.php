@@ -7,14 +7,14 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 @if($params->count == 1)
     <div class='text {{$niceName}}' >   
         @foreach($setting as $field)
-        {{ Form::text("setting[".$field->name."][".$field->id."]", $field->value, array('class'=>'form-control')) }}
+        {{ Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control')) }}
         @endforeach
     </div>
 @else
     
     <div class='hidden template{{$niceName}}'>
         <div class="input-group new">
-                <input class="form-control" data-name="setting[{{$setting[0]->name}}][]" type="text">
+                <input class="form-control" data-name="setting[{{$setting[0]->name}}][{{get_class($field)}}][]" type="text">
                 <span class="input-group-btn">
                     <button class="btn btn-default delete{{$niceName}}" type="button"><span class="glyphicon glyphicon-remove"></span></button>
                 </span>
@@ -27,10 +27,10 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
         ?>
         @foreach($setting as $key=>$field)
             <div class="input-group">
-                    {{ Form::text("setting[".$field->name."][".$field->id."]", $field->value, array('class'=>'form-control')) }}
-                    <span class="input-group-btn">
-                        <button class="btn btn-default delete{{$niceName}}" type="button"><span class="glyphicon glyphicon-remove"></span></button>
-                    </span>
+                {{ Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control')) }}
+                <span class="input-group-btn">
+                    <button class="btn btn-default delete{{$niceName}}" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+                </span>
             </div>
         @endforeach
     </div>

@@ -1,8 +1,13 @@
 <?php
 class Application extends Eloquent {
     protected $table = 'applications';
-    
+    protected $fillable = array('name', 'theme_id', 'parent_id', 'cms_theme_id', 'cms_package', 'cms_service_provider', 'package', 'service_provider');
     protected $_settings = NULL; //holds settings for this application item so we don't have to contantly query it.
+    
+    public static $rules = array(
+		//'content' => 'required',
+		//'parent_id' => 'required'
+    );
     
     public function url(){
         return($this->hasMany('ApplicationUrl'));

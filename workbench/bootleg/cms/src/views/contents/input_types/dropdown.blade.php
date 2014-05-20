@@ -10,4 +10,5 @@ foreach($fields as $key=>$field){
     $final[$f[1]] = $f[0];
 }
 ?>
+TODO: fix this up.
 {{ Form::select($setting->name, $final, $field_value) }}

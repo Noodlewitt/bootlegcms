@@ -74,7 +74,7 @@ class ContentsController extends CMSController {
                     $all_settings->push($setting);
                 }
             }
-       // }
+        //}
         $settings = $all_settings->groupBy('section');
         
         if (Request::ajax()){
@@ -120,13 +120,21 @@ class ContentsController extends CMSController {
         $input = Input::all();
         $validation = Validator::make($input, Content::$rules);
         if($input['parent_id'] == '#'){
-            //we want this under the root.
+            //we ar not allowed to create a new root node like this.. so set it to the current root.
+            //unset($input['parent_id']); //test
             $input['parent_id'] = Content::fromApplication()->whereNull('parent_id')->first()->id;
         }
         if ($validation->passes()){
-            $saved = array($this->content->create($input));
+            $application = Application::getApplication();
+            $input['application_id'] = $application->id;
+            $parent = Content::find($input['parent_id']);
+            //dd($parent->id);
+            unset($input['parent_id']);
+            
+            $saved = $parent->children()->create($input);
+            
             if($json){
-                return($this->renderTree($saved));
+                return($this->renderTree(array($saved)));
             }
             return Redirect::action('ContentsController@anyIndex');
         }
@@ -138,6 +146,13 @@ class ContentsController extends CMSController {
     }
 
 
+    public function anyFixtree(){
+        Content::rebuild();
+        
+        echo(Content::isValid());
+        exit();
+    }
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -193,7 +208,9 @@ class ContentsController extends CMSController {
             $all_settings = $content->setting;
         }
         $settings = $all_settings->groupBy('section');
-    
+        
+        App::register($content->edit_service_provider);
+        
         if (Request::ajax()){
             $cont = View::make( 'cms::contents.edit', compact('content', 'settings') );
             return($cont);
@@ -235,22 +252,41 @@ class ContentsController extends CMSController {
                 //add any settings:
                 if(@$input['setting']){
                     foreach($input['setting'] as $name=>$settingGroup){
-                        foreach($settingGroup as $key=>$setting){
-                            //we want to delete this setting.
-                            if(is_array($setting) && array_key_exists('deleted',$setting)){
-                                $contentSetting = Contentsetting::destroy($key);
-                            }
-                            else{
-                                $contentSetting = Contentsetting::firstOrNew(array(
-                                    'name'=>$name, 
-                                    'content_id'=> $content->id,
-                                    'id'=> $key
-                                ));
-                                $contentSetting->name = $name;
-                                $contentSetting->value = $setting;
-                                $contentSetting->content_id = $content->id;
-                                $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
-                                $contentSetting->save();
+                        foreach($settingGroup as $type=>$setGrp){
+                            foreach($setGrp as $key=>$setting){
+                                //we want to delete this setting.
+                                if(is_array($setting) && array_key_exists('deleted',$setting)){
+                                    $contentSetting = Contentsetting::destroy($key);
+                                }
+                                else{
+                                    if($type != 'Contentdefaultsetting'){
+                                        $contentSetting = Contentsetting::withTrashed()
+                                            ->where('name','=',$name)
+                                            ->where('content_id','=',$content->id)
+                                            ->where('id','=',$key)->first();
+                                    }
+                                    //if it's not found (even in trashed) then we need to make a new field.
+                                    //if it's contentdefault, we need to create it too since it doesn't exist!
+                                    if($type == 'Contentdefaultsetting' || is_null($contentSetting)){
+                                        //if we can't find the field, we need to create it from the default:
+                                        $defaultContentSetting = Contentdefaultsetting::findOrFail($key);
+                                        $contentSetting = new Contentsetting();
+                                        $contentSetting->name = $defaultContentSetting->name;
+                                        $contentSetting->value = $setting;
+                                        $contentSetting->content_id = $content->id;
+                                        $contentSetting->field_type = $defaultContentSetting->field_type;
+                                    }
+                                    else{
+                                        //otherwise this field exists.. we can overwrite it' settings.
+                                        $contentSetting->name = $name;
+                                        $contentSetting->value = $setting;
+                                        $contentSetting->content_id = $content->id;
+                                        $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
+                                    }
+
+                                    $contentSetting->save();
+                                    $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
+                                }
                             }
                         }
                     }
@@ -311,7 +347,6 @@ class ContentsController extends CMSController {
                 ->orderBy('position')
                 ->orderBy('name')->get();
         
-
         return($this->renderTree($tree));   
     }
     
@@ -335,7 +370,7 @@ class ContentsController extends CMSController {
     /*delete uploaded file(s)*/
     public function deleteUpload($id){
         $content_setting = Contentsetting::findOrFail($id);
-        $content_setting->delete();
+        //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
         $delete = new stdClass();
         $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
         
@@ -351,22 +386,33 @@ class ContentsController extends CMSController {
      * pass in a content_setting id to upload to.
      */
     public function postUpload($id,  $type = "Contentsetting"){
+        $input = array_except(Input::all(), '_method');
+        
         $application = Application::getApplication();
         $uploadFolder = @$application->getSetting('Upload Folder');
         if($type == 'Applicationsetting'){
-            $content_setting = Applicationsetting::findOrFail($id);
+            $content_setting = Applicationsetting::withTrashed()->find($id);
         }
-        else{
-            $content_setting = Contentsetting::findOrFail($id);
+        else{           
+            $content_setting = Contentsetting::withTrashed()->find($id);
+            if(is_null($content_setting) || $input['type'] == 'Contentdefaultsetting'){
+                //we need to get the default settings instead:
+                $default_content_setting = Contentdefaultsetting::find($id);
+                $content_setting = new Contentsetting();
+                $content_setting->name = $default_content_setting->name;
+                $content_setting->field_type = $default_content_setting->field_type;
+                $content_setting->field_parameters = $default_content_setting->field_parameters;
+            }
         }
         $niceName = preg_replace('/\s+/', '', $content_setting->name);
         
         $files = (Input::file($niceName));
-        
-        if(!empty($files)){
 
+        if(!empty($files)){
+            
             foreach($files as $file) {
                 $rules = array(
+                    //TODO.
                     'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf|max:20000'
                 );
                 $validator = \Validator::make(array('file'=> $file), $rules);
