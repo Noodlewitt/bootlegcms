@@ -19,7 +19,7 @@ Route::get('/cms/', array('as' => 'dash', function(){
     return Redirect::action('UsersController@anyDashboard');
 }));
 
-Route::group(array('prefix'=>Utils::cmsRoute,'before' => 'permission:view'), function(){
+Route::group(array('prefix'=>Utils::cmsRoute,'before' => 'permission:update'), function(){
 
     Route::group(array('before' => 'auth'), function(){
         
@@ -36,6 +36,7 @@ Route::group(array('prefix'=>Utils::cmsRoute,'before' => 'permission:view'), fun
 Route::any(Utils::cmsRoute.'login', array('uses'=>'UsersController@anyLogin'));
 
 
+//TODO: should this be moved elsewhere so pacakge routes can be included here?
 //this route handles the whole front end of the site.
 Route::group(array('before' => 'permission:front'), function(){
     Route::controller('/', 'PageController');

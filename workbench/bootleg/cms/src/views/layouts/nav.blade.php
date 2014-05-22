@@ -19,10 +19,11 @@
                     <ul class="dropdown-menu">
                         @foreach($applications as $app)
                             @if(@$app->url[0])
-                            <li><a href="{{$app->url[0]->domain}}">{{$app->name}}</a></li>
+                            <li><a href="{{$app->url[0]->protocol or 'http://'}}{{$app->url[0]->domain}}{{$app->url[0]->folder}}{{Utils::cmsRoute}}">{{$app->name}}</a></li>
                             @endif
                         @endforeach
-                        
+                        <li role="presentation" class="divider"></li>
+                        <li><a href="{{action('ApplicationController@anyCreate')}}">Create Application</a></li>
                     </ul>
                 </li>
         </ul> <!-- / .navbar-nav -->

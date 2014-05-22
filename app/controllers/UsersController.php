@@ -40,10 +40,19 @@ class UsersController extends CMSController {
     public function anyLogin(){
         //dd(array('email'=>Input::get('email'), 'password'=>Input::get('password')));
         if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password')))) {
-            return Redirect::action('UsersController@anyDashboard')->with('success', 'You are now logged in!');
+            Session::flash('success', 'You are now logged in!');
+            return Redirect::intended(action('UsersController@anyDashboard'));
         }
         
-        return($this->ajaxRender(View::make($this->application->cms_package.'::users.login')));
+        if (Request::ajax()){
+            $cont = View::make( $this->application->cms_package.'::users.login') ;
+            return($cont);
+        }
+        else{
+            $cont = View::make( $this->application->cms_package.'::users.login');
+            $layout = View::make( 'cms::layouts.bare', compact('cont'));
+        }
+        return($layout);
     }
     
     

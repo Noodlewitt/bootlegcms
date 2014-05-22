@@ -111,6 +111,7 @@ class Content extends Baum\Node{ //Eloquent {
     
     //Loads default values into the model based off the tree stuff..
     public function loadDefaultValues(){
+        
         if(!$this->content_type_id){
             //we need to grab the parent_id's link:
             if($this->parent_id){
@@ -199,7 +200,7 @@ class Content extends Baum\Node{ //Eloquent {
         }
         if(!$this->view){
             $this->view = 'default.view';
-        }
+        }        
     }
     
     
@@ -306,25 +307,38 @@ class Content extends Baum\Node{ //Eloquent {
     }
     
     /*duplicating $this app into $newApp*/
-    public static function doop($recursive, $themeContent, $parent, $newAppId){  
-        $newContent = $themeContent->replicate();
+    public static function doop($recursive, $themeContent, $parent_id, $newAppId){  
         
-        //$input['']
+        //we neeed to dupe all this crap..
+        $newContent = new Content();
+        $newContent->name = $themeContent->name;
+        $newContent->slug = $themeContent->slug;
+        $newContent->identifier = $themeContent->identifier;
+        $newContent->service_provider = $themeContent->service_provider;
+        $newContent->package = $themeContent->package;
+        $newContent->view = $themeContent->view;
+        $newContent->layout = $themeContent->layout;
+        $newContent->content_type_id = $themeContent->content_type_id;
+        $newContent->position = $themeContent->position;
+        $newContent->edit_view = $themeContent->edit_view;
+        $newContent->edit_service_provider = $themeContent->edit_service_provider;
+        $newContent->edit_package = $themeContent->edit_package;
+        $newContent->status = $themeContent->status;
         
         
+        //$newContent->children = @$themeContent->children;
         if($themeContent->parent_id){
-            $newContent->parent_id = $parent->id;
+            $newContent->parent_id = $parent_id;
         }
         
         $newContent->application_id = $newAppId;
-        echo('duplicated ' . $newContent->name. "<br />");
+        echo('duplicated ' . $newContent->name."|".$newContent->application_id. "<br />");
         
         if($saved = $newContent->save()){
-            
-            dd($saved);
             if(@$themeContent->children){
                 foreach($themeContent->children as $oldContent){
-                    Content::doop(true, $themeContent, $themeContent->id, $newAppId);               
+                    //dd($newContent->id);
+                    Content::doop(true, $oldContent, $newContent->id, $newAppId);               
                     //exit();
                 }
             }

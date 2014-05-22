@@ -1,6 +1,3 @@
-@extends('cms::layouts.bare')
-
-@section('main')
 {{ Form::open(array('class'=>'form-signin')) }}
     <!-- username field -->
     <h2 class="form-signin-heading text-center">Bootleg CMS</h2>
@@ -12,6 +9,4 @@
     <!-- submit button -->
     {{ Form::label('login', 'Login') }}
     {{ Form::submit('Login', array('class'=>'btn btn-lg btn-primary btn-block')) }}
-{{ Form::close() }}
-
-@stop      
+{{ Form::close() }}   

@@ -20,7 +20,7 @@
         
         
         <div class="container">
-            @yield('main')
+            {{$cont}}
         </div>
     </body>
 

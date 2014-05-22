@@ -106,11 +106,12 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
-                'Baum\BaumServiceProvider',
-                'Profiler\ProfilerServiceProvider',
-                'Aws\Laravel\AwsServiceProvider',
-                'Franzose\ClosureTable\ClosureTableServiceProvider',
-               // 'Way\Generators\GeneratorsServiceProvider',
+        'Baum\BaumServiceProvider',
+        'Profiler\ProfilerServiceProvider',
+        'Aws\Laravel\AwsServiceProvider',
+        'Franzose\ClosureTable\ClosureTableServiceProvider',
+        'Mikthemes\Appcreator\AppcreatorServiceProvider'
+   //   'Way\Generators\GeneratorsServiceProvider',
 	),
 
 	/*

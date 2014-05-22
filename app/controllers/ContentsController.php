@@ -173,8 +173,7 @@ class ContentsController extends CMSController {
 
                 $fl = $content->setting->filter(function($d) use($cd){
                     return($cd->name===$d->name);
-                }); 
-
+                });  
                 //$fl would be items that should replace.
                 if($fl){
                     foreach($fl as $f){

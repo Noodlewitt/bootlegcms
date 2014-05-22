@@ -52,7 +52,7 @@ class ApplicationUrl extends Eloquent {
     }
     
     public static function getDomain(){
-        $domain = trim($_SERVER['SERVER_NAME']);
+        $domain = trim($_SERVER['HTTP_HOST']);
         return($domain);
     }   
 }
