@@ -109,7 +109,6 @@ return array(
         'Baum\BaumServiceProvider',
         'Profiler\ProfilerServiceProvider',
         'Aws\Laravel\AwsServiceProvider',
-        'Mikthemes\Appcreator\AppcreatorServiceProvider'
    //   'Way\Generators\GeneratorsServiceProvider',
 	),
 
