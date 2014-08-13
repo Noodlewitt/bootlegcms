@@ -109,7 +109,6 @@ return array(
         'Baum\BaumServiceProvider',
         'Profiler\ProfilerServiceProvider',
         'Aws\Laravel\AwsServiceProvider',
-        'Franzose\ClosureTable\ClosureTableServiceProvider',
         'Mikthemes\Appcreator\AppcreatorServiceProvider'
    //   'Way\Generators\GeneratorsServiceProvider',
 	),
