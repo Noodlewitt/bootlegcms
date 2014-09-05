@@ -53,7 +53,8 @@ module.exports = function (grunt) {
                                     'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-video.js',
                                     'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-validate.js',
                                     'public/cms_assets/vendor/blueimp-file-upload/js/jquery.fileupload-ui.js',
-                                    'public/cms_assets/vendor/tinymce-builded/js/tinymce/tinymce.jquery.js'
+                                    'public/cms_assets/vendor/tinymce-builded/js/tinymce/tinymce.jquery.js',
+                                    'public/cms_assets/vendor/bootstrap-tagsinput/dist/bootstrap-tagsinput.js'
                                 ],							// JavaScript files in order you'd like them concatenated and minified
 				concat: '<%= options.js.base %>/concat.js',		// Name of the concatenated JavaScript file
 				min: '<%= options.publish %>/script.min.js'		// Name of the minified JavaScript file

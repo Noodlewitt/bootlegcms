@@ -5,66 +5,82 @@ class Content extends Baum\Node{ //Eloquent {
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
-    protected $table = 'content';
+    public $table = 'content';
         
     public $policy, $signature;
     
     protected $softDelete = true;
     
-    protected $scoped = array('application_id');
+    //protected $scoped = array('application_id');
     
     protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.    
     
     protected $closure = '\contentClosure';
     
-    //tmp for baum.
-    protected $parentColumn = 'parent_id';
-    
-    
-    public static $rules = array(
+    const SERVICE_PROVIDER = 'Bootleg\Cms\CmsServiceProvider';
+    const PACKAGE = 'cms';
+    const VIEW = 'default.view';
+    const LAYOUT = 'default.layout';
+    const EDIT_VIEW = 'contents.form';
+
+    public $rules = array(
 		//'content' => 'required',
 		//'parent_id' => 'required'
     );
 
     public function author(){
-    	return $this->belongsTo('User');
+        return $this->belongsTo('User');
     }
     
-    public function application(){
+    public function application()
+    {
         return($this->belongsTo('Application'));
     }
 
-    public function content_parent(){
-    	return $this->belongsTo('Content');
+    public function content_parent()
+    {
+        return $this->belongsTo('Content');
     }
+	
+	public function template()
+	{
+		return $this->belongsTo('Template', 'template_id');
+	}
 
-    public function default_page(){
+    public function default_page()
+    {
         return $this->belongsTo('Contentdefaultpage', 'content_type_id');
     }
     
-    public function default_fields(){
+    public function default_fields()
+    {
         return $this->belongsTo('Contentdefaultfield', 'content_type_id');
     }
-        
-    public function permission(){
+
+    public function permission()
+    {
         return $this->morphMany('Permission', 'controller');
     }
     
-    public function childs(){
-    	return $this->hasMany('Content', 'parent_id');
+    public function childs()
+    {
+        return $this->hasMany('Content', 'parent_id');
     }
     
     //keeps content within this application.
-    public function scopeFromApplication($query){
+    public function scopeFromApplication($query)
+    {
         $qu = $query->where('application_id', '=', Application::getApplication()->id);
         return($qu);
     }
     
     //keeps content within this application.
-    public function scopeLive($query){
+    public function scopeLive($query)
+    {
         $qu = $query->where('status', '=', Content::LIVE_STATUS);
         return($qu);
     }
+
         
     public function setting()
     {
@@ -78,189 +94,220 @@ class Content extends Baum\Node{ //Eloquent {
     const DRAFT_STATUS = 0;
     const LIVE_STATUS = 1;
 
+	/*
+	 *Mutator that should replace the attributes with the correct language
+	 **/
 
-    
     public static function boot(){
         parent::boot();
+		
         
 //        App::register($this->service_provider);
         
         
         //we need to fill in all the defaults for this item..
-        Content::creating(function($content){    
-            $content->loadDefaultValues();
-        });
+
+		
+		Content::created(function($content){
+			//we need check for sub pages and create them!
+		});
         
     }
     
-    //Creates default pages recursivly.
-    public function createDefaultPages(){
-            
-        
-        $contentDefaults = Contentdefaultpage::where('parent_id', '=', $this->content_type_id)->get();
-        
-        foreach($contentDefaults as $contentDefault){
-            if(is_null($contentDefault->quantity)){
-                $contentDefault->quantity = 1;
-            }
-            for($i=0; $i<$contentDefault->quantity; ++$i) { //TODO: fix this.
-               //nothing here yet.. 
+    /*recursivly create sub pages.*/
+    public function superSave($input){
+        $input = Content::loadDefaultValues($input);
+        $parent = Content::find($input['parent_id']);
+        $template = Template::find($input['template_id']);
+        unset($input['parent_id']);
+        //SAVE CONTENT ITEM
+        $saved = $parent->children()->create($input);  
+        if($template){
+            $templateChildren = $template->getImmediateDescendants();
+            foreach($templateChildren as $templateChild){
+                //dd($templateChild->id);
+                //we need to run a create on this..
+                $inp['template_id'] = $templateChild->id;
+                $inp['parent_id'] = $saved->id;
+                $this->superSave($inp);
             }
         }
+          
+        return($saved);
     }
     
     //Loads default values into the model based off the tree stuff..
-    public function loadDefaultValues(){
-        
-        if(!$this->content_type_id){
-            //we need to grab the parent_id's link:
-            if($this->parent_id){
-                //we try and grab the content_type from the parent's tree..
-                $parent = Content::find($this->parent_id);
-                $parent_default_page_type = @Contentdefaultpage::where('parent_id','=',$parent->content_type_id)->first()->id;
-                if(!$parent_default_page_type){
-                    $parent_default_page_type = 0;
-                }
-                $this->content_type_id = $parent_default_page_type;
+    public static function loadDefaultValues($input = ''){
+
+		
+        $parent = Content::find($input['parent_id']);
+		
+        if(!@$input['template_id']){
+            $parentTemplate = Template::find($parent->template_id);
+            if($parentTemplate){
+                $parentTemplateChild = @$parentTemplate->getImmediateDescendants()->first();
+
+                $input['template_id'] = @$parentTemplateChild->id;
+                //dd('aaa'.$input['template_id']);
+                
             }
-            else{
-                //otherwise we need to guess and set it to the default blank page:
-                $this->content_type_id = 0;
+            if(!@$input['template_id']){
+                //if it's still nothing we can safely set this to 0;
+                $input['template_id'] = null;
             }
         }
-        
+        $template = Template::find($input['template_id']);
+		
+		//dd($template->name);
         //TODO: replace with something like this: dd($this->default_fields()->first()->id);
-        $contentDefaultFields = Contentdefaultfield::where('content_type_id', '=', $this->content_type_id)->get();
+        //$contentDefaultFields = Contentdefaultfield::where('content_type_id', '=', $this->content_type_id)->get();
         
         //plug in the fields we wanted..
-        foreach($contentDefaultFields as $contentDefaultField){
-            
-            if(!$this->name)$this->name = $contentDefaultField->name;
-            if(!$this->view)$this->view = $contentDefaultField->view;
-            if(!$this->layout)$this->layout = $contentDefaultField->layout;
-            if(!$this->identifier)$this->identifier = $contentDefaultField->identifier;
-            
-            if(!$this->package)$this->package = $contentDefaultField->package;
-            if(!$this->service_provider)$this->service_provider = $contentDefaultField->service_provider;
-        }
+        if(!@$input['template_id'])$input['template_id'] = @$template->id;
+        if(!@$input['name'])$input['name'] = @$template->name;
+        if(!@$input['view'])$input['view'] = @$template->view;
+        if(!@$input['layout'])$input['layout'] = @$template->layout;
+        if(!@$input['identifier'])$input['identifier'] = @$template->identifier;
+
+        if(!@$input['package'])$input['package'] = @$template->package;
+        if(!@$input['service_provider'])$input['service_provider'] = @$template->service_provider;
+
+        if(!@$input['edit_view'])$input['edit_view'] = @$template->edit_view;
+        if(!@$input['edit_package'])$input['edit_package'] = @$template->edit_package;
+        if(!@$input['edit_service_provider'])$input['edit_service_provider'] = @$template->edit_service_provider;
+		
         //work out the slug if not manually set
-        if(!$this->slug){
-            $this->slug = $this->createSlug();
+        if(!@$input['slug']){
+            $input['slug'] = Content::createSlug($input, $parent);
         }
-        
+		
+		
         //and the user_id (author)
-        $this->user_id = Auth::user()->id;
+        $input['user_id'] = Auth::user()->id;
         
         //and the application:
-        if(!$this->application_id){
+        if(!@$input['application_id']){
             $application = Application::getApplication();
-            $this->application_id = $application->id;
+            $input['application_id'] = $application->id;
+        }
+		
+		//set language
+		
+		if(!@$input['language']){
+            $input['language'] = App::getLocale();
         }
         
         //and the service_provider if not set
-        if(!$this->service_provider){
+        if (!@$input['service_provider']) {
             //set it as parent one..
-            $this->service_provider = @$parent->service_provider;
+            $input['service_provider'] = @$parent->service_provider;
             
             //still nothing - set from application
-
             $application = Application::getApplication();
             if($application->service_provider){
-                $this->service_provider = $application->service_provider;
+                $input['service_provider'] = $application->service_provider;
             }
             
             //still nothing - we have to set it to default.
-            if(!$this->service_provider){
+            if(!$input['service_provider']){
                 //last ditch attempt to put something sensible in here
-                $this->service_provider = 'Bootleg\Cms\CmsServiceProvider';
+                $input['service_provider'] = Content::SERVICE_PROVIDER;
             }
         }
+		
         
         //and the package if not set
-        if(!$this->package){
+        if(!@$input['package']){
             //set it as parent one..
-            $this->package = @$parent->package;
+            $input['package'] = @$parent->package;
             
             //still nothing - set from application
             $application = Application::getApplication();
             if($application->package){
-                $this->package = $application->package;
+                $input['package'] = $application->package;
             }
             
             //still nothing - we have to set it to default.
-            if(!$this->package){
+            if(!$input['package']){
                 //last ditch attempt to put something sensible in here
-                $this->package = 'cms';
+                $input['package'] = Content::PACKAGE;
             }
         }
-        
-        //and the view/layout if they're not set can safely be set to default.
-        if(!$this->layout){
-            $this->view = 'default.layout';
+
+
+        //and the edit details:
+        if (!@$input['edit_service_provider']) {
+            //set it as parent one..
+            $input['edit_service_provider'] = @$parent->edit_service_provider;
+            
+            //still nothing - we have to set it to default.
+            if(!$input['edit_service_provider']){
+                //last ditch attempt to put something sensible in here
+                $input['edit_service_provider'] = Content::SERVICE_PROVIDER;
+            }
         }
-        if(!$this->view){
-            $this->view = 'default.view';
-        }        
+
+        if(!@$input['edit_package']){
+            //set it as parent one..
+            $input['edit_package'] = @$parent->edit_package;
+            
+            //still nothing - we have to set it to default.
+            if(!$input['edit_package']){
+                //last ditch attempt to put something sensible in here
+                $input['edit_package'] = Content::PACKAGE;
+            }
+        }
+
+        if(!@$input['edit_view']){
+            //set it as parent one..
+            $input['edit_view'] = @$parent->edit_view;
+            
+            //still nothing - we have to set it to default.
+            if(!$input['edit_view']){
+                //last ditch attempt to put something sensible in here
+                $input['edit_view'] = Content::EDIT_VIEW;
+            }
+        }
+
+        //and the view/layout if they're not set can safely be set to default.
+        if(!@$input['layout']){
+            $input['layout'] = Content::LAYOUT;
+        }
+        if(!@$input['view']){
+            $input['view'] = Content::VIEW;
+        }
+		return($input);
     }
     
     
-    //saves default settings for page based off content_type_id
-    /*public function setDefaultSettings(){
-        $contentDefaultSettings = Contentdefaultsetting::where('content_type_id', '=', $this->content_type_id)->get();
-        
-        $data = array();
-        foreach($contentDefaultSettings as $contentDefaultSetting){
-            
-            $data[] = array(
-                'name'=>$contentDefaultSetting->name, 
-                'value'=>$contentDefaultSetting->value,
-                'field_type'=>$contentDefaultSetting->field_type,
-                'field_parameters'=>$contentDefaultSetting->field_parameters,
-                'content_id'=>$this->id
-            );
-        }
-        if(!empty($data)){
-            Contentsetting::insert($data);
-        }
-    }*/
-    
-    
-    public function createSlug(){
-        if($this->slug){
-            return($slug);
+    public static function createSlug( $input, $parent ){
+
+        if(@$input['name']){
+            $pageSlug = $input['name'];
         }
         else{
-            $parent = Content::find($this->parent_id);
-            
-            if($this->title){
-                $pageSlug = $this->title;    
-            }
-            else if($this->name){
-                $pageSlug = $this->name;    
-            }
-            else{
-                $pageSlug = uniqid();    
-            }
-            
-            $pageSlug = str_replace(" ", "-", $pageSlug);    //spaces
-            $pageSlug = urlencode($pageSlug);  //last ditch attempt to sanitise
-            
-            $wholeSlug = rtrim(@$parent->slug,"/")."/$pageSlug";
-            //does it already exist?
-            if(Content::where("slug","=",$wholeSlug)->first()){
-                //it already exists.. find the highest numbered example and increment 1.
-                $highest = Content::where('slug', 'like', "$wholeSlug-%")->orderBy('slug', 'desc')->first();
-                $num = 1;
-                if($highest){
-                    $num = str_replace("$wholeSlug-", "", $highest->slug);
-                    $num++;
-                }
-                return("$wholeSlug-$num");
-            }
-            else{
-                return($wholeSlug);
-            }
+            $pageSlug = uniqid();    
         }
+
+        $pageSlug = str_replace(" ", "-", $pageSlug);    //spaces
+        $pageSlug = urlencode($pageSlug);  //last ditch attempt to sanitise
+
+        $wholeSlug = rtrim(@$parent->slug,"/")."/$pageSlug";
+        //does it already exist?
+        if(Content::where("slug","=",$wholeSlug)->first()){
+            //it already exists.. find the highest numbered example and increment 1.
+            $highest = Content::where('slug', 'like', "$wholeSlug-%")->orderBy('slug', 'desc')->first();
+            $num = 1;
+            if($highest){
+                $num = str_replace("$wholeSlug-", "", $highest->slug);
+                $num++;
+            }
+            return("$wholeSlug-$num");
+        }
+        else{
+            return($wholeSlug);
+        }
+        
     }
     
     
@@ -269,7 +316,7 @@ class Content extends Baum\Node{ //Eloquent {
     public function getTree($parent_id = null, $recurse = false){
         //TODO: look at this.
         if($parent_id){
-            $contentTree = Content::fromApplication()->where('parent_id', '=', $parent_id)->immediateDescendants();
+            $contentTree = Content::fromApplication()->language()->where('parent_id', '=', $parent_id)->immediateDescendants();
         }
         else{
             $contentTree = $this->immediateDescendants();

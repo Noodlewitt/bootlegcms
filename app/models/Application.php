@@ -17,6 +17,10 @@ class Application extends Eloquent {
         return($this->hasMany('Applicationsetting'));
     }
     
+    public function languages(){
+        return($this->hasMany('Applicationlanguage'));
+    }
+
     public function theme(){
         return($this->belongsTo('Theme'));
     }
@@ -25,33 +29,9 @@ class Application extends Eloquent {
         return $this->morphMany('Permission', 'controller');
     }
     
-    public static function getApplication($domain='', $folder = '', $getFromSession = true, $setSession = true){
-        //dd($_SERVER['SERVER_NAME']);
-        if(!$domain){
-            $domain = ApplicationUrl::getDomain();
-        }
+    public static function getApplication($domain='', $folder = ''){        
+        return(unserialize($GLOBALS['application']));
 
-        if(!$folder){
-            $folder = ApplicationUrl::getFolder();
-        }
-               
-        if($getFromSession){
-            if(Session::get('application'.$folder)){
-                $application = Session::get('application'.$folder);
-            }
-            else{
-                $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->with('setting')->first();
-            }
-        }
-        else{
-            $application = ApplicationUrl::where('domain','=',"$domain")->where('folder','LIKE',"$folder")->first()->application()->with('setting')->first();
-        }
-        
-        if($setSession && !Session::get('application')){
-            Session::put('application'.$folder, $application);
-        }
-        
-        return($application);
     }
     
     /*

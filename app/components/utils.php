@@ -31,6 +31,7 @@ class Utils{
         }
         return($pr);
     }
+
     
     /*Time Ago*/
     public static function time_elapsed_string($datetime, $full = false) {
@@ -62,5 +63,13 @@ class Utils{
         else {
                return 0;
              }
+    }
+
+    public static function startsWith($haystack, $needle){
+        return $needle === "" || strpos($haystack, $needle) === 0;
+    }
+
+    public static function endsWith($haystack, $needle){
+        return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
     }
 }

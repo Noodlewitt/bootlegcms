@@ -12,10 +12,6 @@ class PermissionsAddNotAndRemoveOldAccessPermissions extends Migration {
 	 */
 	public function up()
 	{
-		//add a not field to make it better.
-		Schema::table('permissions', function($table) {
-            $table->boolean('not');
-        });
 
 		//and we no longer need this table. was a bad idea.
 		Schema::table('access_permissions', function(Blueprint $table)

@@ -34,9 +34,10 @@ class ApplicationController extends CmsController {
         
         $currentApplication = Application::getApplication();
         $input = Input::all();
+
         $validation = Validator::make($input, Application::$rules);
        // dd($input);
-        if ($validation->passes()){
+        if ($validation->passes()) {
             $themeApp = Application::find($input['theme']);
             $newApp = new Application();
             $newApp->theme_id = $themeApp->id;
@@ -48,8 +49,20 @@ class ApplicationController extends CmsController {
             $newApp->package = $themeApp->package;
             $newApp->service_provider = $themeApp->service_provider;
             
-            if($newApp->save()){
-                echo("app created..");
+            //we need to do the urls..
+            $urls = explode(',', $input['domain']);
+
+
+
+            if ($newApp->save()) {
+                foreach ($urls as $url) {
+                    $appUrl = new ApplicationUrl(array(
+                        'domain'=>trim($url, ' /'),
+                        'folder'=>'/'
+                        ));
+                    $newApp->url()->save($appUrl);
+                }
+
                 //we now need to start duplicating an existing application
                 //grab the theme app as a hierachy so we can start recursivly duping.
                 //Content::find(2)->makeRoot();
@@ -93,6 +106,13 @@ class ApplicationController extends CmsController {
             $layout = View::make( 'cms::layouts.master', compact('cont'));
             return($layout);
         }
+    }
+    
+    /**
+     * Sets language of back end
+     **/
+    public function anySetlang(){
+        
     }
     
     public function anyUpdate(){

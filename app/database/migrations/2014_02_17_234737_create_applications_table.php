@@ -15,7 +15,7 @@ class CreateApplicationsTable extends Migration {
 		Schema::create('applications', function(Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
-                        $table->integer('parent_id');
+                        $table->integer('parent_id')->nullable();
                         $table->integer('theme_id');
                         $table->integer('cms_theme_id');
                         $table->string('cms_service_provider');

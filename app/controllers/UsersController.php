@@ -1,6 +1,7 @@
 <?php
 
-class UsersController extends CMSController {
+class UsersController extends CMSController
+{
 
     /**
      * User Repository
@@ -10,7 +11,8 @@ class UsersController extends CMSController {
     protected $user;
     
     
-    public function __construct(User $user){
+    public function __construct(User $user)
+    {
         parent::__construct();
         $this->user = $user;
         $this->beforeFilter('csrf', array('on'=>'post'));
@@ -25,64 +27,69 @@ class UsersController extends CMSController {
     {
         $users = $this->user->all();
         
-         if (Request::ajax()){
-            $cont = View::make( $this->application->cms_package.'::users.index', compact('cont','users')) ;
+        if (Request::ajax()) {
+            $cont = View::make($this->application->cms_package.'::users.index', compact('cont', 'users')) ;
             return($cont);
-        }
-        else{
-            $cont = View::make( $this->application->cms_package.'::users.index', compact('cont','users') );
-            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        } else {
+            $cont = View::make($this->application->cms_package.'::users.index', compact('cont', 'users'));
+            $layout = View::make('cms::layouts.master', compact('cont'));
         }
         return($layout);
     }
     
-    
-    public function anyLogin(){
+    public function anyLocale()
+    {
+        dd(App::getLocale());
+    }
+
+    public function anyLogin()
+    {
         //dd(array('email'=>Input::get('email'), 'password'=>Input::get('password')));
+        //var_dump(Hash::make('admin'));
         if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password')))) {
             Session::flash('success', 'You are now logged in!');
             return Redirect::intended(action('UsersController@anyDashboard'));
         }
-        
-        if (Request::ajax()){
-            $cont = View::make( $this->application->cms_package.'::users.login') ;
+
+        if (Request::ajax()) {
+            $cont = View::make($this->application->cms_package.'::users.login');
             return($cont);
-        }
-        else{
-            $cont = View::make( $this->application->cms_package.'::users.login');
-            $layout = View::make( 'cms::layouts.bare', compact('cont'));
+        } else {
+            $cont = View::make($this->application->cms_package.'::users.login');
+            $layout = View::make('cms::layouts.bare', compact('cont'));
         }
         return($layout);
     }
     
     
-    public function anyLogout(){
+    public function anyLogout()
+    {
         Auth::logout();
         return Redirect::action('UsersController@anyLogin')->with('message', 'You are now logged out!');
     }
     
     
-    public function anyDashboard(){
+    public function anyDashboard()
+    {
         
-        if (Request::ajax()){
-            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont')) ;
+        if (Request::ajax()) {
+            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
             return($cont);
-        }
-        else{
-            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont') );
-            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        } else {
+            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
+            $layout = View::make('cms::layouts.master', compact('cont'));
         }
         return($layout);
     }
     
-    public function anySettings(){
-        if (Request::ajax()){
-            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont')) ;
+    public function anySettings()
+    {
+        if (Request::ajax()) {
+            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
             return($cont);
-        }
-        else{
-            $cont = View::make( $this->application->cms_package.'::users.dashboard', compact('cont') );
-            $layout = View::make( 'cms::layouts.master', compact('cont'));
+        } else {
+            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
+            $layout = View::make('cms::layouts.master', compact('cont'));
         }
         return($layout);
     }
@@ -95,7 +102,15 @@ class UsersController extends CMSController {
      */
     public function anyCreate()
     {
-        return View::make($this->application->cms_package.'::users.create');
+        $roles = Role::lists('name', 'id');
+        if (Request::ajax()) {
+            $cont = View::make($this->application->cms_package.'::users.create', compact('cont', 'roles'));
+            return($cont);
+        } else {
+            $cont = View::make($this->application->cms_package.'::users.create', compact('cont', 'roles'));
+            $layout = View::make('cms::layouts.master', compact('cont'));
+        }
+        return($layout);
     }
 
     
@@ -109,8 +124,7 @@ class UsersController extends CMSController {
         $input = Input::all();
         $validation = Validator::make($input, User::$rules);
 
-        if ($validation->passes())
-        {
+        if ($validation->passes()) {
             $this->user->create($input);
             return Redirect::action('UsersController@anyCreate');
         }
@@ -144,8 +158,7 @@ class UsersController extends CMSController {
     {
         $user = $this->user->find($id);
 
-        if (is_null($user))
-        {
+        if (is_null($user)) {
             return Redirect::route('users.index');
         }
 
@@ -163,8 +176,7 @@ class UsersController extends CMSController {
         $input = array_except(Input::all(), '_method');
         $validation = Validator::make($this->application->cms_package.'::'.$input, User::$rules);
 
-        if ($validation->passes())
-        {
+        if ($validation->passes()) {
             $user = $this->user->find($id);
             $user->update($input);
 
@@ -190,5 +202,4 @@ class UsersController extends CMSController {
 
         return Redirect::route('users.index');
     }
-
 }

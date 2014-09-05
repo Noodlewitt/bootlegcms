@@ -9,11 +9,6 @@
         <link rel="stylesheet" href="/cms_assets/css/sass.css" />
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
         
-
-
-
-        <!--doesn't like being minified and moved out of it's directory so we have to keep it here-->
-        
     </head>
 
     <body class="">

@@ -51,21 +51,19 @@ Route::filter('auth', function($route, $request){
 });
 
 
-Route::filter('permission', function($route, $request, $type){
-    
+Route::filter('permission', function ($route, $request, $type, $controller) {
     $application = Application::getApplication();
-    $perm = Permission::checkPermission('application', $application->id, $type, "You don't have permission to do that!");
-    if($perm === true){
+    $perm = Permission::checkPermission($controller, $application->id, $type, "You don't have permission to do that!");
+    if ($perm === true) {
         
-    }
-    else{
+    } else {
         return($perm);
     }
 });
 
 
-Route::filter('auth.basic', function(){
-	return Auth::basic();
+Route::filter('auth.basic', function () {
+    return Auth::basic();
 });
 
 /*

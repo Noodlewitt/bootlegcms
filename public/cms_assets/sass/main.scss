@@ -9,12 +9,16 @@ some standard import files - plugins, bootstrap etc..
 
 //JS Tree css
 @import '../vendor/jstree/dist/themes/default/style.css'; 
+
 //fileupload from blueimp
 @import '../vendor/blueimp-file-upload/css/jquery.fileupload.css'; 
  
+//tag input form.
+@import '../vendor/bootstrap-tagsinput/dist/bootstrap-tagsinput.css';
 
 
-/*
+
+/* 
 CMS SCSS in here 
 TODO: figure out a nice way of formatting this correctly. 
 */  
@@ -158,7 +162,10 @@ form.main-form{
         padding:0;
         
         li{
-            
+            div.bootstrap-tagsinput{
+                display:block;
+            }
+
             div.upload{
                 
                 table.uploaded{

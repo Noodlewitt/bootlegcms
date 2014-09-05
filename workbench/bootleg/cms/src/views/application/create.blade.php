@@ -14,8 +14,12 @@
                     {{ Form::text('name', null, array('class'=>'form-control')) }}
                 </li>
                 <li class="form-group">
-                    {{ Form::label('name', 'Name:') }}
+                    {{ Form::label('theme', 'Theme:') }}
                     {{ Form::select('theme', $themes , Input::old('theme'), array('class'=>'form-control')) }}
+                </li>
+                <li class="form-group">
+                    {{ Form::label('domain', 'Domain:') }}
+                    {{ Form::text('domain', null, array('class'=>' tag')) }}
                 </li>
                 <li class="form-group">
                     <div class='btn-group btn-group-lg'>
@@ -28,3 +32,8 @@
         </div>
     </div>
 </div>
+<script>
+$(function() {
+    $('input.tag').tagsinput('items');
+});
+</script>

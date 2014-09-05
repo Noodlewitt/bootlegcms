@@ -1,7 +1,9 @@
 <div class="page-header row searchTreeContainer">
     <input class='searchTree form-control' placeholder='search' type='text' />    
 </div>
-
+<?php
+    $cm = ucfirst($content_mode);
+?>
 <div class='tree'>
     
 </div>    
@@ -12,7 +14,7 @@
             "check_callback" : true,
             "data":{
                 "url": function(node){
-                    return  '{{ action('ContentsController@anyTree') }}';
+                    return  '{{ action($cm."Controller@anyTree") }}';
                 }, 
                 "data":function(node){
                     return {"id":node.id}
@@ -36,7 +38,7 @@
                             if($node.children.length > 0){
                                 //this item has sub items - TODO: we need to ask if we can delete:
                             }
-                            $.post( "{{ action('ContentsController@anyDestroy') }}" ,{
+                            $.post( "{{ action($cm."Controller@anyDestroy") }}" ,{
                                 id: $node.id
                             }).done(function(data){
                                 //successfully deleted.
@@ -74,7 +76,7 @@
         if(isNaN(data.node.id)){
             //create new content item.
             var parentnode = data.instance.get_node(data.node.parent);         
-            $.post( "{{ action('ContentsController@anyStore', array('json'=>true)) }}" , {
+            $.post( "{{ action($cm."Controller@anyStore", array('json'=>true)) }}" , {
                 name:data.text,
                 parent_id:parentnode.id
             }).done(function(d){
@@ -86,7 +88,7 @@
 
         }
         else{
-            $.post("{{ action('ContentsController@anyUpdate') }}", {
+            $.post("{{ action($cm."Controller@anyUpdate") }}", {
                 name:data.node.text
             }).done(function(d){
                 data.instance.refresh_node(data.node);
@@ -101,7 +103,7 @@
     $('.tree').on('changed.jstree', function (e, data) {
         if(data && data.selected && data.selected.length) {
             $('.col-md-offset-4 .overlay').fadeIn();
-            $.get("{{ action('ContentsController@anyEdit') }}/"+data.node.id, function(d){
+            $.get("{{ action($cm."Controller@anyEdit") }}/"+data.node.id, function(d){
                 $('.col-md-offset-4').html(d);
                 $('.col-md-offset-4 .overlay').fadeOut();
             });
@@ -111,7 +113,7 @@
 
     //on move of node.
     $('.tree').on("move_node.jstree", function (e, data) {
-        $.post("{{ action('ContentsController@anyUpdate') }}", {
+        $.post("{{ action($cm."Controller@anyUpdate") }}", {
             parent_id:data.parent,
             id:data.node.id,
             position: data.position

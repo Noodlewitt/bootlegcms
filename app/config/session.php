@@ -96,7 +96,7 @@ return array(
 	|
 	*/
 
-	'cookie' => 'bootstrap_session',
+	'cookie' => 'bootleg_session',
 
 	/*
 	|--------------------------------------------------------------------------

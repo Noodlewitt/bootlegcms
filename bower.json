@@ -8,6 +8,7 @@
                 "jstree": "~3",
                 "tinymce-builded": "~4",
                 "blueimp-file-upload": "~9.5",
-                "fontawesome":"~4"
+                "fontawesome":"~4",
+                "bootstrap-tagsinput":"~0.3"
 	}
 }
