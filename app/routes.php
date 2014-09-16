@@ -93,7 +93,15 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
         //we need to render the correct page.
 
 
+        //dd($slug);
+        $pathInfo = pathinfo($slug);
         
+        if($slug != '/'){
+            $slug = $pathInfo['dirname']."/".$pathInfo['filename'];
+        $slug = str_replace('./', '', $slug);    
+        }
+        
+        $extension = @$pathInfo['extension'];
 
         if (is_null($applicationurl->application)) {
             App::abort(404, "No Application found at url");   //chuck 404 - we can't find the app
@@ -107,18 +115,16 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
             $slug = "/$slug";
         }
         
-
-       
         $content = Content::where('slug', '=', "$slug")
                 ->fromApplication()
                 ->live()
+                ->with('setting')
                 ->first();
         //dd($slug);
         if (is_null($content)) {
             App::abort(404, "No content found at url:'$slug'"); //chuck 404 error.. WE HAVE NO SLUG THAT MATCHES WITHIN THIS APP
         }
         $perm = Permission::getPermission('content', $content->id, 'x');
-
 
         //we set the theme package incase it wasn't set above for the
         //whole application.
@@ -147,22 +153,28 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
         
         //share these accross everything.
         View::share('content', $content);
-
-        if (Input::has('view')) {
-            $view = View::make("$package::".Input::get('view'));
-        } else {
-            if (Request::ajax()) {
-                $view = View::make("$package::$view");
-            } else {
-                $view = View::make("$package::$layout")->nest('child', "$package::$view");
-            }
+        
+        if($extension == 'json'){
+            $view = Response::json($content);
         }
+        else{
+            if (Input::has('view')) {
+                $view = View::make("$package::".Input::get('view'));
+            } else {
+                if (Request::ajax()) {
+                    $view = View::make("$package::$view");
+                } else {
+                    $view = View::make("$package::$layout")->nest('child', "$package::$view");
+                }
+            }    
+        }
+        
         //Access-Control-Allow-Origin: http://example.org
         //$response->header('Content-Type', $value);
         return($view);
 
-
     })->where('slug', '(.*)');
+    //});
 
 //    Route::controller('/', 'PageController');
 });

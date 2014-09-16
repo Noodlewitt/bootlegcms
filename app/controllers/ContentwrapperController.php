@@ -151,7 +151,7 @@ class ContentwrapperController extends CMSController
 
 
     public function anyFixtree(){
-      //  Content::rebuild();
+        $this->content->rebuild();
         
         dd($this->content->isValid());
         exit();
@@ -165,55 +165,48 @@ class ContentwrapperController extends CMSController
      */
     public function anyEdit($id = false){
         
-        $content = $this->content->with(array('setting.default_setting', 'default_page'))->findOrFail($id);
+        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
 
+        //dd($content->setting);
         $permission = Permission::getPermission('content', $content->id, 'w');
         $allPermissions = Permission::getControllerPermission($id, 'content');
         
-        //foreach content_default_field on this content item, we want to 
-        //add a setting if it exists on the content item (replacing it if necisary)        
-        if(@$content->default_page->id){
-            $content_defaults = Contentdefaultsetting::where('content_type_id','=',$content->default_page->id)->get();
-            $all_settings = $content_defaults;
+        //foreach template setting we want to add a setting for this row..   
+        if(!empty($content->template_setting)){
+            
+            $all_settings = new \Illuminate\Database\Eloquent\Collection;
+            
+            foreach($content->template_setting as $template_setting){
 
-            foreach($content_defaults as $key=>$cd){
-
-                $fl = $content->setting->filter(function($d) use($cd){
-                    return($cd->name===$d->name);
-                });  
-                //$fl would be items that should replace.
-                if($fl){
+                $fl = $content->setting->filter(function($setting) use ($template_setting){
+                    return($template_setting->name===$setting->name);
+                });
+                if(($fl->count())){
                     foreach($fl as $f){
-                        //use content->settings value (fl)
+                        //dd('here');
                         $all_settings->push($f);
-                        $all_settings->forget($key);
                     }
                 }
+                else{
+                    $all_settings->push($template_setting);    
+                }
             }
-        }
-        
-        //we now need to add the current settings if they don't exisit in the defaults.
-        if(@$all_settings){
+
             foreach($content->setting as $setting){
 
-                $fl = $all_settings->filter(function($d) use($setting){
-                    if($d->name===$setting->name){
-                        if($d->id === $setting->id){
-                            return(true);
-                        }
-                    }
-                    return(false);
+                $fl = $content->template_setting->filter(function($template_setting) use ($setting){
+                    return($setting->name===$template_setting->name);
                 });
-                if ($fl->isEmpty()) {
-                    $all_settings->push($setting);
+                if(($fl->count() == 0)){
+                    $all_settings->push($setting);    
                 }
             }
-        } else {
-            //if there's no defaults set for this we can just use what's on the content item already.
-            $all_settings = $content->setting;
         }
-        $settings = $all_settings->groupBy('section');
+
+        //dd($all_settings);
         
+        $settings = $all_settings->groupBy('section');
+        //dd($all_settings);
         App::register($content->edit_service_provider);
         
         if (Request::ajax()) {
@@ -243,7 +236,7 @@ class ContentwrapperController extends CMSController
         if ($id !== false) {
             $input = array_except(Input::all(), '_method');
             
-            $validation = Validator::make($input, $this->content->$rules);
+            $validation = Validator::make($input, $this->content->rules);
             if ($validation->passes()) {
                 //we need to update the settings too:
                 $content = $this->content->find($id);
@@ -344,10 +337,18 @@ class ContentwrapperController extends CMSController
             $id = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
         
-        $tree = $this->content->where('id','=',$id)->first()->getDescendantsAndSelf()->toHierarchy();
-        foreach($tree as $t){
-            return Response::json($this->renderTree($t));
+        $tree = $this->content->where('id','=',$id)->first()->getDescendants()->toHierarchy();
+        if(count($tree)){
+            foreach($tree as $t){
+                $treeOut[] = $this->renderTree($t);
+                
+            }
+            return Response::json($treeOut);    
         }
+        else{
+            return Response::json();
+        }
+        
     }
     
     public function renderTree($tree)

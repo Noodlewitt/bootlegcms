@@ -1,7 +1,7 @@
 <?php
 
-class Content extends Baum\Node{ //Eloquent {
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
+class Content extends Baum\Node{ //Eloquent {status
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id', 'status', 'slug');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -17,6 +17,8 @@ class Content extends Baum\Node{ //Eloquent {
     
     protected $closure = '\contentClosure';
     
+
+    //some refaults for thw whole app should normal database stuff fail.
     const SERVICE_PROVIDER = 'Bootleg\Cms\CmsServiceProvider';
     const PACKAGE = 'cms';
     const VIEW = 'default.view';
@@ -47,6 +49,11 @@ class Content extends Baum\Node{ //Eloquent {
 		return $this->belongsTo('Template', 'template_id');
 	}
 
+    public function template_setting()
+    {
+        return $this->hasMany('Templatesetting', 'template_id', 'template_id');
+    }
+
     public function default_page()
     {
         return $this->belongsTo('Contentdefaultpage', 'content_type_id');
@@ -54,7 +61,7 @@ class Content extends Baum\Node{ //Eloquent {
     
     public function default_fields()
     {
-        return $this->belongsTo('Contentdefaultfield', 'content_type_id');
+        return $this->belongsTo('Templatesetting', 'template_id');
     }
 
     public function permission()

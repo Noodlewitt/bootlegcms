@@ -15,7 +15,6 @@ class Utils{
     /*
      * Decodes params on | and : field seperators - returns array.
      */
-    
     public static function decodeParameters($params){
         $params = explode('|', $params);
         

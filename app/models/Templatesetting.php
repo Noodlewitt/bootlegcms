@@ -18,8 +18,8 @@ class Templatesetting extends Eloquent {
     const DEFAULT_DROPDOWN_JSON = '{
         "count": 1,
         "values": {
-          "myval": "blargh",
-          "myval2": "blargh"
+          "myval": "Some Value",
+          "myval2": "Some Other Value"
         }
         "tooltip": "",
     }';
@@ -32,5 +32,9 @@ class Templatesetting extends Eloquent {
     
     public function content(){
         return($this->belongsTo('Content'));
+    }
+
+    public function template(){
+        return($this->belongsTo('Template'));
     }
 }
