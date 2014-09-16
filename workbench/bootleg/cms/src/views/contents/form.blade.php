@@ -146,6 +146,7 @@ if($permission->result === false){
             @endif
             @if(@$fields)
                 @foreach($fields as $field)
+                {{-- This is where the custom input types are rendered in. --}}
                     <li class="form-group">
                         <?php
                         $view = @$field[0]->field_type?$field[0]->field_type:'text';

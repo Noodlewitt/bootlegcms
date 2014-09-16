@@ -173,7 +173,7 @@ class ContentwrapperController extends CMSController
         
         //foreach template setting we want to add a setting for this row..   
         if(!empty($content->template_setting)){
-            
+            //TODO: There has to be a cleaner way of doing this.
             $all_settings = new \Illuminate\Database\Eloquent\Collection;
             
             foreach($content->template_setting as $template_setting){
@@ -203,11 +203,8 @@ class ContentwrapperController extends CMSController
             }
         }
 
-        //dd($all_settings);
-        
         $settings = $all_settings->groupBy('section');
-        //dd($all_settings);
-        App::register($content->edit_service_provider);
+        App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
         
         if (Request::ajax()) {
             $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
@@ -256,7 +253,7 @@ class ContentwrapperController extends CMSController
                                 if (is_array($setting) && array_key_exists('deleted', $setting)) {
                                     $contentSetting = Contentsetting::destroy($key);
                                 } else {
-                                    if ($type != 'Contentdefaultsetting') {
+                                    if ($type != 'Templatesetting') {
                                         $contentSetting = Contentsetting::withTrashed()
                                             ->where('name', '=', $name)
                                             ->where('content_id', '=', $content->id)
@@ -264,9 +261,9 @@ class ContentwrapperController extends CMSController
                                     }
                                     //if it's not found (even in trashed) then we need to make a new field.
                                     //if it's contentdefault, we need to create it too since it doesn't exist!
-                                    if ($type == 'Contentdefaultsetting' || is_null($contentSetting)) {
+                                    if ($type == 'Templatesetting' || is_null($contentSetting)) {
                                         //if we can't find the field, we need to create it from the default:
-                                        $defaultContentSetting = Contentdefaultsetting::findOrFail($key);
+                                        $defaultContentSetting = Templatesetting::findOrFail($key);
                                         $contentSetting = new Contentsetting();
                                         $contentSetting->name = $defaultContentSetting->name;
                                         $contentSetting->value = $setting;
