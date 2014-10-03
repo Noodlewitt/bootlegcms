@@ -40,6 +40,7 @@ Thumbs.db
 #I don’t want a whole bunch of themes committed here.. these should be done through a sub module.
 #
 /workbench/*
+!/workbench/mikthemes
 !/workbench/widgets
 !/workbench/bootleg
 /public/packages/*
