@@ -18,7 +18,7 @@ class Application extends Eloquent {
     }
     
     public function languages(){
-        return($this->hasMany('Applicationlanguage'));
+        return($this->hasMany('ApplicationLanguage'));
     }
 
     public function theme(){

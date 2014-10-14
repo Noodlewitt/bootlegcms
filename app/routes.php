@@ -83,7 +83,6 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
 
     //this doesn't exists in artisan thus we have to if it here.
     if (@$_SERVER['HTTP_HOST']) {
-
         App::register($application->service_provider);
     }
 
@@ -128,6 +127,7 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
 
         //we set the theme package incase it wasn't set above for the
         //whole application.
+        //dd($content->service_provider);
         App::register($content->service_provider);
 
         //get view file for this page
