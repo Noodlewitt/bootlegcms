@@ -22,9 +22,8 @@ Thumbs.db
 #
 #all the node stuff shouldn’t be versioned since it’s dependent on the developer
 #
-/node_modules
-/assets/node_modules
-/.sass-cache
+node_modules/
+.sass-cache
 
 #
 #uploads folder doesn’t need versioning
