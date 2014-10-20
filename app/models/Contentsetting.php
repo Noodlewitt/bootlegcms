@@ -25,8 +25,8 @@ class Contentsetting extends Eloquent {
     }';
     
     const DEFAULT_TEXT_JSON = '{
-        "count": 1,
-        "tooltip":""
+        "tooltip":"",
+        "max_number":1
     }';
     
     
