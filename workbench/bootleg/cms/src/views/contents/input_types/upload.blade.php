@@ -148,7 +148,8 @@ $files = json_encode($files);
                 </tr>
             {% } %}
         </script>
-
+        <?php
+        ?>
         <script type="text/javascript">
 
             $(function() {
@@ -168,8 +169,8 @@ $files = json_encode($files);
                     },
                     autoUpload: true,
                     disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
-                    maxFileSize: {{$params->parsedValidation['size'] * 1024}},
-                    acceptFileTypes: /(\.|\/)({{str_replace(',','|',$params->parsedValidation['mimes'])}})$/i,
+                    maxFileSize: {{$params->validation->size * 1024}},
+                    acceptFileTypes: /(\.|\/)({{str_replace(',','|',$params->validation->mimes)}})$/i,
 
                     fileInput: $('input[type=file]', $container{{$niceName}}),
 

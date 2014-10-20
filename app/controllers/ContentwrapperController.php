@@ -183,7 +183,7 @@ class ContentwrapperController extends CMSController
                 });
                 if(($fl->count())){
                     foreach($fl as $f){
-                        //dd('here');
+                        //if it's fount int content_settings and template_settings, use
                         $all_settings->push($f);
                     }
                 }
@@ -250,8 +250,11 @@ class ContentwrapperController extends CMSController
                         foreach ($settingGroup as $type => $setGrp) {
                             foreach ($setGrp as $key => $setting) {
                                 //we want to delete this setting.
-                                if (is_array($setting) && array_key_exists('deleted', $setting)) {
-                                    $contentSetting = Contentsetting::destroy($key);
+                                
+                                $toDel = Utils::recursive_array_search('deleted', $setGrp, false);
+                                
+                                if (is_array($setGrp) && @$toDel) {
+                                    $contentSetting = Contentsetting::destroy($toDel);
                                 } else {
                                     if ($type != 'Templatesetting') {
                                         $contentSetting = Contentsetting::withTrashed()
@@ -262,10 +265,22 @@ class ContentwrapperController extends CMSController
                                     //if it's not found (even in trashed) then we need to make a new field.
                                     //if it's contentdefault, we need to create it too since it doesn't exist!
                                     if ($type == 'Templatesetting' || is_null($contentSetting)) {
+                                        //TODO: Do we want protection in there so there has to be a 
+                                        //template setting in her for this?
+
                                         //if we can't find the field, we need to create it from the default:
-                                        $defaultContentSetting = Templatesetting::findOrFail($key);
+                                        //dd($name);
+
+                                        $defaultContentSetting = Templatesetting::find($key);
+                                        if(!$defaultContentSetting){
+                                            $defaultContentSetting = Templatesetting::where('name','=',$name)
+                                                                    ->where('template_id', '=', $content->template_id)
+                                                                    ->first();
+                                        }
+                                        //$defaultContentSetting = Templatesetting::where('name','=',)
+                                        
                                         $contentSetting = new Contentsetting();
-                                        $contentSetting->name = $defaultContentSetting->name;
+                                        $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
                                         $contentSetting->value = $setting;
                                         $contentSetting->content_id = $content->id;
                                         $contentSetting->field_type = $defaultContentSetting->field_type;

@@ -7,10 +7,10 @@ class Templatesetting extends Eloquent {
     protected $softDelete = true;
     
     const DEFAULT_UPLOAD_JSON = '{
-        "validation": [
-          "mimes:gif,jpeg,bmp,png",
-          "size:5120"
-        ],
+        "validation": {
+          "mimes":"gif,jpeg,bmp,png",
+          "size":"5120"
+        },
         "tooltip": "",
         "count": 1
     }';
@@ -28,6 +28,7 @@ class Templatesetting extends Eloquent {
         "count": 1,
         "tooltip":""
     }';
+
     
     
     public function content(){

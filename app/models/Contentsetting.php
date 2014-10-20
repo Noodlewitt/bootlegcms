@@ -7,10 +7,10 @@ class Contentsetting extends Eloquent {
     protected $softDelete = true;
     
     const DEFAULT_UPLOAD_JSON = '{
-        "validation": [
-          "mimes:gif,jpeg,bmp,png",
-          "size:5120"
-        ],
+        "validation": {
+          "mimes":"gif,jpeg,bmp,png",
+          "size":"5120"
+        },
         "tooltip": "",
         "count": 1
     }';
@@ -18,8 +18,8 @@ class Contentsetting extends Eloquent {
     const DEFAULT_DROPDOWN_JSON = '{
         "count": 1,
         "values": {
-          "myval": "blargh",
-          "myval2": "blargh"
+          "myval": "Some Value",
+          "myval2": "Some Other Value"
         }
         "tooltip": "",
     }';
@@ -43,6 +43,7 @@ class Contentsetting extends Eloquent {
      * Grabs the params field from wherever it can and parses the json.
      */
     public static function parseParams($setting){
+
         if(@$setting->field_parameters){
             $params = $setting->field_parameters;
         }
@@ -52,25 +53,13 @@ class Contentsetting extends Eloquent {
         else{
             $params = self::getDefaultParams($setting);
         }
-
-        if(!($params = json_decode($params))){
-            $params = self::getDefaultParams($setting);
-            $params = json_decode($params);
-        }
-
-        if(@$params->validation){
-            $params->parsedValidation = array();
-            foreach($params->validation as $rule){
-                $exploded = explode(':', $rule);
-                $params->parsedValidation[$exploded[0]] = $exploded[1];
-            }
-        }
-        return($params);
+        return(json_decode($params));
 
     }
     
     public static function getDefaultParams($setting){
         //todo: there must be a nicer way than this..
+        //dd($setting->field_type);
         if($setting->field_type == 'upload'){
             $params = self::DEFAULT_UPLOAD_JSON;
         }
