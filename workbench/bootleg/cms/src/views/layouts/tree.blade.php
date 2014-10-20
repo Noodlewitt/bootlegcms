@@ -11,10 +11,11 @@
         $('.treeOptions .create').click(function(e){
             e.preventDefault();
             var tree = $(".tree").jstree(true);
-            $('.tree').jstree("create_node", '#', 'New Content', 'last', function(e){
+            var parent = $('.tree').jstree('get_selected');
+            var newNode = { state: "open", data: "New node!" };
+            $('.tree').jstree("create_node", parent, newNode, 'last', function(e){
                 tree.edit(e);
             });  
-            
         });
     });
 </script>
