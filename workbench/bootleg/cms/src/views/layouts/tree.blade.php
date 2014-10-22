@@ -20,6 +20,15 @@
                 tree.edit(e);
             });  
         });
+        $('.treeContainer').click(function(e){
+            e.stopPropagation();
+            var selected = $('.tree').jstree('get_selected');
+            $('.tree').jstree('deselect_node', selected);
+
+        });
+        $('.tree').click(function(e){
+            e.stopPropagation();
+        });
     });
 </script>
 
