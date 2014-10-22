@@ -299,8 +299,15 @@ class ContentwrapperController extends CMSController
                         }
                     }
                 }
-                return Redirect::action('ContentsController@anyEdit', $id)
+                if($this->content_mode == 'template'){
+                    return Redirect::action('TemplateController@anyEdit', $id)
                     ->with('success', 'Success, saved correctly');
+                }
+                else{
+                    return Redirect::action('ContentsController@anyEdit', $id)
+                    ->with('success', 'Success, saved correctly');    
+                }
+                
             }
         } else {
             //TODO:

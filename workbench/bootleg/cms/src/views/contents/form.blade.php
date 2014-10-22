@@ -29,8 +29,11 @@
     @endif
         <li><a href="#tab-Permission" data-toggle="tab">Permisssions</a></li>
 </ul>
-
+@if($content_mode == 'template')
+{{ Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('TemplateController@anyUpdate', @$content->id))) }}
+@else
 {{ Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('ContentsController@anyUpdate', @$content->id))) }}
+@endif
 <div class="tab-content">
 <?php 
 $i = 0; 
