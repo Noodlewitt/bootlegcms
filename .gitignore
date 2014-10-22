@@ -41,4 +41,5 @@ node_modules/
 /workbench/*
 !/workbench/widgets
 !/workbench/bootleg
+!/workbench/mikthemes/file.txt
 /public/packages/*
