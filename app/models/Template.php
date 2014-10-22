@@ -61,6 +61,11 @@ class Template extends Baum\Node{ //Eloquent {
     {
         return $this->hasMany('Content', 'template_id');
     }
+
+    public function template_setting()
+    {
+        return $this->hasMany('Templatesetting', 'template_id', 'template_id');
+    }
     
     //keeps content within this application.
     public function scopeFromApplication($query)
