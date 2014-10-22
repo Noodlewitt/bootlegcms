@@ -12,6 +12,9 @@
             e.preventDefault();
             var tree = $(".tree").jstree(true);
             var parent = $('.tree').jstree('get_selected');
+            if(parent == ''){
+                parent = '#';
+            }
             var newNode = { state: "open", data: "New node!" };
             $('.tree').jstree("create_node", parent, newNode, 'last', function(e){
                 tree.edit(e);
