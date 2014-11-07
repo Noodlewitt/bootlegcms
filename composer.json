@@ -1,6 +1,6 @@
 {
-	"name": "laravel/laravel",
-	"description": "The Laravel Framework.",
+	"name": "bootlegCMS",
+	"description": "An Awesome Laravel Based CMS",
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
 	"require": {
