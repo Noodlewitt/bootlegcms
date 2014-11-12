@@ -353,6 +353,9 @@ class Content extends Baum\Node{ //Eloquent {status
             return $model->name === $getSetting;
             
         });
+        if($settings->count() == 0){
+            return null;
+        }
         if($settings->count() > 1){
             $return = array();
             foreach($settings as $setting){
