@@ -19,8 +19,7 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
     <script>
         $('.add-row').click(function(e){
             e.preventDefault();
-
-            $('.text.{{$niceName}}').parent().append('<div class="input-group text"><input class="form-control" name="setting[][Contentsetting][]" type="text"><span class="input-group-btn"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button></span></div>');
+            $('.text.{{$niceName}}').parent().append('<div class="input-group text"><input class="form-control" name="setting[{{$setting[0]->name}}][Contentsetting][]" type="text"><span class="input-group-btn"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button></span></div>');
         });
         $('.del-row').click(function(e){
             e.preventDefault();
