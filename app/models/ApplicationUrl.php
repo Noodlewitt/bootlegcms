@@ -42,7 +42,7 @@ class ApplicationUrl extends Eloquent
         }
 
                
-        $applicationUrl = ApplicationUrl::with('application', 'application.setting', 'application.languages')->where('domain', '=', "$domain")
+        $applicationUrl = ApplicationUrl::with('application', 'application.setting', 'application.languages', 'application.plugins')->where('domain', '=', "$domain")
                           ->where('folder', 'LIKE', "$folder")->first();
     
         

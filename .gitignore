@@ -9,7 +9,6 @@
 #composer should be down to the developer to deploy
 #
 composer.phar
-composer.lock
 .env.local.php
 .env.php
 

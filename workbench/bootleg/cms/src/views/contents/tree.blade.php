@@ -89,7 +89,8 @@
         }
         else{
             $.post("{{ action($cm."Controller@anyUpdate") }}", {
-                name:data.node.text
+                name:data.node.text,
+                id:data.node.id
             }).done(function(d){
                 data.instance.refresh_node(data.node);
             }).fail(function(){

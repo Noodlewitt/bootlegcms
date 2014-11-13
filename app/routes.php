@@ -75,18 +75,29 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
 
 
 
-
-
-
-//TODO: should this be moved elsewhere so pacakge routes can be included here?
-//this route handles the whole front end of the site.
-
     //this doesn't exists in artisan thus we have to if it here.
+    
     if (@$_SERVER['HTTP_HOST']) {
-        App::register($application->service_provider);
+        foreach($application->plugins as $plugin){
+            App::register($plugin->service_provider);
+        }
     }
 
     
+
+    Route::get('uploads/{filename}', function($filename = null){
+        //TODO: security on this file.
+        $filename = stripslashes(str_replace('/','',$filename));
+        
+        $filename = storage_path() . '/uploads/'. $filename;
+        $file = File::get($filename);
+        $fileData = new \Symfony\Component\HttpFoundation\File\File($filename);
+        $response = Response::make($file, 200);
+        $response->headers->set('Content-Type', $fileData->getMimeType());
+        return($response);
+    });
+
+
 
     Route::any('/{slug?}', function ($slug = '/') use ($application, $applicationurl) {
         //we need to render the correct page.

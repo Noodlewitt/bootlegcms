@@ -16,7 +16,7 @@ class ApplicationUrlsTableSeeder extends Seeder {
 			array (
 				'id' => '1',
 				'application_id' => '1',
-				'domain' => 'creator',
+				'domain' => 'bootleg',
 				'folder' => '/',
 				'created_at' => '0000-00-00 00:00:00',
 				'updated_at' => '0000-00-00 00:00:00',

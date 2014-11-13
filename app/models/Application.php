@@ -21,8 +21,8 @@ class Application extends Eloquent {
         return($this->hasMany('ApplicationLanguage'));
     }
 
-    public function theme(){
-        return($this->belongsTo('Theme'));
+    public function plugins(){
+        return($this->belongsToMany('Plugin'));
     }
     
     public function permission(){

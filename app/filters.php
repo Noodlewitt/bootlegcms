@@ -34,6 +34,7 @@ App::after(function($request, $response)
 */
 
 Route::filter('auth', function($route, $request){
+
     if (Auth::guest()){
         return Redirect::guest(Utils::cmsRoute.'login');
     }

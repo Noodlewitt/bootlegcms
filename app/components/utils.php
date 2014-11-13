@@ -73,12 +73,14 @@ class Utils{
     }
 
     public static function recursive_array_search($needle,$haystack,$subloop = false) {
-    if($subloop === false) $resarr = array();
+        if($subloop === false) {
+            $resarr = array();
+        }
         foreach($haystack as $key=>$value) {
             $current_key=$key;
             if(is_string($needle)) $needle = trim(strtolower($needle));
             if(is_string($value)) $value = trim(strtolower($value));
-            if($needle===$value OR (is_array($value) && recursive_array_search($needle,$value,true) === true)) {
+            if($needle===$value OR (is_array($value) && self::recursive_array_search($needle,$value,true) === true)) {
                 $resarr[] = $current_key;
                 if($subloop === true) return true;
             }

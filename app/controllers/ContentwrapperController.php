@@ -204,18 +204,18 @@ class ContentwrapperController extends CMSController
         }
 
         $settings = $all_settings->groupBy('section');
+        //dd($content->edit_service_provider);
         App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
         
         if (Request::ajax()) {
-            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
-            return($cont);
+            $view = View::make($content->edit_package . '::' . $content->edit_view,  compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
         } else {
             $tree = $content->getDescendants();
-            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
+            $cont = View::make($content->edit_package.'::'.$content->edit_view, compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
             $cont = View::make('cms::layouts.tree', compact('cont', 'tree'));
-            $layout = View::make('cms::layouts.master', compact('cont'));
+            $view = View::make('cms::layouts.master', compact('cont'));         
         }
-        return($layout);
+        return($view);
     }
 
     /**
@@ -231,6 +231,7 @@ class ContentwrapperController extends CMSController
             $id = $input['id'];
         }
         if ($id !== false) {
+
             $input = array_except(Input::all(), '_method');
             
             $validation = Validator::make($input, $this->content->rules);
@@ -250,12 +251,12 @@ class ContentwrapperController extends CMSController
                         foreach ($settingGroup as $type => $setGrp) {
                             foreach ($setGrp as $key => $setting) {
                                 //we want to delete this setting.
-                                
-                                $toDel = Utils::recursive_array_search('deleted', $setGrp, false);
-                                
+                                $toDel = Utils::recursive_array_search('deleted', $setGrp);
                                 if (is_array($setGrp) && @$toDel) {
                                     $contentSetting = Contentsetting::destroy($toDel);
-                                } else {
+                                }
+                                else {
+                                    
                                     if ($type != 'Templatesetting') {
                                         $contentSetting = Contentsetting::withTrashed()
                                             ->where('name', '=', $name)
@@ -285,20 +286,24 @@ class ContentwrapperController extends CMSController
                                         $contentSetting->content_id = $content->id;
                                         $contentSetting->field_type = $defaultContentSetting->field_type;
                                     } else {
+
                                         //otherwise this field exists.. we can overwrite it' settings.
                                         $contentSetting->name = $name;
                                         $contentSetting->value = $setting;
                                         $contentSetting->content_id = $content->id;
                                         $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
-                                    }
 
+                                    }
+                                    //dd($contentSetting);
                                     $contentSetting->save();
+
                                     $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
                                 }
                             }
                         }
                     }
                 }
+
                 if($this->content_mode == 'template'){
                     return Redirect::action('TemplateController@anyEdit', $id)
                     ->with('success', 'Success, saved correctly');
@@ -409,7 +414,6 @@ class ContentwrapperController extends CMSController
      */
     public function postUpload($id,  $type = "Contentsetting"){
         $input = array_except(Input::all(), '_method');
-        
         $application = Application::getApplication();
         $uploadFolder = @$application->getSetting('Upload Folder');
         if($type == 'Applicationsetting'){
@@ -430,6 +434,9 @@ class ContentwrapperController extends CMSController
         
         $files = (Input::file($niceName));
 
+        $params = json_decode($content_setting->field_parameters);
+        //dd($params->validation->mimes);
+
         if(!empty($files)){
             
             foreach($files as $file) {
@@ -444,7 +451,7 @@ class ContentwrapperController extends CMSController
                     $fileId             = uniqid();
                     $extension          = $file->getClientOriginalExtension();
                     $fileName           = trim("$uploadFolder/$fileId.$extension", '/\ ');
-                    $destinationPath    = base_path()."/uploads/";
+                    $destinationPath    = storage_path()."/uploads/";
                     $originalName       = $file->getClientOriginalName();
                     $mime_type          = $file->getMimeType();
                     $size               = $file->getSize();
