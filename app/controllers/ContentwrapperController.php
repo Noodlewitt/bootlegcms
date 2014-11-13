@@ -420,14 +420,26 @@ class ContentwrapperController extends CMSController
             $content_setting = Applicationsetting::withTrashed()->find($id);
         }
         else{           
-            $content_setting = Contentsetting::withTrashed()->find($id);
-            if(is_null($content_setting) || $input['type'] == 'Contentdefaultsetting'){
-                //we need to get the default settings instead:
-                $default_content_setting = Contentdefaultsetting::find($id);
-                $content_setting = new Contentsetting();
-                $content_setting->name = $default_content_setting->name;
-                $content_setting->field_type = $default_content_setting->field_type;
-                $content_setting->field_parameters = $default_content_setting->field_parameters;
+
+            
+            if($type == 'Contentsetting'){
+                $content_setting = Contentsetting::withTrashed()->find($id);
+            }
+            else{
+                //this is on a template field.
+                if($this->content_mode == 'contents'){
+                    //we need to create an element based off the template if there is anything..
+                    $templateSetting = Templatesetting::findOrFail($id);
+                    $content_setting = new Contentsetting();
+                    $content_setting->name = $templateSetting->name;
+                    $content_setting->field_type = $templateSetting->field_type;
+                    $content_setting->field_parameters = $templateSetting->field_parameters;
+                }
+                else{
+                    //TODO: 
+                    dd("TODO: " . $this->content_mode);
+                    //we are in template mode, we want to save it as such.
+                }
             }
         }
         $niceName = preg_replace('/\s+/', '', $content_setting->name);
@@ -440,6 +452,7 @@ class ContentwrapperController extends CMSController
         if(!empty($files)){
             
             foreach($files as $file) {
+
                 $rules = array(
                     //TODO.
                     'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf|max:20000'
