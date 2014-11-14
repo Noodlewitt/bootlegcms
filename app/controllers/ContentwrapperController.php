@@ -284,6 +284,7 @@ class ContentwrapperController extends CMSController
                                         $contentSetting->value = $setting;
                                         $contentSetting->content_id = $content->id;
                                         $contentSetting->field_type = $defaultContentSetting->field_type;
+                                        $contentSetting->section = $defaultContentSetting->section;
                                     } else {
                                         //otherwise this field exists.. we can overwrite it' settings.
                                         $contentSetting->name = $name;
