@@ -30,7 +30,7 @@ else{
 
 Route::group(array('prefix'=>@$applicationurl->folder), function () use ($application, $applicationurl) {
 //dd(Request::path());
-    $languages = array('en','de');
+    $languages = array('en'); //TODO <<
     $locale = null;
     
     
