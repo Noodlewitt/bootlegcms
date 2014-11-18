@@ -2,7 +2,7 @@
 #these should be pushed from composer.
 #
 /bootstrap/compiled.php
-#/vendor
+/vendor
 
 
 #
