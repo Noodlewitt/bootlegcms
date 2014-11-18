@@ -1,4 +1,19 @@
 #
+#these should be pushed from composer.
+#
+/bootstrap/compiled.php
+#/vendor
+
+
+#
+#composer should be down to the developer to deploy
+#
+composer.phar
+composer.lock
+.env.local.php
+.env.php
+
+#
 #the annoying crap that macs and windows add to the folder
 #
 .DS_Store
@@ -7,5 +22,24 @@ Thumbs.db
 #
 #all the node stuff shouldn’t be versioned since it’s dependent on the developer
 #
-node_modules/
-.sass-cache
+/node_modules
+/assets/node_modules
+/.sass-cache
+
+#
+#uploads folder doesn’t need versioning
+#
+/uploads
+
+#
+#database file should be added manually or through chef
+#
+/app/config/database.php
+
+#
+#I don’t want a whole bunch of themes committed here.. these should be done through a sub module.
+#
+/workbench/*
+!/workbench/widgets
+!/workbench/cms-default
+/public/packages/*
