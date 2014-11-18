@@ -34,13 +34,27 @@ class Application extends Eloquent {
 
     }
     
-    /*
+
+        /*
      * returns a single setting given the name;
      */
     public function getSetting($getSetting){
-        return($this->setting->filter(function($model) use(&$getSetting){
+        $settings = $this->setting->filter(function($model) use(&$getSetting){
             return $model->name === $getSetting;
             
-        })->first()->value);
+        });
+        if($settings->count() == 0){
+            return null;
+        }
+        if($settings->count() > 1){
+            $return = array();
+            foreach($settings as $setting){
+                $return[] = $setting->value;
+            }
+        }
+        else{
+            $return = $settings->first()->value;
+        }
+        return($return);
     }
 }

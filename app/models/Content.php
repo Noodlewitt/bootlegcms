@@ -1,7 +1,7 @@
 <?php
 
 class Content extends Baum\Node{ //Eloquent {status
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id', 'status', 'slug');
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'view', 'layout', 'content_type_id', 'application_id', 'status', 'slug');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -19,11 +19,12 @@ class Content extends Baum\Node{ //Eloquent {status
     
 
     //some refaults for thw whole app should normal database stuff fail.
-    const SERVICE_PROVIDER = 'Bootleg\Cms\CmsServiceProvider';
+    
     const PACKAGE = 'cms';
     const VIEW = 'default.view';
     const LAYOUT = 'default.layout';
     const EDIT_VIEW = 'contents.form';
+    const EDIT_ACTION = 'ContentsController@anyEdit';
 
     public $rules = array(
 		//'content' => 'required',
@@ -132,11 +133,13 @@ class Content extends Baum\Node{ //Eloquent {status
         if($template){
             $templateChildren = $template->getImmediateDescendants();
             foreach($templateChildren as $templateChild){
-                //dd($templateChild->id);
-                //we need to run a create on this..
-                $inp['template_id'] = $templateChild->id;
-                $inp['parent_id'] = $saved->id;
-                $this->superSave($inp);
+                if($templateChild->auto_create){
+                    //dd($templateChild->id);
+                    //we need to run a create on this..
+                    $inp['template_id'] = $templateChild->id;
+                    $inp['parent_id'] = $saved->id;
+                    $this->superSave($inp);    
+                }
             }
         }
           
@@ -177,11 +180,10 @@ class Content extends Baum\Node{ //Eloquent {status
         if(!@$input['identifier'])$input['identifier'] = @$template->identifier;
 
         if(!@$input['package'])$input['package'] = @$template->package;
-        if(!@$input['service_provider'])$input['service_provider'] = @$template->service_provider;
 
         if(!@$input['edit_view'])$input['edit_view'] = @$template->edit_view;
         if(!@$input['edit_package'])$input['edit_package'] = @$template->edit_package;
-        if(!@$input['edit_service_provider'])$input['edit_service_provider'] = @$template->edit_service_provider;
+        if(!@$input['edit_action'])$input['edit_action'] = @$template->edit_action;
 		
         //work out the slug if not manually set
         if(!@$input['slug']){
@@ -204,23 +206,6 @@ class Content extends Baum\Node{ //Eloquent {status
             $input['language'] = App::getLocale();
         }
         
-        //and the service_provider if not set
-        if (!@$input['service_provider']) {
-            //set it as parent one..
-            $input['service_provider'] = @$parent->service_provider;
-            
-            //still nothing - set from application
-            $application = Application::getApplication();
-            if($application->service_provider){
-                $input['service_provider'] = $application->service_provider;
-            }
-            
-            //still nothing - we have to set it to default.
-            if(!$input['service_provider']){
-                //last ditch attempt to put something sensible in here
-                $input['service_provider'] = Content::SERVICE_PROVIDER;
-            }
-        }
 		
         
         //and the package if not set
@@ -243,14 +228,14 @@ class Content extends Baum\Node{ //Eloquent {status
 
 
         //and the edit details:
-        if (!@$input['edit_service_provider']) {
+        if (!@$input['edit_action']) {
             //set it as parent one..
-            $input['edit_service_provider'] = @$parent->edit_service_provider;
+            $input['edit_action'] = @$parent->edit_action;
             
             //still nothing - we have to set it to default.
-            if(!$input['edit_service_provider']){
+            if(!$input['edit_action']){
                 //last ditch attempt to put something sensible in here
-                $input['edit_service_provider'] = Content::SERVICE_PROVIDER;
+                $input['edit_action'] = Content::EDIT_ACTION;
             }
         }
 
@@ -368,6 +353,19 @@ class Content extends Baum\Node{ //Eloquent {status
         return($return);
     }
     
+
+    //sets default attributes into blank fields
+    //TODO: these should be in constants up above somewhere.
+    public static function setDefaults($content){
+        if(!$content->edit_view){
+            $content->edit_view = 'contents.edit';
+        }
+        if(!$content->edit_package){
+            $content->edit_package = 'cms';
+        }
+        return($content);
+    }
+
     
     public static function getMainRoot(){
         return(Content::fromApplication()->whereNull('parent_id')->first());
@@ -381,14 +379,13 @@ class Content extends Baum\Node{ //Eloquent {status
         $newContent->name = $themeContent->name;
         $newContent->slug = $themeContent->slug;
         $newContent->identifier = $themeContent->identifier;
-        $newContent->service_provider = $themeContent->service_provider;
         $newContent->package = $themeContent->package;
         $newContent->view = $themeContent->view;
         $newContent->layout = $themeContent->layout;
         $newContent->content_type_id = $themeContent->content_type_id;
         $newContent->position = $themeContent->position;
         $newContent->edit_view = $themeContent->edit_view;
-        $newContent->edit_service_provider = $themeContent->edit_service_provider;
+        $newContent->edit_action = $themeContent->edit_action;
         $newContent->edit_package = $themeContent->edit_package;
         $newContent->status = $themeContent->status;
         

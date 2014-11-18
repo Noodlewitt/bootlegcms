@@ -4,4 +4,4 @@
         <h1 class="col-xs-12"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;Content</h1>
     </div>
     
-    @include('cms::contents.form', array('content'=>@$content, 'permission'=>$permission, 'allPermissions'=>$allPermissions))
+    @include('cms::contents.form', array('content'=>@$content, 'allPermissions'=>$allPermissions))

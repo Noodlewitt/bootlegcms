@@ -1,11 +1,5 @@
 <h1>{{@$content->id?'Update':'Create'}} {{$content->name or 'Content'}}</h1>
 @include('cms::layouts.flash_messages')
-@if($permission->result === false)
-    <div class="alert alert-warning">
-        <p>You do not have permission to edit this content item.</p>
-        <p>{{$permission->picked->comment}}</p>
-    </div>
-@endif
 <ul class="nav nav-tabs">
     <?php $i = 0; $advanced = false; $contentSection = false?>
 
@@ -46,9 +40,6 @@ if(!$advanced){
 
 //we want to set the form array here since we sometimes disable stuff etc.
 $fieldArray = array('class'=>'form-control');
-if($permission->result === false){
-    $fieldArray[] = 'disabled';
-}
 
 ?>
 @foreach($settings as $key=>$section)
@@ -126,22 +117,13 @@ if($permission->result === false){
                     <label>Status:</label>
                     <div class="radio">
                         <label>
-                            @if($permission->result === false)
-                            {{ Form::radio('status','0','',array('disabled')) }}
-                            @else
                             {{ Form::radio('status','0','') }}
-                            @endif
-                            
                             Draft
                         </label>
                     </div>
                     <div class="radio">
                         <label>
-                            @if($permission->result === false)
-                            {{ Form::radio('status','1','',array('disabled')) }}
-                            @else
                             {{ Form::radio('status','1','') }}
-                            @endif
                             Published
                         </label>
                     </div>
@@ -162,13 +144,8 @@ if($permission->result === false){
 
             <li class="form-group">
                 <div class='btn-group btn-group-lg'>
-                    @if($permission->result === false)
-                    {{ Form::submit(@$content->id?'Update':'Create', array('class' => 'btn btn-success disabled')) }}
-                    {{ link_to_action('ContentsController@anyEdit', 'Cancel', @$content->id, array('class' => 'btn btn-danger disabled')) }}
-                    @else
                     {{ Form::submit(@$content->id?'Update':'Create', array('class' => 'btn btn-success ')) }}
-                    {{ link_to_action('ContentsController@anyEdit', 'Cancel', @$content->id, array('class' => 'btn btn-danger ')) }}
-                    @endif                    
+                    {{ link_to_action('ContentsController@anyEdit', 'Cancel', @$content->id, array('class' => 'btn btn-danger ')) }}                  
                 </div>
             </li>
         </ul>

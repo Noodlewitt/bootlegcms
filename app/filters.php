@@ -36,7 +36,7 @@ App::after(function($request, $response)
 Route::filter('auth', function($route, $request){
 
     if (Auth::guest()){
-        return Redirect::guest(Utils::cmsRoute.'login');
+  //      return Redirect::guest(Utils::cmsRoute.'login');
     }
     
     /*//$permission = Permission::where('controller_type','=',$action[0])->get();
@@ -52,12 +52,18 @@ Route::filter('auth', function($route, $request){
 });
 
 
-Route::filter('permission', function ($route, $request, $type, $controller) {
-    $application = Application::getApplication();
-    $perm = Permission::checkPermission($controller, $application->id, $type, "You don't have permission to do that!");
+Route::filter('permission', function ($route, $request, $controller, $controller_id = '') {
+
+    
+
+    $perm = Permission::checkPermission($controller, $controller_id, "You don't have permission to do that!");
+
+
     if ($perm === true) {
-        
+        //preceed with the normal request
     } else {
+        //owtherwise we need to redirect to login with message...
+        //TODO.
         return($perm);
     }
 });

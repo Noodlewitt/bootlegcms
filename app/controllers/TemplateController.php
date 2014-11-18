@@ -15,5 +15,4 @@ class TemplateController extends ContentwrapperController
         parent::__construct($content);
         $this->content = $content;
     }
-    
 }

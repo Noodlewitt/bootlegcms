@@ -7,17 +7,34 @@
         <div class="col-xs-12">
             {{ Form::open(array('action' => 'UsersController@anyStore', 'class'=>'main-form')) }}
                 <ul>
-                    <li class="form-group" class="form-group">
+                    <li class="form-group">
                         {{ Form::label('username', 'Username:') }}
                         {{ Form::text('username', null, array('class'=>'form-control')) }}
                     </li>
 
-                    <li class="form-group">
+                    <li class="form-group js-send-email">
+                        <label>Send Email:</label>
+                        <div class="radio">
+                            <label>
+                                {{ Form::radio('send_email','0','') }}
+                                Disabled
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                {{ Form::radio('send_email','1','') }}
+                                Enabled
+                            </label>
+                        </div>
+                        <p>Sends an email to user with instructions to set password.</p>
+                    </li>
+
+                    <li class="form-group js-password">
                         {{ Form::label('password', 'Password:') }}
                         {{ Form::password('password', array('class'=>'form-control')) }}
                     </li>
 
-                    <li class="form-group">
+                    <li class="form-group js-password">
                         {{ Form::label('password_confirm', 'Password Again:') }}
                         {{ Form::password('password_confirm', array('class'=>'form-control')) }}
                     </li>
@@ -65,5 +82,19 @@
         </div>
     </div>
 </div>
+<script>
+    $(function() {
+        $('.js-password').hide();
+        $('.js-send-email input').change(function(){
+            
+            if($(this).val() == 1){
+                $('.js-password').fadeOut();
+            }
+            else{
+                $('.js-password').fadeIn();   
+            }
+        });
+    });
+</script>
 
 

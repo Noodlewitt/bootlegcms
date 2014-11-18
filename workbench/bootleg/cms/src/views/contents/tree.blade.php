@@ -80,8 +80,12 @@
                 name:data.text,
                 parent_id:parentnode.id
             }).done(function(d){
-                data.instance.set_id(data.node, d.id);
-                data.instance.refresh_node(data.node);
+                console.log(d);
+                console.log(data);
+                data.node.a_attr.href='poobum';
+                data.instance.load_node(parentnode);
+                //data.instance.refresh_node(data.node);
+
             }).fail(function(){
                 data.instance.refresh();
             });
@@ -104,7 +108,7 @@
     $('.tree').on('changed.jstree', function (e, data) {
         if(data && data.selected && data.selected.length) {
             $('.col-md-offset-4 .overlay').fadeIn();
-            $.get("{{ action($cm."Controller@anyEdit") }}/"+data.node.id, function(d){
+            $.get(data.node.a_attr.href, function(d){
                 $('.col-md-offset-4').html(d);
                 $('.col-md-offset-4 .overlay').fadeOut();
             });

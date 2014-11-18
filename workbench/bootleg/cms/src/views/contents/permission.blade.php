@@ -14,12 +14,6 @@
                 Requestor Type
             </th>
             <th>
-                R
-            </th>
-            <th>
-                W
-            </th>
-            <th>
                 X
             </th>
             <th>
@@ -47,25 +41,7 @@
             </td>
             <td>
                 {{$p->requestor_type}}
-            </td>
-            <td>
-            @if($p->r === '1')
-                <span class="glyphicon glyphicon-ok"></span>
-            @elseif($p->r === '0')
-                <span class="glyphicon glyphicon-remove"></span>
-            @else
-                <span class="glyphicon glyphicon-minus"></span>
-            @endif
-            </td>
-            <td>
-            @if($p->w === '1')
-                <span class="glyphicon glyphicon-ok"></span>
-            @elseif($p->w === '0')
-                <span class="glyphicon glyphicon-remove"></span>
-            @else
-                <span class="glyphicon glyphicon-minus"></span>
-            @endif
-            </td>
+            </td>            
             <td>
             @if($p->x === '1')
                 <span class="glyphicon glyphicon-ok"></span>

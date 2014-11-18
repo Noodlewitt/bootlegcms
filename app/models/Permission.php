@@ -17,9 +17,9 @@ class Permission extends Eloquent {
     //$perms = Auth::user()->permission()->where('controller_type','=','content')->get();
     //$c = Content::permission()->perm()->get();
     
-    public static function checkPermission($controller_type, $controller_id = null, $type, $message='You do not have permission'){
+    public static function checkPermission($controller_type, $controller_id = null, $message='You do not have permission'){
 
-        $perm = self::getPermission($controller_type, $controller_id, $type);
+        $perm = self::getPermission($controller_type, $controller_id);
         if ($perm->result === false) {
             //we can redirect!
             return Redirect::guest(Utils::cmsRoute.'login')
@@ -29,13 +29,14 @@ class Permission extends Eloquent {
         }
     }
 
-
-    public static function getPermission($controller_type, $controller_id = null, $type, $return = false){
+    public static function getPermission($controller_type, $controller_id = null, $return = false){
         //do we use complex permissions on this site?
+
+
 
         //check permisssion against user
         if (Auth::guest()) {
-            $user = User::find(1);
+            $user = User::find(0);
         } else {
             $user = Auth::user();
         }
@@ -68,18 +69,17 @@ class Permission extends Eloquent {
         ->orderBy('requestor_id', 'desc')
         ->orderBy('requestor_type', 'desc')
         ->get();
-
-        //dd(DB::getQueryLog());
-        //NULL means we inherit from the next row..
         
+        //dd($perm);
+        //dd('here');
         $return = new stdClass();
         $return->result = false;
         foreach ($perm as $p) {
-            if ($p->$type === '1') {
+            if ($p->x === '1') {
                 $return->result = true;
                 $return->picked = $p;
                 break;
-            } elseif ($p->$type === "0") {
+            } elseif ($p->x === "0") {
                 $return->result = false;
                 $return->picked = $p;
                 break;
@@ -88,14 +88,15 @@ class Permission extends Eloquent {
                 //we are inheriting from the enxt level up.
             }
         }
+
         $return->set = $perm;
         return($return);
     }
 
-    public static function getControllerPermission($controller_id, $controller_type)
-    {
-        $perm = Permission::where(function ($query) use ($controller_type, $controller_id) {
-            $query->where('controller_type', '=', $controller_type)
+    public static function getControllerPermission($controller_id, $controllerAction){
+
+        $perm = Permission::where(function ($query) use ($controllerAction, $controller_id) {
+            $query->where('controller_type', '=', $controllerAction)
                   ->where(function ($query) use ($controller_id) {
                         $query->where('controller_id', '=', $controller_id)
                               ->orWhere('controller_id', '=', '*');

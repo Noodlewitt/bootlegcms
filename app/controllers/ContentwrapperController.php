@@ -30,8 +30,9 @@ class ContentwrapperController extends CMSController
         
         $this->content = $this->content->with(array('setting.default_setting', 'default_page'))->fromApplication()->whereNull('parent_id')->first();
         
-        $permission = Permission::getPermission('content', $this->content->id, 'w');
-        $allPermissions = Permission::getControllerPermission($this->content->id, 'content');
+        //$permission = Permission::getPermission('content', $this->content->id, 'w');
+
+        $allPermissions = Permission::getControllerPermission($this->content->id, Route::currentRouteAction());
        // dd($perm);
         
         //foreach content_default_field on this content item, we want to 
@@ -78,14 +79,15 @@ class ContentwrapperController extends CMSController
         }
         $settings = $all_settings->groupBy('section');
         
-        App::register($this->content->edit_service_provider);
+        //App::register($this->content->edit_service_provider);
         $content = $this->content;
+        $content = Content::setDefaults($content);
         if (Request::ajax()) {
-            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
+            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'allPermissions'));
             return($cont);
         } else {
             $tree = $this->content->getDescendants();
-            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
+            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'allPermissions'));
             $cont = View::make('cms::layouts.tree', compact('cont', 'tree'));
             $layout = View::make('cms::layouts.master', compact('cont'));
         }
@@ -168,8 +170,9 @@ class ContentwrapperController extends CMSController
         $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
 
         //dd($content->setting);
-        $permission = Permission::getPermission('content', $content->id, 'w');
-        $allPermissions = Permission::getControllerPermission($id, 'content');
+        //$permission = Permission::getPermission('content', $content->id, 'w');
+        //$allPermissions = Permission::getContentPermissions($id);
+        $allPermissions = Permission::getControllerPermission($id, Route::currentRouteAction());
         
         //foreach template setting we want to add a setting for this row..   
         if(!empty($content->template_setting)){
@@ -204,14 +207,17 @@ class ContentwrapperController extends CMSController
         }
 
         $settings = $all_settings->groupBy('section');
+        //dd($content->edit_package);
         //dd($content->edit_service_provider);
-        App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
+        //App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
+        $content = Content::setDefaults($content);
         
+
         if (Request::ajax()) {
-            $view = View::make($content->edit_package . '::' . $content->edit_view,  compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
+            $view = View::make($content->edit_package . '::' . $content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         } else {
             $tree = $content->getDescendants();
-            $cont = View::make($content->edit_package.'::'.$content->edit_view, compact('content', 'content_defaults', 'settings', 'permission', 'allPermissions'));
+            $cont = View::make($content->edit_package.'::'.$content->edit_view, compact('content', 'content_defaults', 'settings', 'allPermissions'));
             $cont = View::make('cms::layouts.tree', compact('cont', 'tree'));
             $view = View::make('cms::layouts.master', compact('cont'));         
         }
@@ -382,6 +388,20 @@ class ContentwrapperController extends CMSController
         $branch = new stdClass();
         $branch->id = $tree->id;
         $branch->text = $tree->name;
+        $branch->a_attr = new stdClass();
+        if($tree->edit_action){
+            $branch->a_attr->href = action($tree->edit_action, array($tree->id));
+        }
+        else{
+            if($this->content_mode == 'contents'){
+                $branch->a_attr->href = action('ContentsController@anyEdit', array($tree->id));
+            }
+            else{
+                $branch->a_attr->href = action('TemplateController@anyEdit', array($tree->id));
+            }
+            
+        }
+        
         $branch->children = array();
         //$branch->children = ($tree->rgt - $tree->lft > 1);
         

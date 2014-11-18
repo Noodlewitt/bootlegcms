@@ -112,7 +112,6 @@ class UsersController extends CMSController
         }
         return($layout);
     }
-
     
     /**
      * Store a newly created resource in storage.
@@ -123,9 +122,22 @@ class UsersController extends CMSController
     {
         $input = Input::all();
         $validation = Validator::make($input, User::$rules);
+        $application = Application::getApplication();
 
         if ($validation->passes()) {
-            $this->user->create($input);
+            if($input['password']){
+                $input['password'] = Hash::make($input['password']);
+            }
+            $user = $this->user->create($input);
+            if($input['send_email']){
+                //we need to send an email to the user with details for login and reset pw etc.
+                
+                Mail::send('emails.auth.new_user', $data, function($message) use($application, $user){
+                    $message->from($application->getSetting('Admin Email'), $application->name);
+                    $message->to($user->email);
+                });
+
+            }
             return Redirect::action('UsersController@anyCreate');
         }
 

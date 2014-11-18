@@ -25,10 +25,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     public static $rules = array(
     //'content' => 'required',
     //'parent_id' => 'required'
-        'username' => 'required|unique:users',
-        'email' => 'required|email|unique:users',
-        'password' => 'required',
-        'password_confirm' => 'required|same:password',
+       // 'username' => 'required|unique:users',
+       // 'email' => 'required|email|unique:users',
+        //'password' => 'required',
+        //'password_confirm' => 'required|same:password',
     );
     
     public function role()
@@ -91,8 +91,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     /*
     Mutator for password setting.
     */
-    public function setPasswordAttribute($pass)
+   /* public function setPasswordAttribute($pass)
     {
         $this->attributes['password'] = Hash::make($pass);
-    }
+    }*/
 }

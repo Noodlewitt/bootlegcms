@@ -10,6 +10,7 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+//TODO: sort this out a bit - we need to use these globals or get rid.
 if(@$_SERVER['HTTP_HOST']){
     $applicationurl = ApplicationUrl::getApplicationUrl();
     if (!@($applicationurl->application)) {
@@ -44,6 +45,13 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
             break;
         }
     }
+    //this doesn't exists in artisan thus we have to if it here.
+    
+    if (@$_SERVER['HTTP_HOST']) {
+        foreach($application->plugins as $plugin){
+            App::register($plugin->service_provider);
+        }
+    }
     
     
     App::setLocale($locale);
@@ -58,8 +66,10 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
 
     Route::any(Utils::cmsRoute.'login', array('uses'=>'UsersController@anyLogin'));
 
-    Route::group(array('prefix'=>Utils::cmsRoute, 'before' => 'auth'), function () use ($locale) {
+    Route::group(array('prefix'=>Utils::cmsRoute), function () use ($locale) {
+
         Route::group(array('prefix'=>$locale), function () {
+
 
             Route::any('/', array('uses'=>'UsersController@anyDashboard'));
 
@@ -70,19 +80,10 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
             Route::controller('application', 'ApplicationController');
 
             Route::controller('users', 'UsersController');
+            
+            Route::controller('reminders', 'RemindersController');
         });
     });
-
-
-
-    //this doesn't exists in artisan thus we have to if it here.
-    
-    if (@$_SERVER['HTTP_HOST']) {
-        foreach($application->plugins as $plugin){
-            App::register($plugin->service_provider);
-        }
-    }
-
     
 
     Route::get('uploads/{filename}', function($filename = null){
@@ -100,8 +101,7 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
 
 
     Route::any('/{slug?}', function ($slug = '/') use ($application, $applicationurl) {
-        //we need to render the correct page.
-
+        //TODO: we should really move this into PageController at some point.
 
         //dd($slug);
         $pathInfo = pathinfo($slug);
@@ -134,7 +134,7 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
         if (is_null($content)) {
             App::abort(404, "No content found at url:'$slug'"); //chuck 404 error.. WE HAVE NO SLUG THAT MATCHES WITHIN THIS APP
         }
-        $perm = Permission::getPermission('content', $content->id, 'x');
+        //$perm = Permission::getPermission('content', $content->id, 'x');
 
         //we set the theme package incase it wasn't set above for the
         //whole application.

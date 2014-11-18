@@ -95,10 +95,10 @@ class ApplicationController extends CmsController {
         $app_settings = $this->application->setting()->get();
         $application_settings = $app_settings->groupBy('section');
         
-        $theme = $this->application->theme()->first();
+        $plugins = $this->application->plugins()->first();
         
         if (Request::ajax()){
-            $cont = View::make( $this->application->cms_package.'::application.settings', compact('cont', 'application', 'application_settings', 'theme')) ;
+            $cont = View::make( $this->application->cms_package.'::application.settings', compact('cont', 'application', 'application_settings', 'plugins')) ;
             return($cont);
         }
         else{
