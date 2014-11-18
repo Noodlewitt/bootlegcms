@@ -52,7 +52,16 @@ return array(
 			'prefix'   => '',
 		),
 
-	
+		'mysql' => array(
+			'driver'    => 'mysql',
+			'host'      => 'localhost',
+			'database'  => 'db',
+			'username'  => 'db',
+			'password'  => 'db',
+			'charset'   => 'utf8',
+			'collation' => 'utf8_unicode_ci',
+			'prefix'    => '',
+		),
 
 		'pgsql' => array(
 			'driver'   => 'pgsql',
