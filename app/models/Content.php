@@ -23,8 +23,10 @@ class Content extends Baum\Node{ //Eloquent {status
     const PACKAGE = 'cms';
     const VIEW = 'default.view';
     const LAYOUT = 'default.layout';
-    const EDIT_VIEW = 'contents.form';
+    const EDIT_VIEW = 'contents.edit';
     const EDIT_ACTION = 'ContentsController@anyEdit';
+    const DRAFT_STATUS = 0;
+    const LIVE_STATUS = 1;
 
     public $rules = array(
 		//'content' => 'required',
@@ -99,8 +101,7 @@ class Content extends Baum\Node{ //Eloquent {status
 //    	return $this->belongsTo('Contenttype');
 //    }
     
-    const DRAFT_STATUS = 0;
-    const LIVE_STATUS = 1;
+
 
 	/*
 	 *Mutator that should replace the attributes with the correct language

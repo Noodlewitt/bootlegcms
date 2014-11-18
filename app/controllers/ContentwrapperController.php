@@ -134,7 +134,7 @@ class ContentwrapperController extends CMSController
         if ($validation->passes()){
             $application = Application::getApplication();
             
-          
+            
             $tree = $this->content->superSave($input);
             
           //  dd($tree);
@@ -154,9 +154,7 @@ class ContentwrapperController extends CMSController
 
     public function anyFixtree(){
         $this->content->rebuild();
-        
-        dd($this->content->isValid());
-        exit();
+        dd(Content::isValidNestedSet());
     }
     
     /**

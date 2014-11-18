@@ -12,7 +12,6 @@ class PageController extends BaseController
     //returns whatever file from the uploads dir.
     public function getUploads ($url = "")
     {
-        dd('here');
         //TODO: security on this file.
         $filename = base_path() . '/uploads/'. $url;
         $file = File::get($filename);

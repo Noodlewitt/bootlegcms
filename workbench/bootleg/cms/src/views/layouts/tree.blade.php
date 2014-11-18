@@ -24,7 +24,6 @@
             e.stopPropagation();
             var selected = $('.tree').jstree('get_selected');
             $('.tree').jstree('deselect_node', selected);
-
         });
         $('.tree').click(function(e){
             e.stopPropagation();
@@ -36,6 +35,6 @@
     @include('cms::contents.tree', array('content'=>@$content, 'tree'=>@$tree))
 </div>
 
-<div class="col-sm-offset-3 col-md-offset-4 col-md-8">
+<div class="col-sm-offset-3 col-md-offset-4 col-md-8 main-content">
     {{$cont}}
 </div>

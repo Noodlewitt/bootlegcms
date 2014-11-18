@@ -80,9 +80,7 @@
                 name:data.text,
                 parent_id:parentnode.id
             }).done(function(d){
-                console.log(d);
-                console.log(data);
-                data.node.a_attr.href='poobum';
+                data.node.a_attr.href='aa';
                 data.instance.load_node(parentnode);
                 //data.instance.refresh_node(data.node);
 
@@ -107,10 +105,9 @@
     //switch to selected page.
     $('.tree').on('changed.jstree', function (e, data) {
         if(data && data.selected && data.selected.length) {
-            $('.col-md-offset-4 .overlay').fadeIn();
+            $('.main-content .overlay').fadeIn();
             $.get(data.node.a_attr.href, function(d){
-                $('.col-md-offset-4').html(d);
-                $('.col-md-offset-4 .overlay').fadeOut();
+                $('.main-content').html(d);
             });
         }
     });
