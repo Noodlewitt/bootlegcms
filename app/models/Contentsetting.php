@@ -16,12 +16,19 @@ class Contentsetting extends Eloquent {
     }';
     
     const DEFAULT_DROPDOWN_JSON = '{
-        "count": 1,
         "values": {
           "myval": "Some Value",
           "myval2": "Some Other Value"
-        }
+        },
         "tooltip": "",
+    }';
+
+    const DEFAULT_CHECKBOX_JSON = '{
+        "values": {
+          "checked": "1",
+          "unchecked": "0"
+        },
+        "tooltip": ""
     }';
     
     const DEFAULT_TEXT_JSON = '{
@@ -54,7 +61,6 @@ class Contentsetting extends Eloquent {
             $params = self::getDefaultParams($setting);
         }
         return(json_decode($params));
-
     }
     
     public static function getDefaultParams($setting){
@@ -65,6 +71,9 @@ class Contentsetting extends Eloquent {
         }
         else if($setting->field_type == 'dropdown'){
             $params = self::DEFAULT_DROPDOWN_JSON;
+        }
+        else if($setting->field_type == 'checkbox'){
+            $params = self::DEFAULT_CHECKBOX_JSON;
         }
         else{
             $params = self::DEFAULT_TEXT_JSON;

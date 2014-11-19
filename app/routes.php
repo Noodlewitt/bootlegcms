@@ -139,7 +139,7 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
         //we set the theme package incase it wasn't set above for the
         //whole application.
         //dd($content->service_provider);
-        App::register($content->service_provider);
+//        App::register($content->service_provider);
 
         //get view file for this page
         if ($content->view) {

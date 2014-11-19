@@ -122,8 +122,8 @@ class ContentwrapperController extends CMSController
      */
     public function anyStore($json = false){
 
-        //perm check here.
-
+        
+        
         $input = Input::all();
         $validation = Validator::make($input, $this->content->rules);
         if($input['parent_id'] == '#'){
@@ -134,9 +134,11 @@ class ContentwrapperController extends CMSController
         if ($validation->passes()){
             $application = Application::getApplication();
             
-            
+            Event::fire('content.create', array($this->content));
+            Event::fire('content.update', array($this->content));
             $tree = $this->content->superSave($input);
-            
+            Event::fire('content.created', array($this->content));
+            Event::fire('content.updated', array($this->content));
           //  dd($tree);
             
             
@@ -151,11 +153,28 @@ class ContentwrapperController extends CMSController
             ->with('message', 'There were validation errors.');
     }
 
-
+    //fixes tree based off parent_id
     public function anyFixtree(){
         $this->content->rebuild();
         dd(Content::isValidNestedSet());
     }
+
+    //fixes slugs based off depth
+    public function anyFixslug(){
+        $Content = Content::where('depth','=','5')->get();
+        foreach($Content as $cont){
+            $input = array();
+            $input['name'] = $cont->name;
+            $parent = Content::find($cont->parent_id);
+            $slug = Content::createSlug($input,$parent,true);
+            $cont->slug = $slug;
+            var_dump($slug);
+            $cont->save();
+        }
+        dd('done');
+    }
+        
+
     
     /**
      * Show the form for editing the specified resource.
@@ -210,7 +229,7 @@ class ContentwrapperController extends CMSController
         //App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
         $content = Content::setDefaults($content);
         
-
+        //dd($content->edit_package.'::'.$content->edit_view);
         if (Request::ajax()) {
             $view = View::make($content->edit_package . '::' . $content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         } else {
@@ -242,7 +261,10 @@ class ContentwrapperController extends CMSController
             if ($validation->passes()) {
                 //we need to update the settings too:
                 $content = $this->content->find($id);
-                
+                //TODO: care with Template settings.
+                Event::fire('content.edit', array($content));
+                Event::fire('content.update', array($content));
+
                 if (@$input['parent_id'] == '#') {
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
@@ -250,7 +272,7 @@ class ContentwrapperController extends CMSController
                 
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
                 //add any settings:
-                if (@$input['setting']) {
+                if (isset($input['setting'])) {
                     foreach ($input['setting'] as $name => $settingGroup) {
                         foreach ($settingGroup as $type => $setGrp) {
                             foreach ($setGrp as $key => $setting) {
@@ -262,6 +284,7 @@ class ContentwrapperController extends CMSController
                                 else {
                                     
                                     if ($type != 'Templatesetting') {
+                                        
                                         $contentSetting = Contentsetting::withTrashed()
                                             ->where('name', '=', $name)
                                             ->where('content_id', '=', $content->id)
@@ -308,6 +331,10 @@ class ContentwrapperController extends CMSController
                         }
                     }
                 }
+                
+                //TODO: care with Template settings.
+                Event::fire('content.edited', array($content));
+                Event::fire('content.updated', array($content));
 
                 if($this->content_mode == 'template'){
                     return Redirect::action('TemplateController@anyEdit', $id)

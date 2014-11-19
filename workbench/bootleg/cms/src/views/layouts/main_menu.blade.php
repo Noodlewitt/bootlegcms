@@ -12,12 +12,24 @@
                 <span class="mm-text">Content</span>
             </a>
         </li>
-        <li class="{{Request::is(Utils::cmsRoute.'users/index*')?'active':''}}">
+        <li class="{{Request::is(Utils::cmsRoute.'users/*')?'active':''}}">
             <a href="{{action('UsersController@anyIndex', array())}}">
                 <i class="menu-icon glyphicon glyphicon-user"></i>
                 <span class="mm-text">Users</span>
             </a>
         </li>
+        <?php
+            $menuItems = Event::fire('menu.links', array());
+        ?>
+        @foreach($menuItems as $menuItem)
+        <li class="{{Request::is(Utils::cmsRoute.$menuItem['activePattern'])?'active':''}}">
+            <a href="{{$menuItem['location']}}">
+                <i class="menu-icon glyphicon {{$menuItem['icon']}}"></i>
+                <span class="mm-text">{{$menuItem['title']}}</span>
+            </a>
+        </li>
+        @endforeach
+        
         <li class="{{Request::is(Utils::cmsRoute.'application/settings*')?'active':''}}">
             <a href="{{action('ApplicationController@anySettings', array())}}">
                 <i class="menu-icon glyphicon glyphicon-cog"></i>

@@ -273,7 +273,7 @@ class Content extends Baum\Node{ //Eloquent {status
     }
     
     
-    public static function createSlug( $input, $parent ){
+    public static function createSlug( $input, $parent, $ignoreDuplicates = false ){
 
         if(@$input['name']){
             $pageSlug = $input['name'];
@@ -286,6 +286,9 @@ class Content extends Baum\Node{ //Eloquent {status
         $pageSlug = urlencode($pageSlug);  //last ditch attempt to sanitise
 
         $wholeSlug = rtrim(@$parent->slug,"/")."/$pageSlug";
+        if($ignoreDuplicates){
+            return($wholeSlug);
+        }
         //does it already exist?
         if(Content::where("slug","=",$wholeSlug)->first()){
             //it already exists.. find the highest numbered example and increment 1.

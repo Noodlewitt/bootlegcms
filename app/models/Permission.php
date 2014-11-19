@@ -30,9 +30,6 @@ class Permission extends Eloquent {
     }
 
     public static function getPermission($controller_type, $controller_id = null, $return = false){
-        //do we use complex permissions on this site?
-
-
 
         //check permisssion against user
         if (Auth::guest()) {
