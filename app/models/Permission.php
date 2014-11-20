@@ -81,7 +81,7 @@ class Permission extends Eloquent {
                 $return->picked = $p;
                 break;
             } else {
-                var_dump($p->id);
+                //var_dump($p->id);
                 //we are inheriting from the enxt level up.
             }
         }
