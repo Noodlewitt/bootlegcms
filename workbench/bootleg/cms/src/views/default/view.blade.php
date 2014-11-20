@@ -1,0 +1,1 @@
+This is the default view for the page: {{$content->name}}

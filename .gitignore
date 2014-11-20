@@ -41,5 +41,5 @@ Thumbs.db
 #
 /workbench/*
 !/workbench/widgets
-!/workbench/cms-default
+!/workbench/bootleg
 /public/packages/*
