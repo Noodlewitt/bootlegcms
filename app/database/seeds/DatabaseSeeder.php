@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder {
 		$this->command->info('Application seeded');
 		$this->call('ApplicationUrlsTableSeeder');
 		$this->command->info('App url seeded');
+		$this->call('TemplateTableSeeder');
 	}
 
 
