@@ -33,7 +33,7 @@ class Permission extends Eloquent {
 
         //check permisssion against user
         if (Auth::guest()) {
-            $user = User::find(0);
+            $user = User::find(1);  //select the guest row.
         } else {
             $user = Auth::user();
         }

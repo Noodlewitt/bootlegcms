@@ -14,7 +14,19 @@ class UsersTableSeeder extends Seeder {
 		\DB::table('users')->insert(array (
 			0 => 
 			array (
-				'id' => '1',
+				'username' => 'guest',
+				'password' => '',
+				'email' => '',
+				'role_id' => '0',
+				'status' => '0',
+				'loggedin_at' => '0000-00-00 00:00:00',
+				'created_at' => '0000-00-00 00:00:00',
+				'updated_at' => '0000-00-00 00:00:00',
+				'remember_token' => '',
+				'deleted_at' => '0000-00-00 00:00:00',
+			),
+			1 =>
+			array (
 				'username' => 'admin',
 				'password' => '$2y$10$S1JZ/o3GnV0BwgG1r/5/kOrUF71QnMWicAIJE8Sue7os2pWqypbmm',
 				'email' => 'admin@admin.com',
