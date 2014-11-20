@@ -34,7 +34,7 @@ Thumbs.db
 #
 #database file should be added manually or through chef
 #
-./app/config/database.php
+/app/config/database.php
 
 #
 #I don’t want a whole bunch of themes committed here.. these should be done through a sub module.
