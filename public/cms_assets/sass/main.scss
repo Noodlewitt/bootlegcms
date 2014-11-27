@@ -16,6 +16,8 @@ some standard import files - plugins, bootstrap etc..
 //tag input form.
 @import '../vendor/bootstrap-tagsinput/dist/bootstrap-tagsinput.css';
 
+@import '../vendor/bootstrap-sass-datepicker/sass/datepicker.scss';
+
 
 
 /* 
@@ -181,5 +183,10 @@ form.main-form{
             }
         }
     }
+}
+
+.dash-item{
+    
+
 }
 

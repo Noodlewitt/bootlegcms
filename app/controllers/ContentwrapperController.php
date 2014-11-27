@@ -514,7 +514,13 @@ class ContentwrapperController extends CMSController
                     $originalName       = $file->getClientOriginalName();
                     $mime_type          = $file->getMimeType();
                     $size               = $file->getSize();
-                    $upload_success     = $file->move($destinationPath.$uploadFolder, "$fileId.$extension");
+                    try {
+                        $upload_success     = $file->move($destinationPath.$uploadFolder, "$fileId.$extension");
+                    } catch(Exception $e) {
+                        dd($e->getMessage());
+                        //TODO: proper error handling should really take place here.. 
+                        //in the mean time we'll make do with a dd.
+                    }
                     
                     $finalUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName";
                     

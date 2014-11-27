@@ -37,6 +37,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
     }
     
     
+    public function author(){
+        return $this->hasMany('Content');
+    }
+
     public function permission()
     {
         return $this->morphMany('Permission', 'requestor');

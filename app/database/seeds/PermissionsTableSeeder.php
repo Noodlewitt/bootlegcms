@@ -15,7 +15,7 @@ class PermissionsTableSeeder extends Seeder {
 			0 => 
 			array (
 				'id' => '10',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -28,7 +28,7 @@ class PermissionsTableSeeder extends Seeder {
 			1 => 
 			array (
 				'id' => '11',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -41,7 +41,7 @@ class PermissionsTableSeeder extends Seeder {
 			2 => 
 			array (
 				'id' => '12',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -54,7 +54,7 @@ class PermissionsTableSeeder extends Seeder {
 			3 => 
 			array (
 				'id' => '13',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -67,7 +67,7 @@ class PermissionsTableSeeder extends Seeder {
 			4 => 
 			array (
 				'id' => '14',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -80,7 +80,7 @@ class PermissionsTableSeeder extends Seeder {
 			5 => 
 			array (
 				'id' => '15',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -93,7 +93,7 @@ class PermissionsTableSeeder extends Seeder {
 			6 => 
 			array (
 				'id' => '16',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -106,7 +106,7 @@ class PermissionsTableSeeder extends Seeder {
 			7 => 
 			array (
 				'id' => '17',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -119,7 +119,7 @@ class PermissionsTableSeeder extends Seeder {
 			8 => 
 			array (
 				'id' => '18',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -132,7 +132,7 @@ class PermissionsTableSeeder extends Seeder {
 			9 => 
 			array (
 				'id' => '19',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -145,7 +145,7 @@ class PermissionsTableSeeder extends Seeder {
 			10 => 
 			array (
 				'id' => '21',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -158,7 +158,7 @@ class PermissionsTableSeeder extends Seeder {
 			11 => 
 			array (
 				'id' => '23',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -171,7 +171,7 @@ class PermissionsTableSeeder extends Seeder {
 			12 => 
 			array (
 				'id' => '25',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -184,7 +184,7 @@ class PermissionsTableSeeder extends Seeder {
 			13 => 
 			array (
 				'id' => '27',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -197,7 +197,7 @@ class PermissionsTableSeeder extends Seeder {
 			14 => 
 			array (
 				'id' => '28',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -210,7 +210,7 @@ class PermissionsTableSeeder extends Seeder {
 			15 => 
 			array (
 				'id' => '29',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -223,7 +223,7 @@ class PermissionsTableSeeder extends Seeder {
 			16 => 
 			array (
 				'id' => '30',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -236,7 +236,7 @@ class PermissionsTableSeeder extends Seeder {
 			17 => 
 			array (
 				'id' => '31',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -249,7 +249,7 @@ class PermissionsTableSeeder extends Seeder {
 			18 => 
 			array (
 				'id' => '32',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -262,7 +262,7 @@ class PermissionsTableSeeder extends Seeder {
 			19 => 
 			array (
 				'id' => '33',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -275,7 +275,7 @@ class PermissionsTableSeeder extends Seeder {
 			20 => 
 			array (
 				'id' => '34',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -288,7 +288,7 @@ class PermissionsTableSeeder extends Seeder {
 			21 => 
 			array (
 				'id' => '35',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -301,7 +301,7 @@ class PermissionsTableSeeder extends Seeder {
 			22 => 
 			array (
 				'id' => '36',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -314,7 +314,7 @@ class PermissionsTableSeeder extends Seeder {
 			23 => 
 			array (
 				'id' => '37',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -327,7 +327,7 @@ class PermissionsTableSeeder extends Seeder {
 			24 => 
 			array (
 				'id' => '38',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -340,7 +340,7 @@ class PermissionsTableSeeder extends Seeder {
 			25 => 
 			array (
 				'id' => '39',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -353,7 +353,7 @@ class PermissionsTableSeeder extends Seeder {
 			26 => 
 			array (
 				'id' => '40',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -366,7 +366,7 @@ class PermissionsTableSeeder extends Seeder {
 			27 => 
 			array (
 				'id' => '41',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -379,7 +379,7 @@ class PermissionsTableSeeder extends Seeder {
 			28 => 
 			array (
 				'id' => '42',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -444,7 +444,7 @@ class PermissionsTableSeeder extends Seeder {
 			33 => 
 			array (
 				'id' => '48',
-				'requestor_id' => '1',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -457,7 +457,7 @@ class PermissionsTableSeeder extends Seeder {
 			34 => 
 			array (
 				'id' => '49',
-				'requestor_id' => '*',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -470,7 +470,7 @@ class PermissionsTableSeeder extends Seeder {
 			35 => 
 			array (
 				'id' => '50',
-				'requestor_id' => '*',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
@@ -483,11 +483,24 @@ class PermissionsTableSeeder extends Seeder {
 			36 => 
 			array (
 				'id' => '51',
-				'requestor_id' => '*',
+				'requestor_id' => '2',
 				'application_id' => '',
 				'requestor_type' => 'role',
 				'controller_id' => '*',
 				'controller_type' => 'ReportsController@anyEdit',
+				'x' => '1',
+				'comment' => '',
+				'created_at' => '0000-00-00 00:00:00',
+				'updated_at' => '0000-00-00 00:00:00',
+			),
+			37 => 
+			array (
+				'id' => '52',
+				'requestor_id' => '*',
+				'application_id' => '',
+				'requestor_type' => 'role',
+				'controller_id' => '*',
+				'controller_type' => 'ReportsController@anyQueryOptions',
 				'x' => '1',
 				'comment' => '',
 				'created_at' => '0000-00-00 00:00:00',

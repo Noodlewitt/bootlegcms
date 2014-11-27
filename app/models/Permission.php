@@ -13,6 +13,41 @@ class Permission extends Eloquent {
     public function requestor(){
         return $this->morphTo();
     }
+
+
+
+    //a permissions query you can dump into your query.
+    public static function hasPermission($controller_type = '', $user){
+        $out = function($query) use ($controller_type, $user){
+            $query->where(function($query) use ($controller_type, $user){
+                $query->where(function($query) use ($controller_type){
+                    $query->where('controller_id','=','*')
+                        ->orWhere('controller_type', '=', $controller_type);
+                })
+                ->where(function ($query) use ($user) {
+                    $query->where(function ($query) use ($user) {    //where user
+                        $query->where(function ($query) use ($user) {
+                            $query->where('requestor_id', '=', $user->id)
+                                ->orWhere('requestor_id', '=', '*');
+                        })
+                        ->where('requestor_type', '=', 'user');
+                    })
+                    ->orWhere(function ($query) use ($user) {    //where role
+                        $query->where(function ($query) use ($user) {
+                            $query->where('requestor_id', '=', $user->role_id)
+                                ->orWhere('requestor_id', '=', '*');
+                        })
+                        ->where('requestor_type', '=', 'role');
+                    });
+                })
+                ->orderBy('controller_id', 'desc')
+                ->orderBy('requestor_id', 'desc')
+                ->orderBy('requestor_type', 'desc');
+            })
+;
+        };
+        return array('permission' => $out);
+    }
     
     //$perms = Auth::user()->permission()->where('controller_type','=','content')->get();
     //$c = Content::permission()->perm()->get();
@@ -20,6 +55,7 @@ class Permission extends Eloquent {
     public static function checkPermission($controller_type, $controller_id = null, $message='You do not have permission'){
 
         $perm = self::getPermission($controller_type, $controller_id);
+        
         if ($perm->result === false) {
             //we can redirect!
             return Redirect::guest(Utils::cmsRoute.'login')
@@ -37,7 +73,7 @@ class Permission extends Eloquent {
         } else {
             $user = Auth::user();
         }
-
+        
         //a horrible looking query that grabs the permissions for a user.
         $perm = Permission::where(function ($query) use ($controller_type, $controller_id) {
             $query->where('controller_type', '=', $controller_type)
@@ -67,8 +103,7 @@ class Permission extends Eloquent {
         ->orderBy('requestor_type', 'desc')
         ->get();
         
-        //dd($perm);
-        //dd('here');
+        
         $return = new stdClass();
         $return->result = false;
         foreach ($perm as $p) {
@@ -85,7 +120,7 @@ class Permission extends Eloquent {
                 //we are inheriting from the enxt level up.
             }
         }
-
+        
         $return->set = $perm;
         return($return);
     }

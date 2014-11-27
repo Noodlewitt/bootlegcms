@@ -17,10 +17,20 @@ class Contentsetting extends Eloquent {
     
     const DEFAULT_DROPDOWN_JSON = '{
         "values": {
-          "myval": "Some Value",
-          "myval2": "Some Other Value"
+          "": "Please Select",
+          "customise": "You need to cusomise the values from field_parameters"
         },
-        "tooltip": "",
+        "max_number":1,
+        "tooltip": ""
+    }';
+
+    const DEFAULT_DATEPICKER_JSON = '{
+        "options":{
+            "data-date-format": "dd/mm/yyyy",
+            "data-date-today-button": "true"
+        },
+        "max_number":1,
+        "tooltip": ""
     }';
 
     const DEFAULT_CHECKBOX_JSON = '{
@@ -50,7 +60,6 @@ class Contentsetting extends Eloquent {
      * Grabs the params field from wherever it can and parses the json.
      */
     public static function parseParams($setting){
-
         if(@$setting->field_parameters){
             $params = $setting->field_parameters;
         }
@@ -74,6 +83,9 @@ class Contentsetting extends Eloquent {
         }
         else if($setting->field_type == 'checkbox'){
             $params = self::DEFAULT_CHECKBOX_JSON;
+        }
+        else if($setting->field_type == 'datepicker'){
+            $params = self::DEFAULT_DATEPICKER_JSON;
         }
         else{
             $params = self::DEFAULT_TEXT_JSON;
