@@ -30,7 +30,7 @@ class UsersTableSeeder extends Seeder {
 				'username' => 'admin',
 				'password' => '$2y$10$S1JZ/o3GnV0BwgG1r/5/kOrUF71QnMWicAIJE8Sue7os2pWqypbmm',
 				'email' => 'admin@admin.com',
-				'role_id' => '1',
+				'role_id' => '2',
 				'status' => '1',
 				'loggedin_at' => '0000-00-00 00:00:00',
 				'created_at' => '0000-00-00 00:00:00',

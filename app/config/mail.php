@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => "noreply.madeinkatana@gmail.com", 'name' => "No Reply 5SOS"),
+	'from' => array('address' => "", 'name' => "No Reply 5SOS"),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return array(
 	|
 	*/
 
-	'username' => "noreply.madeinkatana@gmail.com",
+	'username' => "",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => 'd1$J6%0N5u',
+	'password' => '',
 
 	/*
 	|--------------------------------------------------------------------------
