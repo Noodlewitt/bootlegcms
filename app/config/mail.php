@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => "", 'name' => "No Reply 5SOS"),
+	'from' => array('address' => "", 'name' => ""),
 
 	/*
 	|--------------------------------------------------------------------------
