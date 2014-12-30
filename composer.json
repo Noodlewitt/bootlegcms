@@ -4,6 +4,7 @@
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
 	"require": {
+		"symfony/event-dispatcher":"~2.1",
 		"noodlewitt/framework4.1fix": "4.1.31",
         "loic-sharma/profiler": "dev-master",
         "baum/baum": "~1.0",
