@@ -54,10 +54,7 @@ Route::filter('auth', function($route, $request){
 
 Route::filter('permission', function ($route, $request, $controller, $controller_id = '') {
 
-    
-
     $perm = Permission::checkPermission($controller, $controller_id, "You don't have permission to do that!");
-
 
     if ($perm === true) {
         //preceed with the normal request

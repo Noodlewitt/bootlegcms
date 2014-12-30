@@ -130,7 +130,8 @@ class Content extends Baum\Node{ //Eloquent {status
         $template = Template::find($input['template_id']);
         unset($input['parent_id']);
         //SAVE CONTENT ITEM
-        $saved = $parent->children()->create($input);  
+        $saved = $parent->children()->create($input); 
+
         if($template){
             $templateChildren = $template->getImmediateDescendants();
             foreach($templateChildren as $templateChild){
@@ -149,17 +150,23 @@ class Content extends Baum\Node{ //Eloquent {status
     
     //Loads default values into the model based off the tree stuff..
     public static function loadDefaultValues($input = ''){
-
 		
         $parent = Content::find($input['parent_id']);
-		
+
         if(!@$input['template_id']){
             $parentTemplate = Template::find($parent->template_id);
+//            dd($parent->template_id);
             if($parentTemplate){
-                $parentTemplateChild = @$parentTemplate->getImmediateDescendants()->first();
-
-                $input['template_id'] = @$parentTemplateChild->id;
-                //dd('aaa'.$input['template_id']);
+                //since we occasionally want to process a looped back tree (which makes the whole tree 
+                //invalid, we can't use baum's built in functions to get the first child.
+                if($parentTemplate->loopback){
+                    $parentTemplateChild = Template::find($parentTemplate->loopback);
+                }
+                else{
+                    $parentTemplateChild = @$parentTemplate->getImmediateDescendants()->first();  
+                }                
+            
+                $input['template_id'] = @$parentTemplateChild->id;    
                 
             }
             if(!@$input['template_id']){
@@ -185,7 +192,7 @@ class Content extends Baum\Node{ //Eloquent {status
         if(!@$input['edit_view'])$input['edit_view'] = @$template->edit_view;
         if(!@$input['edit_package'])$input['edit_package'] = @$template->edit_package;
         if(!@$input['edit_action'])$input['edit_action'] = @$template->edit_action;
-		
+
         //work out the slug if not manually set
         if(!@$input['slug']){
             $input['slug'] = Content::createSlug($input, $parent);

@@ -126,7 +126,8 @@ class ContentwrapperController extends CMSController
         
         $input = Input::all();
         $validation = Validator::make($input, $this->content->rules);
-        if($input['parent_id'] == '#'){
+
+        if(!isset($input['parent_id']) || $input['parent_id'] == '#'){
             //we ar not allowed to create a new root node like this.. so set it to the current root.
             //unset($input['parent_id']); //test
             $input['parent_id'] = $this->content->fromApplication()->whereNull('parent_id')->first()->id;

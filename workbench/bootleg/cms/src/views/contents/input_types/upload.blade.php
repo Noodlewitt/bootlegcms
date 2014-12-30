@@ -162,7 +162,11 @@ $files = json_encode($files);
                     //xhrFields: {withCredentials: true},
                     url: "{{{action('ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>get_class($setting[0])))}}}",
                     maxNumberOfFiles:{{$params->count or '1'}},
-                    singleFileUploads:{{$params->count>1?'true':'false'}},
+                    @if(isset($params->count) && $params->count>1)
+                    singleFileUploads:'false',
+                    @else
+                    singleFileUploads:'true',
+                    @endif
                     limitConcurrentUploads:3,
                     formData:{
                         type: '{{get_class($setting[0])}}'

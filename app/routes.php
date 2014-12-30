@@ -180,9 +180,29 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
             }    
         }
         
-        //Access-Control-Allow-Origin: http://example.org
-        //$response->header('Content-Type', $value);
-        return($view);
+        
+        //Next wee need to organise some headers for us.
+        if($content->headers){
+            $headers = (array) json_decode($content->headers);
+            $code = @$headers['Response'];
+        }
+        else{
+            $code = 200;
+        }
+
+        $response = Response::make($view, $code);
+
+        if(@$headers){
+            foreach($headers as $key=>$header){
+                if($key != 'Response'){
+                    $response->header($key, $header);
+                }
+            }
+        }
+        
+
+        return $response;
+        //return($view);
 
     })->where('slug', '(.*)');
     //});
