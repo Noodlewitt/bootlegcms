@@ -14,7 +14,7 @@ class ContentTableMakeNullParentId extends Migration {
 	{
 		DB::update(DB::raw('ALTER TABLE content MODIFY parent_id INT'));
 		DB::update(DB::raw('ALTER TABLE content MODIFY language INT'));
-		DB::update(DB::raw('ALTER TABLE content MODIFY identifier INT'));
+		DB::update(DB::raw('ALTER TABLE content MODIFY identifier varchar(255)'));
 
 	}
 
