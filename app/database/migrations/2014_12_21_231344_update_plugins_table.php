@@ -25,7 +25,7 @@ class UpdatePluginsTable extends Migration {
 		Schema::table('content', function($table)
 		{
 		    $table->dropColumn('service_provider');
-		    $table->dropColumn('package');
+		    //$table->dropColumn('package');
 		    $table->dropColumn('edit_service_provider');
 		    $table->dropColumn('edit_package');
 		});
