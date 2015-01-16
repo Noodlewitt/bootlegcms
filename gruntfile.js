@@ -56,6 +56,7 @@ module.exports = function (grunt) {
                                     'public/cms_assets/vendor/tinymce-builded/js/tinymce/tinymce.jquery.js',
                                     'public/cms_assets/vendor/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
                                     'public/cms_assets/vendor/bootstrap-sass-datepicker/js/bootstrap-sass-datepicker.js',
+                                    'public/cms_assets/vendor/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
                                 ],							// JavaScript files in order you'd like them concatenated and minified
 				concat: '<%= options.js.base %>/concat.js',		// Name of the concatenated JavaScript file
 				min: '<%= options.publish %>/script.min.js'		// Name of the minified JavaScript file
