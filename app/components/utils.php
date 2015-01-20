@@ -1,6 +1,7 @@
 <?php
 class Utils{
     //WE CAN USE THIS FOR ANY STANDARD STING UTILS
+    //Test STring to check deployment scheme
     
     //the route for the cms.
     const cmsRoute = 'cms/';
