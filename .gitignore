@@ -22,14 +22,13 @@ Thumbs.db
 #
 #all the node stuff shouldn’t be versioned since it’s dependent on the developer
 #
-/node_modules
-/assets/node_modules
-/.sass-cache
+workbench/bootleg/cms/.sass-cache/
+workbench/bootleg/cms/node_modules/
 
 #
 #uploads folder doesn’t need versioning
 #
-/uploads
+/app/storage/uploads
 
 #
 #database file should be added manually or through chef

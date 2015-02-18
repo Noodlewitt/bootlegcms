@@ -86,6 +86,6 @@ class Utils{
                 if($subloop === true) return true;
             }
         }
-        return $resarr;
+        return @$resarr;
     }
 }

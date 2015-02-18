@@ -282,6 +282,22 @@ class ContentwrapperController extends CMSController
                                 if (is_array($setGrp) && @$toDel) {
                                     $contentSetting = Contentsetting::destroy($toDel);
                                 }
+                                else if(is_array($setting) && @$setting['deleted']){
+                                    //THIS IS AN UPLOAD CONTENT ITEM.
+                                    //we need to count if there are others.. if so we need to remove this item.
+                                    //otherwise we need to set it to blank.
+                                    $thisSetting = ContentSetting::find($key);
+
+                                    $otherSettings = Contentsetting::where('name', $thisSetting->name)->where('content_id',$content->id)->get();
+                                    if(count($otherSettings) > 1){
+                                        $contentSetting = Contentsetting::destroy($key);    
+                                    }
+                                    else{
+                                        //we jsut want to set it to blank.
+                                        $thisSetting->value = '';
+                                        $thisSetting->save();
+                                    }
+                                }
                                 else {
                                     
                                     if ($type != 'Templatesetting') {
@@ -313,6 +329,7 @@ class ContentwrapperController extends CMSController
                                         $contentSetting->value = $setting;
                                         $contentSetting->content_id = $content->id;
                                         $contentSetting->field_type = $defaultContentSetting->field_type;
+                                        $contentSetting->field_parameters = $defaultContentSetting->field_parameters;
                                         $contentSetting->section = $defaultContentSetting->section;
                                     } else {
 
@@ -324,7 +341,14 @@ class ContentwrapperController extends CMSController
 
                                     }
                                     //dd($contentSetting);
-                                    $contentSetting->save();
+                                    try{
+                                        $contentSetting->save();
+                                    }
+                                    catch(Exception $e){
+                                        dd($setGrp);
+                                        dd($setting);
+                                        dd($e);
+                                    }
 
                                     $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
                                 }
@@ -443,18 +467,39 @@ class ContentwrapperController extends CMSController
     
     
     /*delete uploaded file(s)*/
-    public function deleteUpload($id){
-        $content_setting = Contentsetting::findOrFail($id);
-        //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
-        $delete = new stdClass();
-        $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
+    public function deleteUpload($id = ''){
+        if($id){
+            $content_setting = Contentsetting::findOrFail($id);
+            //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
+            $delete = new stdClass();
+            $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
+            
+            $delete->{$fileName} = true;
+            $return->files[] = $delete;
+        }
+        else{
+            return(true);
+        }
         
-        $delete->{$fileName} = true;
-        $return->files[] = $delete;
-        
+
         return Response::json($return);
     }
     
+    public function anyInlineUpload(){
+        //$setting = array();
+        $setting = new \Illuminate\Database\Eloquent\Collection;
+        $setting->add(new Contentsetting());
+        $setting[0]->field_parameters = Contentsetting::DEFAULT_UPLOAD_JSON;
+        $setting[0]->name = '_inline';
+        $setting[0]->field_type = '_inline';
+        $setting[0]->id = 0;
+        
+
+
+        $cont = View::make('cms::contents.input_types.upload', compact('setting'));
+        $layout = View::make('cms::layouts.bare', compact('cont'));
+        return($layout);
+    }
     
     /*
      * pass in a content_setting id to upload to.
@@ -463,38 +508,45 @@ class ContentwrapperController extends CMSController
         $input = array_except(Input::all(), '_method');
         $application = Application::getApplication();
         $uploadFolder = @$application->getSetting('Upload Folder');
+        $inline = false;
         if($type == 'Applicationsetting'){
             $content_setting = Applicationsetting::withTrashed()->find($id);
         }
         else{           
-
-            
-            if($type == 'Contentsetting'){
-                $content_setting = Contentsetting::withTrashed()->find($id);
+            if($id == 0){
+                //This is an inline edit - we need to deal with it accordingly.
+                $content_setting = new Contentsetting();
+                $content_setting->name = '_inline';
+                $content_setting->field_type = '_inline'; //just dummy stuff for now..
+                $content_setting->field_parameters = Contentsetting::DEFAULT_UPLOAD_JSON;
             }
             else{
-                //this is on a template field.
-                if($this->content_mode == 'contents'){
-                    //we need to create an element based off the template if there is anything..
-                    $templateSetting = Templatesetting::findOrFail($id);
-                    $content_setting = new Contentsetting();
-                    $content_setting->name = $templateSetting->name;
-                    $content_setting->field_type = $templateSetting->field_type;
-                    $content_setting->field_parameters = $templateSetting->field_parameters;
+                if($type == 'Contentsetting'){
+                    $content_setting = Contentsetting::withTrashed()->find($id);
                 }
                 else{
-                    //TODO: 
-                    dd("TODO: " . $this->content_mode);
-                    //we are in template mode, we want to save it as such.
+                    //this is on a template field.
+                    if($this->content_mode == 'contents'){
+                        //we need to create an element based off the template if there is anything..
+                        $templateSetting = Templatesetting::findOrFail($id);
+                        $content_setting = new Contentsetting();
+                        $content_setting->name = $templateSetting->name;
+                        $content_setting->field_type = $templateSetting->field_type;
+                        $content_setting->field_parameters = $templateSetting->field_parameters;
+                    }
+                    else{
+                        //TODO: 
+                        dd("TODO: " . $this->content_mode);
+                        //we are in template mode, we want to save it as such.
+                    }
                 }
             }
         }
-        $niceName = preg_replace('/\s+/', '', $content_setting->name);
-        
-        $files = (Input::file($niceName));
 
+        $niceName = preg_replace('/\s+/', '', $content_setting->name);
+        $files = (Input::file($niceName));
         $params = json_decode($content_setting->field_parameters);
-        //dd($params->validation->mimes);
+
 
         if(!empty($files)){
             

@@ -4,7 +4,7 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 $files = array();
 foreach($setting as $field){
     if(@$field->value){
-    
+        
         $url = $field->value;
 
         $fileName = pathinfo($url,PATHINFO_FILENAME);
@@ -23,7 +23,9 @@ $files = json_encode($files);
 ?>
 <div class="wrap">
     <div class='upload {{$niceName}}' >   
+        @if($setting[0]->name !="_inline")
         {{ Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) }}
+        @endif
         @foreach($setting as $field)
             {{ Form::hidden("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control file-url')) }}
         @endforeach
@@ -34,28 +36,41 @@ $files = json_encode($files);
             <noscript><input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"></noscript>
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
-                <div class="col-lg-7">
+                <div class="col-lg-7 
+                @if($setting[0]->name == "_inline")
+                    text-center
+                @endif
+                ">
                     <div class="btn-group">
                     <!-- The fileinput-button span is used to style the file input field as button -->
-                        <span class="btn btn-success fileinput-button">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            <span>Add file...</span>
-                            <input type="file" name="{{$niceName}}[]" multiple>
-                        </span>
+                        
+                        @if($params->count == 1)
+                            <span class="btn btn-success fileinput-button">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                <span>Choose file...</span>
+                                <input type="file" name="{{$niceName}}[]" multiple>
+                            </span>
+                        @else
+                            <span class="btn btn-success fileinput-button">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                <span>Add file...</span>
+                                <input type="file" name="{{$niceName}}[]" multiple>
+                            </span>
+                        @endif
+                        {{--
                         <button type="submit" class="btn btn-primary start">
                             <i class="glyphicon glyphicon-upload"></i>
                             <span>Start upload</span>
-                        </button>
-                        <button type="reset" class="btn btn-warning cancel">
-                            <i class="glyphicon glyphicon-ban-circle"></i>
-                            <span>Cancel upload</span>
-                        </button>
+                        </button>--}}
+
                         <button type="button" class="btn btn-danger delete">
                             <i class="glyphicon glyphicon-trash"></i>
                             <span>Delete</span>
                         </button>
                     </div>
-                    <input type="checkbox" class="toggle">
+                    @if($setting[0]->name !="_inline")
+                        <input type="checkbox" class="toggle">
+                    @endif
                     <!-- The global file processing state -->
                     <span class="fileupload-process"></span>
                 </div>
@@ -95,12 +110,14 @@ $files = json_encode($files);
                                 <span>Start</span>
                             </button>
                         {% } %}
+                        @if($setting[0]->name !="_inline")
                         {% if (!i) { %}
                             <button class="btn btn-warning cancel">
                                 <i class="glyphicon glyphicon-ban-circle"></i>
                                 <span>Cancel</span>
                             </button>
                         {% } %}
+                        @endif
                     </td>
                 </tr>
             {% } %}
@@ -133,7 +150,7 @@ $files = json_encode($files);
                     </td>
                     <td>
                         {% if (file.deleteUrl) { %}
-                            <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                            <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                                 <i class="glyphicon glyphicon-trash"></i>
                                 <span>Delete</span>
                             </button>
@@ -199,11 +216,10 @@ $files = json_encode($files);
                         var rpl = $input.attr('name').replace('[deleted]','');
                         console.log(rpl);
                         $input.attr('name',rpl);
-                        
+                        window.parent.inline_image = $input.val();
                     }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {     
                     //on deleted, we remove the input file
-                    console.log(data.context);
                     $inp = $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id'));
                     $inp.attr('name',$inp.attr('name')+'[deleted]');
                     //$('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id')).remove();
