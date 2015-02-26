@@ -11,6 +11,8 @@ class Content extends Baum\Node{ //Eloquent {status
     
     protected $softDelete = true;
     
+    protected $orderColumn = 'position';
+
     //protected $scoped = array('application_id');
     
     protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.    
@@ -126,8 +128,11 @@ class Content extends Baum\Node{ //Eloquent {status
     /*recursivly create sub pages.*/
     public function superSave($input){
         $input = Content::loadDefaultValues($input);
-        $parent = Content::find($input['parent_id']);
+        $parent = Content::with('children')->find($input['parent_id']);
         $template = Template::find($input['template_id']);
+        
+        $input['position'] = count($parent->children); //we always want to create this one at the end.
+
         unset($input['parent_id']);
         //SAVE CONTENT ITEM
         $saved = $parent->children()->create($input); 

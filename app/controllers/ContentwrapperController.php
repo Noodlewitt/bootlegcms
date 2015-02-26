@@ -269,7 +269,29 @@ class ContentwrapperController extends CMSController
                 if (@$input['parent_id'] == '#') {
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
+                $oldPosition = $content->position;
                 $content->update($input);
+
+                //position needs looking at too..
+                if(isset($input['position'])){
+                    $siblings = $content->getSiblings();
+
+                    foreach($siblings as $key => $sibling){
+
+                        if($oldPosition <= $sibling->position){
+                            $sibling->position = $sibling->position - 1;
+                        }
+
+
+                        /*if($content->position <= $sibling->position){
+                            $sibling->position = $key+1;
+                        }
+*/
+                        
+                        $sibling->save();
+                    }
+                    dd($siblings);
+                }
                 
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
                 //add any settings:
@@ -287,7 +309,6 @@ class ContentwrapperController extends CMSController
                                     //we need to count if there are others.. if so we need to remove this item.
                                     //otherwise we need to set it to blank.
                                     $thisSetting = ContentSetting::find($key);
-
                                     $otherSettings = Contentsetting::where('name', $thisSetting->name)->where('content_id',$content->id)->get();
                                     if(count($otherSettings) > 1){
                                         $contentSetting = Contentsetting::destroy($key);    
