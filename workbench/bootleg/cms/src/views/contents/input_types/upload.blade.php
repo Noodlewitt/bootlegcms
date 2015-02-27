@@ -13,6 +13,7 @@ foreach($setting as $field){
         $fileObj->thumbnailUrl = "$url"; //todo
         $fileObj->deleteUrl = action('ContentsController@deleteUpload', array('id'=>$field->id)); //todo
         $fileObj->deleteType = "DELETE";
+        $fileObj->id = $field->id;
 
         $files[] = $fileObj;
         //TODO: handle multiple files here?
@@ -26,14 +27,15 @@ $files = json_encode($files);
         @if($setting[0]->name !="_inline")
         {{ Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) }}
         @endif
-        @foreach($setting as $field)
-            {{ Form::hidden("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control file-url')) }}
-        @endforeach
         
         
 
             <!-- Redirect browsers with JavaScript disabled to the origin page -->
             <noscript><input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"></noscript>
+
+            <!-- The table listing the files available for upload/download -->
+            <table id="{{uniqid()}}" role="presentation" class="table table-striped uploaded"><tbody class="files"></tbody></table>
+
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
                 <div class="col-lg-7 
@@ -44,7 +46,7 @@ $files = json_encode($files);
                     <div class="btn-group">
                     <!-- The fileinput-button span is used to style the file input field as button -->
                         
-                        @if($params->count == 1)
+                        @if($params->max_number == 1)
                             <span class="btn btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 <span>Choose file...</span>
@@ -84,8 +86,6 @@ $files = json_encode($files);
                     <div class="progress-extended">&nbsp;</div>
                 </div>
             </div>
-            <!-- The table listing the files available for upload/download -->
-            <table id="{{uniqid()}}" role="presentation" class="table table-striped uploaded"><tbody class="files"></tbody></table>
 
 
             <!-- The template to display files available for upload -->
@@ -129,6 +129,7 @@ $files = json_encode($files);
                     <td class="preview-wrap">
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
+                                <input value="{%=file.thumbnailUrl%}" class="upload-value" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
                                 <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}" alt="preview" class="img-thumbnail"></a>
                             {% } %}
                         </span>
@@ -178,8 +179,8 @@ $files = json_encode($files);
                     // Uncomment the following to send cross-domain cookies:
                     //xhrFields: {withCredentials: true},
                     url: "{{{action('ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>get_class($setting[0])))}}}",
-                    maxNumberOfFiles:{{$params->count or '1'}},
-                    @if(isset($params->count) && $params->count>1)
+                    maxNumberOfFiles:{{$params->max_number or '1'}},
+                    @if(isset($params->max_number) && $params->max_number>1)
                     singleFileUploads:'false',
                     @else
                     singleFileUploads:'true',
@@ -208,20 +209,16 @@ $files = json_encode($files);
                     setTimeout(function(){
                         //and add in the image preview
                         $input = $('input.file-url', $container{{$niceName}});
-                        if($input.length == 0){
-                            
-                        }
                         $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
-                        //and remove deleted if it's there.
-                        var rpl = $input.attr('name').replace('[deleted]','');
-                        console.log(rpl);
-                        $input.attr('name',rpl);
                         window.parent.inline_image = $input.val();
                     }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {     
                     //on deleted, we remove the input file
-                    $inp = $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id'));
-                    $inp.attr('name',$inp.attr('name')+'[deleted]');
+                    var $input = $('input.upload-value', $(data.context).closest('tr')).val('');
+                    $input.clone().appendTo( $container{{$niceName}});
+                    
+                    //$inp = $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id'));
+                    //$inp.attr('name',$inp.attr('name')+'[deleted]');
                     //$('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id')).remove();
                 }); 
 

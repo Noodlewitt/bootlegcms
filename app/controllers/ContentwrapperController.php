@@ -298,31 +298,26 @@ class ContentwrapperController extends CMSController
                 if (isset($input['setting'])) {
                     foreach ($input['setting'] as $name => $settingGroup) {
                         foreach ($settingGroup as $type => $setGrp) {
+
                             foreach ($setGrp as $key => $setting) {
+
                                 //we want to delete this setting.
-                                $toDel = Utils::recursive_array_search('deleted', $setGrp);
-                                if (is_array($setGrp) && @$toDel) {
-                                    $contentSetting = Contentsetting::destroy($toDel);
-                                }
-                                else if(is_array($setting) && @$setting['deleted']){
-                                    //THIS IS AN UPLOAD CONTENT ITEM.
-                                    //we need to count if there are others.. if so we need to remove this item.
-                                    //otherwise we need to set it to blank.
-                                    $thisSetting = ContentSetting::find($key);
-                                    $otherSettings = Contentsetting::where('name', $thisSetting->name)->where('content_id',$content->id)->get();
-                                    if(count($otherSettings) > 1){
-                                        $contentSetting = Contentsetting::destroy($key);    
-                                    }
-                                    else{
-                                        //we jsut want to set it to blank.
-                                        $thisSetting->value = '';
-                                        $thisSetting->save();
+                                $fieldDeleted = false;
+                                if($setting == ''){
+
+                                    //find out if we should remove the whole setting or just set it to ''
+                                    if(is_array($setGrp) && count($setGrp) > 1){
+                                        //remove it
+                                        //dd($key);
+                                        $fieldDeleted = true;
+                                        $contentSetting = Contentsetting::destroy($key); 
+                                        //dd($key);   
                                     }
                                 }
-                                else {
-                                    
+
+                                if(!$fieldDeleted){
                                     if ($type != 'Templatesetting') {
-                                        
+                                    
                                         $contentSetting = Contentsetting::withTrashed()
                                             ->where('name', '=', $name)
                                             ->where('content_id', '=', $content->id)
@@ -336,13 +331,19 @@ class ContentwrapperController extends CMSController
 
                                         //if we can't find the field, we need to create it from the default:
                                         //dd($name);
-
-                                        $defaultContentSetting = Templatesetting::find($key);
-                                        if(!$defaultContentSetting){
+                                     
+                                    //    $defaultContentSetting = Templatesetting::find($key);
+                                    //    if(!$defaultContentSetting){
+                                        
                                             $defaultContentSetting = Templatesetting::where('name','=',$name)
                                                                     ->where('template_id', '=', $content->template_id)
                                                                     ->first();
+                                        if(!$defaultContentSetting){
+                                        //    dd($name);
+                                            dd($content->template_id);
                                         }
+
+                                    //    }
                                         //$defaultContentSetting = Templatesetting::where('name','=',)
                                         
                                         $contentSetting = new Contentsetting();
@@ -355,6 +356,7 @@ class ContentwrapperController extends CMSController
                                     } else {
 
                                         //otherwise this field exists.. we can overwrite it' settings.
+                                        
                                         $contentSetting->name = $name;
                                         $contentSetting->value = $setting;
                                         $contentSetting->content_id = $content->id;
@@ -370,9 +372,10 @@ class ContentwrapperController extends CMSController
                                         dd($setting);
                                         dd($e);
                                     }
-
-                                    $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
+                                    $contentSetting->restore();     
                                 }
+                                
+                                                               
                             }
                         }
                     }

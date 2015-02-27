@@ -25,7 +25,7 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
             e.preventDefault();
             var input_name = $('input',$(this).parent().parent()).attr('name');
             $(this).parent().parent().remove();
-            $('.text-fields').append('<input class="hidden" type="hidden" name="'+input_name+'" value="deleted">');
+            $('.text-fields').append('<input class="hidden" type="hidden" name="'+input_name+'" value="">');
         });
     </script>
 @else
