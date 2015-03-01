@@ -11,6 +11,7 @@ foreach($setting as $field){
         $fileObj = new stdClass();
         $fileObj->name = $fileName;
         $fileObj->thumbnailUrl = "$url"; //todo
+        $fileObj->url = "$url";
         $fileObj->deleteUrl = action('ContentsController@deleteUpload', array('id'=>$field->id)); //todo
         $fileObj->deleteType = "DELETE";
         $fileObj->id = $field->id;
@@ -92,18 +93,18 @@ $files = json_encode($files);
             <script id="{{uniqid()}}" class='upload-template' type="text/x-tmpl">
             {% for (var i=0, file; file=o.files[i]; i++) { %}
                 <tr class="template-upload fade">
-                    <td class="preview-wrap">
+                    <td class="vertical-middle preview-wrap">
                         <span class="preview"></span>
                     </td>
-                    <td>
+                    <td class='vertical-middle'>
                         <p class="name">{%=file.name%}</p>
                         <strong class="error text-danger"></strong>
                     </td>
-                    <td>
+                    <td class='vertical-middle'>
                         <p class="size">Processing...</p>
                         <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
                     </td>
-                    <td>
+                    <td class='vertical-middle'>
                         {% if (!i && !o.options.autoUpload) { %}
                             <button class="btn btn-primary start" disabled>
                                 <i class="glyphicon glyphicon-upload"></i>
@@ -126,18 +127,18 @@ $files = json_encode($files);
             <script id="{{uniqid()}}" class='download-template' type="text/x-tmpl">
             {% for (var i=0, file; file=o.files[i]; i++) { %}
                 <tr data-item_id="{%=i%}" class="template-download fade">
-                    <td class="preview-wrap">
+                    <td class="vertical-middle preview-wrap">
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
-                                <input value="{%=file.thumbnailUrl%}" class="upload-value" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
-                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}" alt="preview" class="img-thumbnail"></a>
+                                <input value="{%=file.url%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
+                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" data-gallery><img src="{%=file.thumbnailUrl%}" alt="preview" class="img-thumbnail"></a>
                             {% } %}
                         </span>
                     </td>
-                    <td>
+                    <td class='vertical-middle'>
                         <p class="name">
                             {% if (file.url) { %}
-                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
+                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
                             {% } else { %}
                                 <span>{%=file.name%}</span>
                             {% } %}
@@ -146,10 +147,10 @@ $files = json_encode($files);
                             <div><span class="label label-danger">Error</span> {%=file.error%}</div>
                         {% } %}
                     </td>
-                    <td>
+                    <td  class='vertical-middle'>
                         <span class="size">{%=o.formatFileSize(file.size)%}</span>
                     </td>
-                    <td>
+                    <td class='vertical-middle'>
                         {% if (file.deleteUrl) { %}
                             <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                                 <i class="glyphicon glyphicon-trash"></i>

@@ -269,28 +269,56 @@ class ContentwrapperController extends CMSController
                 if (@$input['parent_id'] == '#') {
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
+
                 $oldPosition = $content->position;
                 $content->update($input);
-
                 //position needs looking at too..
-                if(isset($input['position'])){
-                    $siblings = $content->getSiblings();
+                if(isset($input['position']) && $oldPosition != $input['position']){
 
-                    foreach($siblings as $key => $sibling){
+                    $siblings = $content->getSiblingsAndSelf();
 
-                        if($oldPosition <= $sibling->position){
-                            $sibling->position = $sibling->position - 1;
+                    foreach($siblings as $key=>$sibling){
+
+                        if($sibling->id == $content->id){
+                            if($oldPosition > $content->position){
+                                $siblings[$key]->position = $siblings[$key]->position-0.5;    
+                            }
+                            else{
+                                $siblings[$key]->position = $siblings[$key]->position+0.5;       
+                            }
                         }
-
-
-                        /*if($content->position <= $sibling->position){
-                            $sibling->position = $key+1;
-                        }
-*/
-                        
-                        $sibling->save();
                     }
-                    dd($siblings);
+
+                    $ordered = $siblings->sortBy(function($sibling){
+                        return ($sibling->position);
+                    });
+
+                    $ordered->values();
+                    //dd($siblings);
+                    //this will leave us with 2 that are the same position.
+                    //we need to loop through and detect which ones to swap.
+
+
+                    foreach($ordered as $key=>$sibling){
+                        $sibling->position = $key;
+                        $sibling->save();    
+                    }
+                    //dd($ordered);
+                    
+
+                    //dd($ordered->toArray());
+
+                   // $siblingsArr = $siblings->toArray();
+
+
+
+                    /*
+                    foreach($reOrdered as $siblingReOrdered){
+                        var_dump($siblingReOrdered);
+                    }*/
+
+                    
+                    
                 }
                 
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
@@ -463,6 +491,8 @@ class ContentwrapperController extends CMSController
         $branch->id = $tree->id;
         $branch->text = $tree->name;
         $branch->a_attr = new stdClass();
+        $branch->valid_children = 'default';
+        $branch->type = 'default';
         if($tree->edit_action){
             $branch->a_attr->href = action($tree->edit_action, array($tree->id));
         }

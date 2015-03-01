@@ -88,6 +88,10 @@ body {
     margin-top: 0;
 }
 
+.table > tbody > tr > td.vertical-middle{
+    vertical-align:middle;
+}
+
 
 .nav-sidebar {
     .menu-additional{
@@ -128,6 +132,10 @@ body {
 }
 
 .vakata-context{
+    z-index:50;
+}
+
+#jstree-marker{
     z-index:9999;
 }
 
