@@ -1,0 +1,44 @@
+#
+#these should be pushed from composer.
+#
+/bootstrap/compiled.php
+/vendor
+
+
+#
+#composer should be down to the developer to deploy
+#
+composer.phar
+#composer.lock
+.env.local.php
+.env.php
+
+#
+#the annoying crap that macs and windows add to the folder
+#
+.DS_Store
+Thumbs.db
+
+#
+#all the node stuff shouldn’t be versioned since it’s dependent on the developer
+#
+workbench/bootleg/cms/.sass-cache/
+workbench/bootleg/cms/node_modules/
+
+#
+#uploads folder doesn’t need versioning
+#
+/app/storage/uploads
+
+#
+#database file should be added manually or through chef
+#
+/app/config/database.php
+
+#
+#I don’t want a whole bunch of themes committed here.. these should be done through a sub module.
+#
+/workbench/*
+!/workbench/widgets
+!/workbench/bootleg
+/public/packages/*
