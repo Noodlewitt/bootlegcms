@@ -109,7 +109,7 @@ return array(
         'Baum\BaumServiceProvider',
         'Profiler\ProfilerServiceProvider',
         'Aws\Laravel\AwsServiceProvider',
-        'Orangehill\Iseed\IseedServiceProvider'
+     //   'Orangehill\Iseed\IseedServiceProvider'
         //'Franzose\ClosureTable\ClosureTableServiceProvider',
    //   'Way\Generators\GeneratorsServiceProvider',
 	),

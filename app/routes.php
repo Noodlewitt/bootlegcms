@@ -52,8 +52,9 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
             App::register($plugin->service_provider);
         }
     }
-    
-    
+
+    Event::fire('routes.before');
+
     App::setLocale($locale);
     
     Route::get('/upload', function () {
@@ -99,113 +100,12 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
     });
 
 
-
     Route::any('/{slug?}', function ($slug = '/') use ($application, $applicationurl) {
         //TODO: we should really move this into PageController at some point.
-
-        //dd($slug);
-        $pathInfo = pathinfo($slug);
-        
-        if($slug != '/'){
-            $slug = $pathInfo['dirname']."/".$pathInfo['filename'];
-        $slug = str_replace('./', '', $slug);    
-        }
-        
-        $extension = @$pathInfo['extension'];
-
-        if (is_null($applicationurl->application)) {
-            App::abort(404, "No Application found at url");   //chuck 404 - we can't find the app
-        }
-
-        if ($applicationurl->folder !== '/') {
-            $slug = str_replace($applicationurl->folder, '', $slug);
-        }
-
-        if ($slug !== '/') {
-            $slug = "/$slug";
-        }
-        
-        $content = Content::where('slug', '=', "$slug")
-                ->fromApplication()
-                ->live()
-                ->with('setting')
-                ->first();
-        //dd($slug);
-        if (is_null($content)) {
-            App::abort(404, "No content found at url:'$slug'"); //chuck 404 error.. WE HAVE NO SLUG THAT MATCHES WITHIN THIS APP
-        }
-        //$perm = Permission::getPermission('content', $content->id, 'x');
-
-        //we set the theme package incase it wasn't set above for the
-        //whole application.
-        //dd($content->service_provider);
-//        App::register($content->service_provider);
-
-        //get view file for this page
-        if ($content->view) {
-            $view = $content->view;
-        } else {
-            $view = 'default.view';
-        }
-
-        //get layout file for this page
-        if ($content->layout) {
-            $layout = $content->layout;
-        } else {
-            $layout = 'default.layout';
-        }
-
-        //get the package
-        if ($content->package) {
-            $package = $content->package;
-        } else {
-            $package = 'cms';
-        }
-        
-        //share these accross everything.
-        View::share('content', $content);
-        
-        if($extension == 'json'){
-            $view = Response::json($content);
-        }
-        else{
-            if (Input::has('view')) {
-                $view = View::make("$package::".Input::get('view'));
-            } else {
-                if (Request::ajax()) {
-                    $view = View::make("$package::$view");
-                } else {
-                    $view = View::make("$package::$layout")->nest('child', "$package::$view");
-                }
-            }    
-        }
-        
-        
-        //Next wee need to organise some headers for us.
-        if($content->headers){
-            $headers = (array) json_decode($content->headers);
-            $code = @$headers['Response'];
-        }
-        else{
-            $code = 200;
-        }
-
-        $response = Response::make($view, $code);
-
-        if(@$headers){
-            foreach($headers as $key=>$header){
-                if($key != 'Response'){
-                    $response->header($key, $header);
-                }
-            }
-        }
-        
-
-        return $response;
-        //return($view);
-
+        return PageController::page($slug, $application, $applicationurl);
     })->where('slug', '(.*)');
     //});
 
+    \Event::fire('routes.after');
 //    Route::controller('/', 'PageController');
 });

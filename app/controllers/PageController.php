@@ -29,8 +29,7 @@ class PageController extends BaseController
 	}
 
 
-    public function page($slug){
-        //dd($slug);
+    public static function page($slug, $application, $applicationurl){
         $pathInfo = pathinfo($slug);
         
         if($slug != '/'){
@@ -66,20 +65,13 @@ class PageController extends BaseController
         //we set the theme package incase it wasn't set above for the
         //whole application.
         //dd($content->service_provider);
-        App::register($content->service_provider);
+
 
         //get view file for this page
         if ($content->view) {
             $view = $content->view;
         } else {
             $view = 'default.view';
-        }
-
-        //get layout file for this page
-        if ($content->layout) {
-            $layout = $content->layout;
-        } else {
-            $layout = 'default.layout';
         }
 
         //get the package
@@ -96,19 +88,31 @@ class PageController extends BaseController
             $view = Response::json($content);
         }
         else{
-            if (Input::has('view')) {
-                $view = View::make("$package::".Input::get('view'));
-            } else {
-                if (Request::ajax()) {
-                    $view = View::make("$package::$view");
-                } else {
-                    $view = View::make("$package::$layout")->nest('child', "$package::$view");
-                }
-            }    
+            
+            $view = View::make("$package::$view");
         }
         
-        //Access-Control-Allow-Origin: http://example.org
-        //$response->header('Content-Type', $value);
-        return($view);
+        
+        //Next wee need to organise some headers for us.
+        if($content->headers){
+            $headers = (array) json_decode($content->headers);
+            $code = @$headers['Response'];
+        }
+        else{
+            $code = 200;
+        }
+
+        $response = Response::make($view, $code);
+
+        if(@$headers){
+            foreach($headers as $key=>$header){
+                if($key != 'Response'){
+                    $response->header($key, $header);
+                }
+            }
+        }
+        
+
+        return $response;
     }
 }

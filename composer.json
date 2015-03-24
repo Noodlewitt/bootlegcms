@@ -10,7 +10,7 @@
         "baum/baum": "~1.0",
         "doctrine/dbal": "~2.3",
         "aws/aws-sdk-php-laravel": "1.*",
-        "orangehill/iseed": "dev-master",
+        
         "loic-sharma/profiler": "1.1.*",
         "aws/aws-sdk-php-laravel": "1.*"
 	},
