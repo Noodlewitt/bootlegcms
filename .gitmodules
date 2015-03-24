@@ -1,0 +1,8 @@
+[submodule "src/workbench/bootleg/blog"]
+	path = src/workbench/bootleg/blog
+	url = git@bitbucket.org:made-in-katana/bootleg-blog
+	branch = master
+[submodule "src/workbench/mikthemes/coolaccidents"]
+	path = src/workbench/mikthemes/coolaccidents
+	url = git@bitbucket.org:made-in-katana/cool-accidents-site.git
+	branch = coolaccidents-blog
