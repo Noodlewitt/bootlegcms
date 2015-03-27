@@ -45,7 +45,8 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
                 selector:'textarea.{{$niceName.$field->id}}',
                 plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
                 toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload",
-                relative_urls: false
+                relative_urls: false,
+                entity_encoding : "raw"
             });
         });
     </script>
