@@ -66,7 +66,6 @@ class Permission extends Eloquent {
     }
 
     public static function getPermission($controller_type, $controller_id = null, $return = false){
-
         //check permisssion against user
         if (Auth::guest()) {
             $user = User::find(1);  //select the guest row.

@@ -6,3 +6,7 @@
 	path = src/workbench/mikthemes/coolaccidents
 	url = git@bitbucket.org:made-in-katana/cool-accidents-site.git
 	branch = coolaccidents-blog
+[submodule "src/workbench/bootleg/search"]
+	path = src/workbench/bootleg/search
+	url = git@bitbucket.org:made-in-katana/bootleg-search.git
+	branch = master
