@@ -272,6 +272,7 @@ class ContentwrapperController extends CMSController
 
                 $oldPosition = $content->position;
                 $content->update($input);
+                
                 //position needs looking at too..
                 if(isset($input['position']) && $oldPosition != $input['position']){
 
@@ -294,31 +295,14 @@ class ContentwrapperController extends CMSController
                     });
 
                     $ordered->values();
-                    //dd($siblings);
                     //this will leave us with 2 that are the same position.
                     //we need to loop through and detect which ones to swap.
-
 
                     foreach($ordered as $key=>$sibling){
                         $sibling->position = $key;
                         $sibling->save();    
                     }
-                    //dd($ordered);
-                    
 
-                    //dd($ordered->toArray());
-
-                   // $siblingsArr = $siblings->toArray();
-
-
-
-                    /*
-                    foreach($reOrdered as $siblingReOrdered){
-                        var_dump($siblingReOrdered);
-                    }*/
-
-                    
-                    
                 }
                 
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
