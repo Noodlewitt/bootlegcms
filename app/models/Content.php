@@ -11,7 +11,7 @@ class Content extends Baum\Node{ //Eloquent {status
     
     protected $softDelete = true;
     
-    protected $orderColumn = 'position';
+    protected $orderColumn = 'position'; //Baum sorting and ordering modifier
 
     //protected $scoped = array('application_id');
     
