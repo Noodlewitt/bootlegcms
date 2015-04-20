@@ -542,12 +542,19 @@ class ContentwrapperController extends CMSController
                 }
             }
         }
-
-        $niceName = preg_replace('/\s+/', '', $content_setting->name);
-        $files = (Input::file($niceName));
+        //TODO: tidy up this.. maybe an upload controller or some jazz..
+        if($content_setting->name == '_inline'){
+            $niceName = preg_replace('/\s+/', '', $content_setting->name);
+            $f = Input::file();
+            $files = (Input::file(key($f)));
+        }
+        else{
+            $niceName = preg_replace('/\s+/', '', $content_setting->name);
+            $files = (Input::file($niceName));    
+        }
+        
         $params = json_decode($content_setting->field_parameters);
-
-
+        
         if(!empty($files)){
             
             foreach($files as $file) {

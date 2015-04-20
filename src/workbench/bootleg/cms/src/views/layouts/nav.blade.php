@@ -43,7 +43,7 @@
                 $navItems = Event::fire('nav.links', array());
             ?>
             @foreach($navItems as $navItem)
-                <a href="{{$navItem['location']}}">{{$navItem['title']}}</a>
+                <a href="{{action($navItem['location'])}}">{{$navItem['title']}}</a>
             @endforeach
         </ul> <!-- / .navbar-nav -->
       </div>
