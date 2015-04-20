@@ -269,6 +269,8 @@ class ContentwrapperController extends CMSController
                 if (@$input['parent_id'] == '#') {
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
+
+                $oldPosition = $content->position;
                 $content->update($input);
                 
                 //position needs looking at too..
