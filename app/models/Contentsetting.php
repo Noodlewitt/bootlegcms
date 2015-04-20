@@ -12,7 +12,7 @@ class Contentsetting extends Eloquent {
           "size":"5120"
         },
         "tooltip": "",
-        "count": 1
+        "max_number": 1
     }';
     
     const DEFAULT_DROPDOWN_JSON = '{
