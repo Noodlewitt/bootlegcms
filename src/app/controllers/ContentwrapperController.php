@@ -271,6 +271,38 @@ class ContentwrapperController extends CMSController
                 }
                 $content->update($input);
                 
+                //position needs looking at too..
+                if(isset($input['position']) && $oldPosition != $input['position']){
+
+                    $siblings = $content->getSiblingsAndSelf();
+
+                    foreach($siblings as $key=>$sibling){
+
+                        if($sibling->id == $content->id){
+                            if($oldPosition > $content->position){
+                                $siblings[$key]->position = $siblings[$key]->position-0.5;    
+                            }
+                            else{
+                                $siblings[$key]->position = $siblings[$key]->position+0.5;       
+                            }
+                        }
+                    }
+
+                    $ordered = $siblings->sortBy(function($sibling){
+                        return ($sibling->position);
+                    });
+
+                    $ordered->values();
+                    //this will leave us with 2 that are the same position.
+                    //we need to loop through and detect which ones to swap.
+
+                    foreach($ordered as $key=>$sibling){
+                        $sibling->position = $key;
+                        $sibling->save();    
+                    }
+
+                }
+                
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
                 //add any settings:
                 if (isset($input['setting'])) {
