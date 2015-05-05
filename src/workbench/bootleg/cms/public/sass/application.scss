@@ -1,14 +1,14 @@
 /*
-some standard import files - plugins, bootstrap etc..  
+some standard import files - plugins, bootstrap etc..
 */
 @import "base";
 
 
-/* 
-CMS SCSS in here 
-TODO: figure out a nice way of formatting this correctly. 
-*/  
- 
+/*
+CMS SCSS in here
+TODO: figure out a nice way of formatting this correctly.
+*/
+
 /*
 Some globals
 */
@@ -103,7 +103,7 @@ body {
         h2{
             font-size: 1.5em;
         }
-    }    
+    }
 }
 
 .page-header{
@@ -113,7 +113,7 @@ body {
 .treeContainer{
     overflow:auto;
     bottom: 60px;
-    .page-header{ 
+    .page-header{
         padding: 0 $gutter-half $gutter-half $gutter-half;
         margin: 0;
         margin-left: -$gutter-half;
@@ -145,27 +145,31 @@ body {
     margin: 0 auto;
 }
 
+.nav-tabs{
+    margin-bottom:$gutter-half;
+}
+
 
 form.main-form{
     .edit-content-tab{
         padding:$gutter-half 0 0 0;
     }
-     
+
     ul{
         list-style:none;
         padding:0;
-        
+
         li{
             div.bootstrap-tagsinput{
                 display:block;
             }
 
             div.upload{
-                
+
                 table.uploaded{
                     td.preview-wrap{
                         text-align:center;
-                     
+
                         span.preview img{
                             max-height: 100px;
                             max-width: 100px;
@@ -178,7 +182,6 @@ form.main-form{
 }
 
 .dash-item{
-    
+
 
 }
-

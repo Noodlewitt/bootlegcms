@@ -16,27 +16,27 @@ class ContentwrapperController extends CMSController
         View::share('content_mode', $this->content_mode);
         $this->content = $content;
     }
-    
+
     public $policy, $signature;
 
-    
-    
+
+
     /**
      * main content view.
      *
      * @return Response
      */
     public function anyIndex(){
-        
+
         $this->content = $this->content->with(array('setting.default_setting', 'default_page'))->fromApplication()->whereNull('parent_id')->first();
-        
+
         //$permission = Permission::getPermission('content', $this->content->id, 'w');
 
         $allPermissions = Permission::getControllerPermission($this->content->id, Route::currentRouteAction());
        // dd($perm);
-        
-        //foreach content_default_field on this content item, we want to 
-        //add a setting if it exists on the content item (replacing it if necisary)        
+
+        //foreach content_default_field on this content item, we want to
+        //add a setting if it exists on the content item (replacing it if necisary)
         if(@$content->default_page->id){
             $content_defaults = Contentdefaultsetting::where('content_type_id','=',$this->content->default_page->id)->get();
             $all_settings = $content_defaults;
@@ -45,7 +45,7 @@ class ContentwrapperController extends CMSController
 
                 $fl = $content->setting->filter(function($d) use($cd){
                     return($cd->name===$d->name);
-                });  
+                });
                 //$fl would be items that should replace.
                 if ($fl) {
                     foreach($fl as $f){
@@ -56,7 +56,7 @@ class ContentwrapperController extends CMSController
                 }
             }
         }
-        
+
         //we now need to add the current settings if they don't exisit in the defaults.
         if (@$all_settings) {
             foreach ($this->content->setting as $setting) {
@@ -78,7 +78,7 @@ class ContentwrapperController extends CMSController
             $all_settings = $this->content->setting;
         }
         $settings = $all_settings->groupBy('section');
-        
+
         //App::register($this->content->edit_service_provider);
         $content = $this->content;
         $content = Content::setDefaults($content);
@@ -93,7 +93,7 @@ class ContentwrapperController extends CMSController
         }
         return($layout);
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -103,17 +103,17 @@ class ContentwrapperController extends CMSController
     public function anyCreate($parent_id=null){
         $content = new Content;
         $content->parent_id = $parent_id;
-        
-        
+
+
         if($content){
             $tree = $content->getDescendantsAndSelf();
         }
-        
+
         $content_settings = $this->content->setting()->get();
-        
+
         return View::make($this->application->cms_package.'::contents.create', compact('content', 'content_settings', 'tree'));
     }
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -122,8 +122,8 @@ class ContentwrapperController extends CMSController
      */
     public function anyStore($json = false){
 
-        
-        
+
+
         $input = Input::all();
         $validation = Validator::make($input, $this->content->rules);
 
@@ -134,20 +134,20 @@ class ContentwrapperController extends CMSController
         }
         if ($validation->passes()){
             $application = Application::getApplication();
-            
+
             Event::fire('content.create', array($this->content));
             Event::fire('content.update', array($this->content));
             $tree = $this->content->superSave($input);
             Event::fire('content.created', array($this->content));
             Event::fire('content.updated', array($this->content));
           //  dd($tree);
-            
-            
+
+
             return Response::json($this->renderTree($tree));
-            
+
            // return Redirect::action('ContentsController@anyIndex');
         }
-        
+
         return Redirect::action('ContentsController@anyCreate')
             ->withInput()
             ->withErrors($validation)
@@ -174,9 +174,9 @@ class ContentwrapperController extends CMSController
         }
         dd('done');
     }
-        
 
-    
+
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -184,19 +184,19 @@ class ContentwrapperController extends CMSController
      * @return Response
      */
     public function anyEdit($id = false){
-        
+
         $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
 
         //dd($content->setting);
         //$permission = Permission::getPermission('content', $content->id, 'w');
         //$allPermissions = Permission::getContentPermissions($id);
         $allPermissions = Permission::getControllerPermission($id, Route::currentRouteAction());
-        
-        //foreach template setting we want to add a setting for this row..   
+
+        //foreach template setting we want to add a setting for this row..
         if(!empty($content->template_setting)){
             //TODO: There has to be a cleaner way of doing this.
             $all_settings = new \Illuminate\Database\Eloquent\Collection;
-            
+
             foreach($content->template_setting as $template_setting){
 
                 $fl = $content->setting->filter(function($setting) use ($template_setting){
@@ -209,7 +209,7 @@ class ContentwrapperController extends CMSController
                     }
                 }
                 else{
-                    $all_settings->push($template_setting);    
+                    $all_settings->push($template_setting);
                 }
             }
 
@@ -219,7 +219,7 @@ class ContentwrapperController extends CMSController
                     return($setting->name===$template_setting->name);
                 });
                 if(($fl->count() == 0)){
-                    $all_settings->push($setting);    
+                    $all_settings->push($setting);
                 }
             }
         }
@@ -229,7 +229,7 @@ class ContentwrapperController extends CMSController
         //dd($content->edit_service_provider);
         //App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
         $content = Content::setDefaults($content);
-        
+
         //dd($content->edit_package.'::'.$content->edit_view);
         if (Request::ajax()) {
             $view = View::make($content->edit_package . '::' . $content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
@@ -237,7 +237,7 @@ class ContentwrapperController extends CMSController
             $tree = $content->getDescendants();
             $cont = View::make($content->edit_package.'::'.$content->edit_view, compact('content', 'content_defaults', 'settings', 'allPermissions'));
             $cont = View::make('cms::layouts.tree', compact('cont', 'tree'));
-            $view = View::make('cms::layouts.master', compact('cont'));         
+            $view = View::make('cms::layouts.master', compact('cont'));
         }
         return($view);
     }
@@ -257,7 +257,7 @@ class ContentwrapperController extends CMSController
         if ($id !== false) {
 
             $input = array_except(Input::all(), '_method');
-            
+
             $validation = Validator::make($input, $this->content->rules);
             if ($validation->passes()) {
                 //we need to update the settings too:
@@ -272,7 +272,7 @@ class ContentwrapperController extends CMSController
 
                 $oldPosition = $content->position;
                 $content->update($input);
-                
+
                 //position needs looking at too..
                 if(isset($input['position']) && $oldPosition != $input['position']){
 
@@ -282,10 +282,10 @@ class ContentwrapperController extends CMSController
 
                         if($sibling->id == $content->id){
                             if($oldPosition > $content->position){
-                                $siblings[$key]->position = $siblings[$key]->position-0.5;    
+                                $siblings[$key]->position = $siblings[$key]->position-0.5;
                             }
                             else{
-                                $siblings[$key]->position = $siblings[$key]->position+0.5;       
+                                $siblings[$key]->position = $siblings[$key]->position+0.5;
                             }
                         }
                     }
@@ -300,11 +300,11 @@ class ContentwrapperController extends CMSController
 
                     foreach($ordered as $key=>$sibling){
                         $sibling->position = $key;
-                        $sibling->save();    
+                        $sibling->save();
                     }
 
                 }
-                
+
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
                 //add any settings:
                 if (isset($input['setting'])) {
@@ -324,7 +324,7 @@ class ContentwrapperController extends CMSController
 
                                     $otherSettings = Contentsetting::where('name', $thisSetting->name)->where('content_id',$content->id)->get();
                                     if(count($otherSettings) > 1){
-                                        $contentSetting = Contentsetting::destroy($key);    
+                                        $contentSetting = Contentsetting::destroy($key);
                                     }
                                     else{
                                         //we jsut want to set it to blank.
@@ -333,9 +333,9 @@ class ContentwrapperController extends CMSController
                                     }
                                 }
                                 else {
-                                    
+
                                     if ($type != 'Templatesetting') {
-                                        
+
                                         $contentSetting = Contentsetting::withTrashed()
                                             ->where('name', '=', $name)
                                             ->where('content_id', '=', $content->id)
@@ -344,7 +344,7 @@ class ContentwrapperController extends CMSController
                                     //if it's not found (even in trashed) then we need to make a new field.
                                     //if it's contentdefault, we need to create it too since it doesn't exist!
                                     if ($type == 'Templatesetting' || is_null($contentSetting)) {
-                                        //TODO: Do we want protection in there so there has to be a 
+                                        //TODO: Do we want protection in there so there has to be a
                                         //template setting in her for this?
 
                                         //if we can't find the field, we need to create it from the default:
@@ -357,7 +357,7 @@ class ContentwrapperController extends CMSController
                                                                     ->first();
                                         }
                                         //$defaultContentSetting = Templatesetting::where('name','=',)
-                                        
+
                                         $contentSetting = new Contentsetting();
                                         $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
                                         $contentSetting->value = $setting;
@@ -390,7 +390,7 @@ class ContentwrapperController extends CMSController
                         }
                     }
                 }
-                
+
                 //TODO: care with Template settings.
                 Event::fire('content.edited', array($content));
                 Event::fire('content.updated', array($content));
@@ -401,9 +401,9 @@ class ContentwrapperController extends CMSController
                 }
                 else{
                     return Redirect::action('ContentsController@anyEdit', $id)
-                    ->with('success', 'Success, saved correctly');    
+                    ->with('success', 'Success, saved correctly');
                 }
-                
+
             }
         } else {
             //TODO:
@@ -435,7 +435,7 @@ class ContentwrapperController extends CMSController
 
         return Redirect::action('ContentsController@anyIndex');
     }
-    
+
     //requests imediate descendents for given node
     //TODO: recursive.
     public function anyTree()
@@ -447,28 +447,28 @@ class ContentwrapperController extends CMSController
         } else {
             $id = @$id['id'];
         }
-        
+
         if (!$id) {
             $id = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
-        
+
         $tree = $this->content->where('id','=',$id)->first()->getDescendants()->toHierarchy();
         if(count($tree)){
             foreach($tree as $t){
                 $treeOut[] = $this->renderTree($t);
-                
+
             }
-            return Response::json($treeOut);    
+            return Response::json($treeOut);
         }
         else{
             return Response::json();
         }
-        
+
     }
-    
+
     public function renderTree($tree)
     {
-        
+
         $branch = new stdClass();
         $branch->id = $tree->id;
         $branch->text = $tree->name;
@@ -483,23 +483,23 @@ class ContentwrapperController extends CMSController
             else{
                 $branch->a_attr->href = action('TemplateController@anyEdit', array($tree->id));
             }
-            
+
         }
-        
+
         $branch->children = array();
         //$branch->children = ($tree->rgt - $tree->lft > 1);
-        
+
         foreach($tree->children as $child){
-            
+
             $c = $this->renderTree($child);
-            
+
             $branch->children[] = $c;
         }
-        
+
         return($branch);
     }
-    
-    
+
+
     /*delete uploaded file(s)*/
     public function deleteUpload($id = ''){
         if($id){
@@ -507,18 +507,18 @@ class ContentwrapperController extends CMSController
             //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
             $delete = new stdClass();
             $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
-            
+
             $delete->{$fileName} = true;
             $return->files[] = $delete;
         }
         else{
             return(true);
         }
-        
+
 
         return Response::json($return);
     }
-    
+
     public function anyInlineUpload(){
         //$setting = array();
         $setting = new \Illuminate\Database\Eloquent\Collection;
@@ -527,14 +527,14 @@ class ContentwrapperController extends CMSController
         $setting[0]->name = '_inline';
         $setting[0]->field_type = '_inline';
         $setting[0]->id = 0;
-        
+
 
 
         $cont = View::make('cms::contents.input_types.upload', compact('setting'));
         $layout = View::make('cms::layouts.bare', compact('cont'));
         return($layout);
     }
-    
+
     /*
      * pass in a content_setting id to upload to.
      */
@@ -546,7 +546,7 @@ class ContentwrapperController extends CMSController
         if($type == 'Applicationsetting'){
             $content_setting = Applicationsetting::withTrashed()->find($id);
         }
-        else{           
+        else{
             if($id == 0){
                 //This is an inline edit - we need to deal with it accordingly.
                 $content_setting = new Contentsetting();
@@ -569,7 +569,7 @@ class ContentwrapperController extends CMSController
                         $content_setting->field_parameters = $templateSetting->field_parameters;
                     }
                     else{
-                        //TODO: 
+                        //TODO:
                         dd("TODO: " . $this->content_mode);
                         //we are in template mode, we want to save it as such.
                     }
@@ -578,19 +578,22 @@ class ContentwrapperController extends CMSController
         }
         //TODO: tidy up this.. maybe an upload controller or some jazz..
         if($content_setting->name == '_inline'){
+
             $niceName = preg_replace('/\s+/', '', $content_setting->name);
             $f = Input::file();
             $files = (Input::file(key($f)));
+//            dd($files);
         }
         else{
             $niceName = preg_replace('/\s+/', '', $content_setting->name);
-            $files = (Input::file($niceName));    
+            $files = (Input::file($niceName));
+
         }
-        
+
         $params = json_decode($content_setting->field_parameters);
-        
+
         if(!empty($files)){
-            
+
             foreach($files as $file) {
 
                 $rules = array(
@@ -609,13 +612,13 @@ class ContentwrapperController extends CMSController
                     $mime_type          = $file->getMimeType();
                     $size               = $file->getSize();
                     try {
-                        $upload_success     = $file->move($destinationPath.$uploadFolder, "$fileId.$extension");
+                        $upload_success     = $file->move($destinationPath.$uploadFolder, $fileId.'.'.$extension);
                     } catch(Exception $e) {
                         dd($e->getMessage());
-                        //TODO: proper error handling should really take place here.. 
+                        //TODO: proper error handling should really take place here..
                         //in the mean time we'll make do with a dd.
                     }
-                    
+
                     $finalUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName";
                     
                     //if s3 is enabled, we can upload to s3!
@@ -630,7 +633,7 @@ class ContentwrapperController extends CMSController
                         else{
                             $pth = $fileName;
                         }
-                        
+
                         $s3 = AWS::get('s3');
                         $s3->putObject(array(
                             'Bucket'     => @$application->getSetting('s3 Bucket'),
@@ -645,18 +648,18 @@ class ContentwrapperController extends CMSController
                         else{
                             $finalUrl = "//".@$application->getSetting('s3 Bucket')."/$pth";
                         }
-                        
-                        
+
+
                         //todo: remove old file in /uploads?
                     }
-                    
+
                     //and we need to build the json response.
                     $fileObj = new stdClass();
                     $fileObj->name = $originalName;
                     $fileObj->thumbnailUrl = $finalUrl; //todo
                     $fileObj->deleteUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName"; //todo
                     $fileObj->deleteType = "DELETE";
-                    
+
                     $return->files[] = $fileObj;
                 }
                 else{
@@ -664,9 +667,11 @@ class ContentwrapperController extends CMSController
                     echo('val fail');
                     exit();
                 }
+
+                Event::fire('upload.complete', array($finalUrl));
             }
             return Response::json($return);
-            
+
         }
     }
 }

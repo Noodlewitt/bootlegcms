@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /*
-some standard import files - plugins, bootstrap etc..  
+some standard import files - plugins, bootstrap etc..
 */
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 @import url(../components/jstree/dist/themes/default/style.css);
@@ -9637,9 +9637,9 @@ border-top: 1px solid #ddd !important;
 /*@import "compass/reset";            
 @import "compass/utilities"; 
 @import "compass/css3";*/
-/* 
-CMS SCSS in here 
-TODO: figure out a nice way of formatting this correctly. 
+/*
+CMS SCSS in here
+TODO: figure out a nice way of formatting this correctly.
 */
 /*
 Some globals
@@ -9758,6 +9758,10 @@ body {
   max-width: 330px;
   padding: 15px;
   margin: 0 auto;
+}
+
+.nav-tabs {
+  margin-bottom: 15px;
 }
 
 form.main-form .edit-content-tab {

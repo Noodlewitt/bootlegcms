@@ -8,10 +8,11 @@ class PageController extends BaseController
         //this is here to generate the root url from. TODO: there's probably a better way of doing this.
     }
 
-    
+
     //returns whatever file from the uploads dir.
     public function getUploads ($url = "")
     {
+        dd($url);
         //TODO: security on this file.
         $filename = base_path() . '/uploads/'. $url;
         $file = File::get($filename);
@@ -20,7 +21,7 @@ class PageController extends BaseController
         $response->headers->set('Content-Type', $fileData->getMimeType());
         return($response);
     }
-        
+
 	/*
 	 *Sets language for front end pages.
 	 **/
@@ -31,12 +32,14 @@ class PageController extends BaseController
 
     public static function page($slug, $application, $applicationurl){
         $pathInfo = pathinfo($slug);
-        
+        if($pathInfo['dirname'] == '/'){
+            $pathInfo['dirname'] = '';
+        }
         if($slug != '/'){
             $slug = $pathInfo['dirname']."/".$pathInfo['filename'];
-        $slug = str_replace('./', '', $slug);    
+            $slug = str_replace('./', '', $slug);
         }
-        
+
         $extension = @$pathInfo['extension'];
 
         if (is_null($applicationurl->application)) {
@@ -47,10 +50,7 @@ class PageController extends BaseController
             $slug = str_replace($applicationurl->folder, '', $slug);
         }
 
-        if ($slug !== '/') {
-            $slug = "/$slug";
-        }
-        
+
         $content = Content::where('slug', '=', "$slug")
                 ->fromApplication()
                 ->live()
@@ -80,19 +80,19 @@ class PageController extends BaseController
         } else {
             $package = 'cms';
         }
-        
+
         //share these accross everything.
         View::share('content', $content);
-        
+
         if($extension == 'json'){
             $view = Response::json($content);
         }
         else{
-            
+
             $view = View::make("$package::$view");
         }
-        
-        
+
+
         //Next wee need to organise some headers for us.
         if($content->headers){
             $headers = (array) json_decode($content->headers);
@@ -111,7 +111,7 @@ class PageController extends BaseController
                 }
             }
         }
-        
+
 
         return $response;
     }

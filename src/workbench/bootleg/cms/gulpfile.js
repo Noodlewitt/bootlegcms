@@ -11,7 +11,7 @@ gulp.task('compass', function() {
     //we need to work out the package name from the location for the asset publish.
     var location = process.cwd();
     location = location.split("workbench/");
-    var location = location.slice(-1)[0];
+    location = location.slice(-1)[0];
 
     gulp.src('./public/sass/*.scss')
         .pipe(compass({
@@ -28,7 +28,7 @@ gulp.task('uglify', function() {
     //we need to work out the package name from the location for the asset publish.
     var location = process.cwd();
     location = location.split("workbench/");
-    var location = location.slice(-1)[0];
+    location = location.slice(-1)[0];
 
     gulp.src([
         'public/components/jquery/jquery.js',
@@ -73,4 +73,4 @@ gulp.task('uglify', function() {
 
 gulp.task('watch', function() {
     gulp.watch('./public/sass/**/*.scss', ['compass', ]);
-})
+});

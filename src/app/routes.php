@@ -16,25 +16,25 @@ if(@$_SERVER['HTTP_HOST']){
     if (!@($applicationurl->application)) {
         App::abort(404, "No Application found at url");   //chuck 404 - we can't find the app
     }
-    
+
     $application = $applicationurl->application;
 
     $GLOBALS['applicationurl'] = serialize($applicationurl);
     $GLOBALS['application'] = serialize($application);
-    //I don't like doing this but meh. Laravel likes it's 
+    //I don't like doing this but meh. Laravel likes it's
     //collections serialized for some reason.
 }
 else{
     $application = '';
-    $applicationurl = '';    
+    $applicationurl = '';
 }
 
 Route::group(array('prefix'=>@$applicationurl->folder), function () use ($application, $applicationurl) {
 //dd(Request::path());
     $languages = array('en'); //TODO <<
     $locale = null;
-    
-    
+
+
     //we need to hunt down the right bit of the url to use for language.
     $pathArr = explode('/', Request::path());
     foreach ($pathArr as $segment) {
@@ -46,7 +46,7 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
         }
     }
     //this doesn't exists in artisan thus we have to if it here.
-    
+
     if (@$_SERVER['HTTP_HOST']) {
         foreach($application->plugins as $plugin){
             App::register($plugin->service_provider);
@@ -56,7 +56,7 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
     Event::fire('routes.before');
 
     App::setLocale($locale);
-    
+
     Route::get('/upload', function () {
         return Redirect::action('PagesController@getUpload');
     });
@@ -81,16 +81,17 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
             Route::controller('application', 'ApplicationController');
 
             Route::controller('users', 'UsersController');
-            
+
             Route::controller('reminders', 'RemindersController');
         });
     });
-    
 
-    Route::get('uploads/{filename}', function($filename = null){
+    Route::pattern('upl', '(.*)');
+    Route::get('/uploads/{upl?}', function($filename = null){
         //TODO: security on this file.
-        $filename = stripslashes(str_replace('/','',$filename));
-        
+
+        //$filename = stripslashes(str_replace('/','',$filename));
+
         $filename = storage_path() . '/uploads/'. $filename;
         $file = File::get($filename);
         $fileData = new \Symfony\Component\HttpFoundation\File\File($filename);

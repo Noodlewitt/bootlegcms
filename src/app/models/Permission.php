@@ -1,14 +1,14 @@
 <?php
 class Permission extends Eloquent {
     //This should hold the actual permission table.. who is allowed into what.
-    
+
     protected $table = 'permissions';
-    
+
     //allows permission->controller
     public function controller(){
         return $this->morphTo();
     }
-    
+
     //allows permission->requestor
     public function requestor(){
         return $this->morphTo();
@@ -48,14 +48,14 @@ class Permission extends Eloquent {
         };
         return array('permission' => $out);
     }
-    
+
     //$perms = Auth::user()->permission()->where('controller_type','=','content')->get();
     //$c = Content::permission()->perm()->get();
-    
+
     public static function checkPermission($controller_type, $controller_id = null, $message='You do not have permission'){
 
         $perm = self::getPermission($controller_type, $controller_id);
-        
+
         if ($perm->result === false) {
             //we can redirect!
             return Redirect::guest(Utils::cmsRoute.'login')
@@ -72,7 +72,7 @@ class Permission extends Eloquent {
         } else {
             $user = Auth::user();
         }
-        
+
         //a horrible looking query that grabs the permissions for a user.
         $perm = Permission::where(function ($query) use ($controller_type, $controller_id) {
             $query->where('controller_type', '=', $controller_type)
@@ -101,7 +101,7 @@ class Permission extends Eloquent {
         ->orderBy('requestor_id', 'desc')
         ->orderBy('requestor_type', 'desc')
         ->get();
-        
+
         
         $return = new stdClass();
         $return->result = false;
@@ -119,7 +119,7 @@ class Permission extends Eloquent {
                 //we are inheriting from the enxt level up.
             }
         }
-        
+
         $return->set = $perm;
         return($return);
     }

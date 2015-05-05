@@ -14,7 +14,8 @@
             <li>
                 <a href="#">Home</a>
             </li>
-            @if(Permission::getPermission('ApplictationController@anyCreate','')->result)
+            @if(count($applications) > 1)
+
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -23,11 +24,14 @@
                         <li><a href="{{$app->url[0]->protocol or 'http://'}}{{$app->url[0]->domain}}{{$app->url[0]->folder}}{{Utils::cmsRoute}}">{{$app->name}}</a></li>
                         @endif
                     @endforeach
+                    @if(Permission::getPermission('ApplictationController@anyCreate','')->result)
                     <li role="presentation" class="divider"></li>
                     <li><a href="{{action('ApplicationController@anyCreate')}}">Create Application</a></li>
+                    @endif
                 </ul>
             </li>
             @endif
+
             @if(count($application->languages))
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Languages <b class="caret"></b></a>
