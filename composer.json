@@ -4,18 +4,16 @@
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
 	"require": {
-		"symfony/event-dispatcher":"~2.1",
-		"noodlewitt/framework4.1fix": "4.1.31",
-        "loic-sharma/profiler": "dev-master",
-        "baum/baum": "1.0.15",
-        "doctrine/dbal": "~2.3",
+		"laravel/framework": "4.2.*",
+        "baum/baum": "1.0.*",
         "aws/aws-sdk-php-laravel": "1.*",
+        "doctrine/dbal": "~2.3"
 	},
 	"autoload": {
 		"classmap": [
 			"app/commands",
 			"app/controllers",
-                        "app/components",
+            "app/components",
 			"app/models",
 			"app/database/migrations",
 			"app/database/seeds",
@@ -26,12 +24,14 @@
 		"post-install-cmd": [
 			"php artisan clear-compiled",
 			"php artisan optimize",
-			"php artisan dump-autoload"
+			"php artisan dump-autoload",
+			"php artisan asset:publish --bench=\"bootleg/cms\""
 		],
 		"post-update-cmd": [
 			"php artisan clear-compiled",
 			"php artisan optimize",
-			"php artisan dump-autoload"
+			"php artisan dump-autoload",
+			"php artisan asset:publish --bench=\"bootleg/cms\""
 		],
 		"post-create-project-cmd": [
 			"php artisan key:generate"

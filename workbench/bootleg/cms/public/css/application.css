@@ -9747,7 +9747,7 @@ body {
 }
 
 .vakata-context {
-  z-index: 50;
+  z-index: 1050;
 }
 
 #jstree-marker {

@@ -49,9 +49,9 @@
             ?>
             <h2>{{@$application->name}}</h2>
             <div class="btn-group">
-                <a href="{{action('UsersController@anyLogout', array())}}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-log-out"></span></a>
-                <a href="{{action('UsersController@anySettings', array())}}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-cog"></span></a>
-                <a href="{{action('UsersController@anySettings', array())}}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-user"></span></a>
+                <a title='Logout' href="{{action('UsersController@anyLogout', array())}}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-log-out"></span></a>
+                <a title='Dashboard' href="{{action('UsersController@anySettings', array())}}" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-home"></span></a>
+                <a title='My Settings' href="{{action('UsersController@anySettings', array())}}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-user"></span></a>
             </div>
         </li>
     </ul>

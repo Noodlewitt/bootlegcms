@@ -52,14 +52,20 @@ class Permission extends Eloquent {
     //$perms = Auth::user()->permission()->where('controller_type','=','content')->get();
     //$c = Content::permission()->perm()->get();
 
-    public static function checkPermission($controller_type, $controller_id = null, $message='You do not have permission'){
+    public static function checkPermission($controller_type, $controller_id = null, $message="You do not have permission to do that."){
 
         $perm = self::getPermission($controller_type, $controller_id);
 
         if ($perm->result === false) {
             //we can redirect!
-            return Redirect::guest(Utils::cmsRoute.'login')
-                ->with('message', $message);
+            if($message){
+                return Redirect::guest(Utils::cmsRoute.'login')
+                    ->with('danger', $message);
+            }
+            else{
+                return Redirect::guest(Utils::cmsRoute.'login');   
+            }
+            
         } else {
             return(true);
         }

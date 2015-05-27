@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 class Template extends Baum\Node{ //Eloquent {
     protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
     
@@ -9,7 +9,8 @@ class Template extends Baum\Node{ //Eloquent {
         
     public $policy, $signature;
     
-    protected $softDelete = true;
+    use SoftDeletingTrait;
+    protected $dates = ['deleted_at'];
     
     protected $scoped = array('application_id');
     

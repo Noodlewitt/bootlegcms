@@ -1,10 +1,12 @@
 <?php
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 class Contentsetting extends Eloquent {
     protected $fillable = array('content_id', 'name', 'value', 'field_type');
 
     protected $table = 'content_settings';
     
-    protected $softDelete = true;
+    use SoftDeletingTrait;
+    protected $dates = ['deleted_at'];
     
     const DEFAULT_UPLOAD_JSON = '{
         "validation": {

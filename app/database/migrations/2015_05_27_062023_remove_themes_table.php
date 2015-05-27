@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddIdentifierContentTable extends Migration {
+class RemoveThemesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class AddIdentifierContentTable extends Migration {
 	 */
 	public function up()
 	{
-		//
+		Schema::drop('themes');
 	}
 
 	/**

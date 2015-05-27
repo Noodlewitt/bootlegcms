@@ -1,7 +1,7 @@
 <?php
-
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 class Content extends Baum\Node{ //Eloquent {status
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'view', 'layout', 'content_type_id', 'application_id', 'status', 'slug');
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'view', 'content_type_id', 'application_id', 'status', 'slug');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -9,7 +9,9 @@ class Content extends Baum\Node{ //Eloquent {status
         
     public $policy, $signature;
     
-    protected $softDelete = true;
+    use SoftDeletingTrait;
+
+    protected $dates = ['deleted_at'];
     
     protected $orderColumn = 'position'; //Baum sorting and ordering modifier
 
@@ -24,7 +26,6 @@ class Content extends Baum\Node{ //Eloquent {status
     
     const PACKAGE = 'cms';
     const VIEW = 'default.view';
-    const LAYOUT = 'default.layout';
     const EDIT_VIEW = 'contents.edit';
     const EDIT_ACTION = 'ContentsController@anyEdit';
     const DRAFT_STATUS = 0;
@@ -189,7 +190,6 @@ class Content extends Baum\Node{ //Eloquent {status
         if(!@$input['template_id'])$input['template_id'] = @$template->id;
         if(!@$input['name'])$input['name'] = @$template->name;
         if(!@$input['view'])$input['view'] = @$template->view;
-        if(!@$input['layout'])$input['layout'] = @$template->layout;
         if(!@$input['identifier'])$input['identifier'] = @$template->identifier;
 
         if(!@$input['package'])$input['package'] = @$template->package;
@@ -274,10 +274,6 @@ class Content extends Baum\Node{ //Eloquent {status
             }
         }
 
-        //and the view/layout if they're not set can safely be set to default.
-        if(!@$input['layout']){
-            $input['layout'] = Content::LAYOUT;
-        }
         if(!@$input['view']){
             $input['view'] = Content::VIEW;
         }
@@ -397,7 +393,6 @@ class Content extends Baum\Node{ //Eloquent {status
         $newContent->identifier = $themeContent->identifier;
         $newContent->package = $themeContent->package;
         $newContent->view = $themeContent->view;
-        $newContent->layout = $themeContent->layout;
         $newContent->content_type_id = $themeContent->content_type_id;
         $newContent->position = $themeContent->position;
         $newContent->edit_view = $themeContent->edit_view;

@@ -18,8 +18,8 @@ class PluginsTableSeeder extends Seeder {
 				'name' => 'default',
 				'service_provider' => 'Bootleg\\Cms\\CmsServiceProvider',
 				'package' => 'cms',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 		));
 	}

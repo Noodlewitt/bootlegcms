@@ -1,3 +1,3 @@
 ##Bootleg CMS##
 
-This is a wip for bootleg cms. Check back soon!
+Check the Wiki for more information. Works with laravel 4.2

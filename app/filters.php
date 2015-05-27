@@ -54,13 +54,15 @@ Route::filter('auth', function($route, $request){
 
 Route::filter('permission', function ($route, $request, $controller, $controller_id = '') {
 
-    $perm = Permission::checkPermission($controller, $controller_id, "You don't have permission to do that!");
+    $perm = Permission::checkPermission($controller, $controller_id, false);
 
     if ($perm === true) {
         //preceed with the normal request
-    } else {
-        //owtherwise we need to redirect to login with message...
-        //TODO.
+    } 
+    else {
+        if(@Auth::user()->id){
+            Session::flash('danger', "You do not have permission to do that.");    
+        }
         return($perm);
     }
 });

@@ -22,8 +22,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@anyIndex',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			1 => 
 			array (
@@ -35,8 +35,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@anyTree',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			2 => 
 			array (
@@ -48,8 +48,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyIndex',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			3 => 
 			array (
@@ -61,8 +61,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyTree',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			4 => 
 			array (
@@ -74,8 +74,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyEdit',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			5 => 
 			array (
@@ -87,8 +87,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@anyEdit',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			6 => 
 			array (
@@ -100,8 +100,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'UsersController@anyDashboard',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			7 => 
 			array (
@@ -113,8 +113,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'UsersController@anyIndex',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			8 => 
 			array (
@@ -126,8 +126,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'UsersController@anyLogout',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			9 => 
 			array (
@@ -139,8 +139,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'UsersController@anySettings',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			10 => 
 			array (
@@ -152,8 +152,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'UsersController@anyCreate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			11 => 
 			array (
@@ -165,8 +165,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'UsersController@anyStore',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			12 => 
 			array (
@@ -178,8 +178,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'UsersController@anyUpdate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			13 => 
 			array (
@@ -191,8 +191,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@anyCreate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			14 => 
 			array (
@@ -204,8 +204,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyStore',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			15 => 
 			array (
@@ -217,8 +217,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyCreate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			16 => 
 			array (
@@ -230,8 +230,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@anyStore',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			17 => 
 			array (
@@ -243,8 +243,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@anyUpdate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			18 => 
 			array (
@@ -256,8 +256,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyUpdate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			19 => 
 			array (
@@ -269,8 +269,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyDestroy',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			20 => 
 			array (
@@ -282,8 +282,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@anyDestroy',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			21 => 
 			array (
@@ -295,8 +295,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@deleteUpload',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			22 => 
 			array (
@@ -308,8 +308,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@deleteUpload',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			23 => 
 			array (
@@ -321,8 +321,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@postUpload',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			24 => 
 			array (
@@ -334,8 +334,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'TemplateController@postUpload',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			25 => 
 			array (
@@ -347,8 +347,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ApplicationController@anyCreate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			26 => 
 			array (
@@ -360,8 +360,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ApplicationController@postStore',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			27 => 
 			array (
@@ -373,8 +373,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ApplicationController@anySettings',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			28 => 
 			array (
@@ -386,8 +386,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ApplicationController@anyUpdate',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			29 => 
 			array (
@@ -399,8 +399,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'RemindersController@getRemind',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			30 => 
 			array (
@@ -412,8 +412,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'RemindersController@postRemind',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			31 => 
 			array (
@@ -425,8 +425,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'RemindersController@getReset',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			32 => 
 			array (
@@ -438,8 +438,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'RemindersController@postReset',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			33 => 
 			array (
@@ -451,8 +451,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ContentsController@anyFixtree',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			34 => 
 			array (
@@ -464,8 +464,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ReportsController@anyIndex',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			35 => 
 			array (
@@ -477,8 +477,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ReportsController@anyRun',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			36 => 
 			array (
@@ -490,8 +490,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ReportsController@anyEdit',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 			37 => 
 			array (
@@ -503,8 +503,8 @@ class PermissionsTableSeeder extends Seeder {
 				'controller_type' => 'ReportsController@anyQueryOptions',
 				'x' => '1',
 				'comment' => '',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 		));
 	}

@@ -21,7 +21,6 @@ class TemplateTableSeeder extends Seeder {
 				'status' => '1',
 				'package' => 'cms',
 				'view' => 'default.view',
-				'layout' => 'default.layout',
 				'application_id' => '1',
 				'language' => '',
 				'language_original_id' => '0',

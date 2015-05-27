@@ -18,8 +18,8 @@ class ApplicationUrlsTableSeeder extends Seeder {
 				'application_id' => '1',
 				'domain' => 'bootleg',
 				'folder' => '/',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 		));
 	}

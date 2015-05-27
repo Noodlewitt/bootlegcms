@@ -17,8 +17,8 @@ class ApplicationPluginTableSeeder extends Seeder {
 				'id' => '1',
 				'application_id' => '1',
 				'plugin_id' => '1',
-				'created_at' => '0000-00-00 00:00:00',
-				'updated_at' => '0000-00-00 00:00:00',
+				'created_at' => date("Y-m-d H:i:s"),
+				'updated_at' => date("Y-m-d H:i:s"),
 			),
 		));
 	}

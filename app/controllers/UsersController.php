@@ -59,9 +59,20 @@ class UsersController extends CMSController
         //dd(array('email'=>Input::get('email'), 'password'=>Input::get('password')));
         //var_dump(Hash::make('admin'));
         if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password')))) {
+            //and we need to update last logged in datetime
+            $user = User::find(Auth::user()->id);
+
+            $user->last_loggedin_at = $user->loggedin_at;
+            $user->loggedin_at = date("Y-m-d H:i:s");
+            $user->save();
+
             Session::flash('success', 'You are now logged in!');
             return Redirect::intended(action('UsersController@anyDashboard'));
         }
+        else if(Input::get('email') && Input::get('password')){
+            Session::flash('danger', 'Authentication Failed!');
+        }
+
 
         if (Request::ajax()) {
             $cont = View::make($this->application->cms_package.'::users.login');
@@ -77,7 +88,7 @@ class UsersController extends CMSController
     public function anyLogout()
     {
         Auth::logout();
-        return Redirect::action('UsersController@anyLogin')->with('message', 'You are now logged out!');
+        return Redirect::action('UsersController@anyLogin')->with('warning', 'You are now logged out!');
     }
     
     
