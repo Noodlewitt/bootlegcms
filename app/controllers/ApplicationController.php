@@ -6,86 +6,74 @@ class ApplicationController extends CmsController {
         parent::__construct();
     }
     
+    public function anyIndex(){
+
+        $applications = Application::paginate(15);
+        return $this->render('application.index', compact('applications')) ;
+    }
+
     public function anyCreate(){
-        $themes = Theme::lists('name','id');
-        if (Request::ajax()){
-            $cont = View::make( $this->application->cms_package.'::application.create', compact('cont', 'application', 'themes')) ;
-            return($cont);
-        }
-        else{
-            $cont = View::make( $this->application->cms_package.'::application.create', compact('application','themes') );
-            $layout = View::make( 'cms::layouts.master', compact('cont'));
-            return($layout);
-        }
+        return $this->render('application.create') ;
+    }
+
+    public function deleteDestroy($id){
+        $application = Application::findOrFail($id);
+        $application->delete();
+    }
+
+    /**
+     * Small preview of application
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+    */
+    public function getView($id){
+
     }
     
     public function postStore(){
-     /*   
-        $root1 = Content::create(array('name' => 'R1', 'application_id' => 1));
-        $root2 = Content::create(array('name' => 'R2', 'application_id' => 2));
-
-        $child1 = Content::create(array('name' => 'C1', 'application_id' => 1));
-        $child2 = Content::create(array('name' => 'C2', 'application_id' => 2));
-
-        $child1->makeChildOf($root1);
-        $child2->makeChildOf($root2);
-        var_dump(Content::isValid());
-        exit();*/
         
-        $currentApplication = Application::getApplication();
         $input = Input::all();
+        if($input['parent_id']){
+            $parentApplication = Application::find($input['parent_id']);
+        }
+        else{
+            $parentApplication = $this->application;
+        }
+
 
         $validation = Validator::make($input, Application::$rules);
        // dd($input);
         if ($validation->passes()) {
-            $themeApp = Application::find($input['theme']);
+
             $newApp = new Application();
-            $newApp->theme_id = $themeApp->id;
             $newApp->name = $input['name'];
-            $newApp->parent_id = $currentApplication->id;
-            $newApp->cms_theme_id = $currentApplication->cms_theme_id;
-            $newApp->cms_package = $currentApplication->cms_package;
-            $newApp->cms_service_provider = $currentApplication->cms_service_provider;
-            $newApp->package = $themeApp->package;
-            $newApp->service_provider = $themeApp->service_provider;
+            //$newApp->parent_id = $parentApplication->id;
+            $newApp->cms_package = $parentApplication->cms_package;
             
             //we need to do the urls..
             $urls = explode(',', $input['domain']);
+            
+            $parentApplication->children()->save($newApp);
 
-
-
-            if ($newApp->save()) {
-                foreach ($urls as $url) {
-                    $appUrl = new ApplicationUrl(array(
-                        'domain'=>trim($url, ' /'),
-                        'folder'=>'/'
-                        ));
-                    $newApp->url()->save($appUrl);
-                }
-
-                //we now need to start duplicating an existing application
-                //grab the theme app as a hierachy so we can start recursivly duping.
-                //Content::find(2)->makeRoot();
-                
-                //dd(DB::getQueryLog());
-                
-                $themeContent = Content::where('application_id','=', $themeApp->id)
-                        ->whereNull('parent_id')->first()
-                        ->getDescendantsAndSelf()
-                        ->toHierarchy();
-                
-
-                foreach($themeContent as $tc){
-                    Content::doop(true,$tc, null, $newApp->id);
-                }
-                
+            //TODO: Fix baum here - not saving correctly
+            Application::rebuild();
+            
+            //handle the urls..
+            foreach ($urls as $url) {
+                $appUrl = new ApplicationUrl(array(
+                    'domain'=>trim($url, ' /'),
+                    'folder'=>'/'
+                    ));
+                $newApp->url()->save($appUrl);
             }
-            
-            dd($input);
-            
-            //we want to store or update the row.
-            $saved = array(Application::create($input));
-            
+
+            //and the plugins
+            $parentPlugins = $parentApplication->plugins()->get();
+            foreach($parentPlugins as $parentPlugin){
+                $newApp->plugins()->attach($parentPlugin->id);//associate($parentPlugin)
+            }
+
+            return Redirect::action('ApplicationController@anyIndex')->with(['success'=>'Application Succesfully Created']);
         }
     }
     
@@ -97,15 +85,7 @@ class ApplicationController extends CmsController {
         
         $plugins = $this->application->plugins()->first();
         
-        if (Request::ajax()){
-            $cont = View::make( $this->application->cms_package.'::application.settings', compact('cont', 'application', 'application_settings', 'plugins')) ;
-            return($cont);
-        }
-        else{
-            $cont = View::make( $this->application->cms_package.'::application.settings', compact('application', 'application_settings', 'theme') );
-            $layout = View::make( 'cms::layouts.master', compact('cont'));
-            return($layout);
-        }
+        return $this->render('application.settings', compact('cont', 'application', 'application_settings', 'plugins')) ;
     }
     
     /**

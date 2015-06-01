@@ -16,7 +16,7 @@ class ApplicationsTableSeeder extends Seeder {
 			array (
 				'id' => '1',
 				'name' => 'newapplication',
-				'parent_id' => '0',
+				'parent_id' => NULL,
 				'theme_id' => '0',
 				'cms_theme_id' => '0',
 				'cms_service_provider' => 'Bootleg\\Cms\\CmsServiceProvider',
@@ -26,6 +26,9 @@ class ApplicationsTableSeeder extends Seeder {
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s"),
 				'deleted_at' => NULL,
+				'lft'=>1,
+				'rgt'=>2,
+				'depth'=>0,
 			),
 		));
 	}

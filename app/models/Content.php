@@ -60,10 +60,6 @@ class Content extends Baum\Node{ //Eloquent {status
         return $this->hasMany('Templatesetting', 'template_id', 'template_id');
     }
 
-    public function default_page()
-    {
-        return $this->belongsTo('Contentdefaultpage', 'content_type_id');
-    }
     
     public function default_fields()
     {
@@ -306,10 +302,10 @@ class Content extends Baum\Node{ //Eloquent {status
                 $num = str_replace("$wholeSlug-", "", $highest->slug);
                 $num++;
             }
-            return("$wholeSlug-$num");
+            return(strtolower("$wholeSlug-$num"));
         }
         else{
-            return($wholeSlug);
+            return(strtolower($wholeSlug));
         }
         
     }

@@ -1,3 +1,5 @@
+@extends('cms::layouts.bare')
+@section('main-content')
 @include('cms::layouts.flash_messages')
 {{ Form::open(array('class'=>'form-signin')) }}
     <!-- username field -->
@@ -11,3 +13,4 @@
     {{ Form::label('login', 'Login') }}
     {{ Form::submit('Login', array('class'=>'btn btn-lg btn-primary btn-block')) }}
 {{ Form::close() }}   
+@stop

@@ -14,7 +14,7 @@
             <li>
                 <a href="#">Home</a>
             </li>
-            @if(count($applications) > 1)
+            @if(count($applications) > 1 || Permission::getPermission('ApplicationController@anyCreate','')->result)
 
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
@@ -24,9 +24,9 @@
                         <li><a href="{{$app->url[0]->protocol or 'http://'}}{{$app->url[0]->domain}}{{$app->url[0]->folder}}{{Utils::cmsRoute}}">{{$app->name}}</a></li>
                         @endif
                     @endforeach
-                    @if(Permission::getPermission('ApplictationController@anyCreate','')->result)
-                    <li role="presentation" class="divider"></li>
-                    <li><a href="{{action('ApplicationController@anyCreate')}}">Create Application</a></li>
+                    @if(Permission::getPermission('ApplicationController@anyCreate','')->result)
+                        <li role="presentation" class="divider"></li>
+                        <li><a href="{{action('ApplicationController@anyCreate')}}">Create Application</a></li>
                     @endif
                 </ul>
             </li>

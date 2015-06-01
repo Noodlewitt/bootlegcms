@@ -19,14 +19,13 @@ class UsersController extends CMSController
 
         //add in some standard dash items..
         \Event::listen('dashboard.items', function(){
-            $application = Application::getApplication();
             $user = Auth::user();
-            return \View::make($application->cms_package.'::users.dash_item', array('user'=>$user))->render();
+            return $this->render('users.dash_item', array('user'=>$user));
         });
 
+        //TODO: move this into applications
         \Event::listen('dashboard.items', function(){
-            $application = Application::getApplication();
-            return \View::make($application->cms_package.'::application.dash_item', array('application'=>$application))->render();
+            return $this->render('application.dash_item', array('application'=>$this->application));
         });
     }
 
@@ -35,18 +34,10 @@ class UsersController extends CMSController
      *
      * @return Response
      */
-    public function anyIndex()
-    {
-        $users = $this->user->all();
+    public function anyIndex(){
+        $users = $this->user->paginate();
+        return $this->render('users.index', compact('users')) ;
         
-        if (Request::ajax()) {
-            $cont = View::make($this->application->cms_package.'::users.index', compact('cont', 'users')) ;
-            return($cont);
-        } else {
-            $cont = View::make($this->application->cms_package.'::users.index', compact('cont', 'users'));
-            $layout = View::make('cms::layouts.master', compact('cont'));
-        }
-        return($layout);
     }
     
     public function anyLocale()
@@ -71,17 +62,12 @@ class UsersController extends CMSController
         }
         else if(Input::get('email') && Input::get('password')){
             Session::flash('danger', 'Authentication Failed!');
-        }
+        }  
 
+        return $this->render('users.login');
 
-        if (Request::ajax()) {
-            $cont = View::make($this->application->cms_package.'::users.login');
-            return($cont);
-        } else {
-            $cont = View::make($this->application->cms_package.'::users.login');
-            $layout = View::make('cms::layouts.bare', compact('cont'));
-        }
-        return($layout);
+        //return View::make($this->application->cms_package.'::users.login');
+           
     }
     
     
@@ -92,29 +78,13 @@ class UsersController extends CMSController
     }
     
     
-    public function anyDashboard()
-    {
-        
-        if (Request::ajax()) {
-            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
-            return($cont);
-        } else {
-            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
-            $layout = View::make('cms::layouts.master', compact('cont'));
-        }
-        return($layout);
+    public function anyDashboard(){
+        return $this->render('users.dashboard');
     }
     
     public function anySettings()
     {
-        if (Request::ajax()) {
-            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
-            return($cont);
-        } else {
-            $cont = View::make($this->application->cms_package.'::users.dashboard', compact('cont'));
-            $layout = View::make('cms::layouts.master', compact('cont'));
-        }
-        return($layout);
+        return $this->render('users.dashboard');
     }
     
 
@@ -126,14 +96,7 @@ class UsersController extends CMSController
     public function anyCreate()
     {
         $roles = Role::lists('name', 'id');
-        if (Request::ajax()) {
-            $cont = View::make($this->application->cms_package.'::users.create', compact('cont', 'roles'));
-            return($cont);
-        } else {
-            $cont = View::make($this->application->cms_package.'::users.create', compact('cont', 'roles'));
-            $layout = View::make('cms::layouts.master', compact('cont'));
-        }
-        return($layout);
+        return $this->render('users.create', compact('cont', 'roles'));
     }
     
     /**
@@ -145,7 +108,6 @@ class UsersController extends CMSController
     {
         $input = Input::all();
         $validation = Validator::make($input, User::$rules);
-        $application = Application::getApplication();
 
         if ($validation->passes()) {
             if($input['password']){
@@ -154,7 +116,7 @@ class UsersController extends CMSController
             $user = $this->user->create($input);
             if($input['send_email']){
                 //we need to send an email to the user with details for login and reset pw etc.
-                
+                $application = $this->application;
                 Mail::send('emails.auth.new_user', $data, function($message) use($application, $user){
                     $message->from($application->getSetting('Admin Email'), $application->name);
                     $message->to($user->email);
@@ -180,7 +142,7 @@ class UsersController extends CMSController
     {
         $user = $this->user->findOrFail($id);
 
-        return View::make($this->application->cms_package.'::users.show', compact('user'));
+        return $this->render('users.show', compact('user'));
     }
 
     /**
@@ -197,7 +159,7 @@ class UsersController extends CMSController
             return Redirect::route('users.index');
         }
 
-        return View::make($this->application->cms_package.'::users.edit', compact('user'));
+        return $this->render('users.edit', compact('user'));
     }
 
     /**

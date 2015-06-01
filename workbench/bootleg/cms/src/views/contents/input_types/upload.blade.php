@@ -1,9 +1,9 @@
 <?php
 $params = Contentsetting::parseParams($setting[0]);
-$niceName = preg_replace('/\s+/', '', $setting[0]->name);
+$niceName = preg_replace('/\s+/', '_', $setting[0]->name);
 $files = array();
 foreach($setting as $field){
-    if(@$field->value){
+    if(@$field->name){
         
         $url = $field->value;
 
@@ -18,7 +18,6 @@ foreach($setting as $field){
 
         $files[] = $fileObj;
         //TODO: handle multiple files here?
-        
     }
 }
 $files = json_encode($files);   
@@ -29,10 +28,6 @@ $files = json_encode($files);
         {{ Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) }}
         @endif
         
-        
-
-            <!-- Redirect browsers with JavaScript disabled to the origin page -->
-            <noscript><input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"></noscript>
 
             <!-- The table listing the files available for upload/download -->
             <table id="{{uniqid()}}" role="presentation" class="table table-striped uploaded"><tbody class="files"></tbody></table>
@@ -51,13 +46,13 @@ $files = json_encode($files);
                             <span class="btn btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 <span>Choose file...</span>
-                                <input type="file" name="{{$niceName}}[]" multiple>
+                                <input type="file" name="{{$setting[0]->name}}[]" multiple>
                             </span>
                         @else
                             <span class="btn btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 <span>Add file...</span>
-                                <input type="file" name="{{$niceName}}[]" multiple>
+                                <input type="file" name="{{$setting[0]->name}}[]" multiple>
                             </span>
                         @endif
                         {{--
@@ -126,6 +121,7 @@ $files = json_encode($files);
             <!-- The template to display files available for download -->
             <script id="{{uniqid()}}" class='download-template' type="text/x-tmpl">
             {% for (var i=0, file; file=o.files[i]; i++) { %}
+                {% if (file.thumbnailUrl) { %}
                 <tr data-item_id="{%=i%}" class="template-download fade">
                     <td class="vertical-middle preview-wrap">
                         <span class="preview">
@@ -165,6 +161,7 @@ $files = json_encode($files);
                         {% } %}
                     </td>
                 </tr>
+                {% } %}
             {% } %}
         </script>
         <?php
@@ -209,7 +206,7 @@ $files = json_encode($files);
                     //added file, we wait for 1 second for some reason                  
                     setTimeout(function(){
                         //and add in the image preview
-                        $input = $('input.file-url', $container{{$niceName}});
+                        $input = $('input.upload-value', $container{{$niceName}});
                         $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
                         window.parent.inline_image = $input.val();
                     }, 1000);
@@ -243,8 +240,6 @@ $files = json_encode($files);
                             .appendTo('form');
                     });
                 }
-
-
             });
 
         </script>

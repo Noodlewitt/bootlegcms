@@ -15,7 +15,9 @@
         
         
         <div class="container">
-            {{$cont}}
+            @section('main-content')
+
+            @show
         </div>
     </body>
 

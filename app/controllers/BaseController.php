@@ -7,17 +7,11 @@ class BaseController extends Controller {
 	 *
 	 * @return void
 	 */
-        public $application;
-	protected function setupLayout()
-	{
-		if ( ! is_null($this->layout))
-		{
-			$this->layout = View::make($this->layout);
-		}
-	}
+    public $application;
+
         
-        public function __construct() {
-            
-            
-        }
+    public function __construct() {
+        $this->application = Application::getApplication();
+        View::share('application', $this->application);
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-$params = Contentsetting::parseParams($setting[0]);
+$params = \Contentsetting::parseParams($setting[0]);
 $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 ?>
 {{ Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) }}

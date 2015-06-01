@@ -49,15 +49,7 @@ class RemindersController extends CMSController {
 	public function getReset($token = null)
 	{
 		if (is_null($token)) App::abort(404);
-
-		if (Request::ajax()) {
-            $cont = View::make($this->application->cms_package.'::users.reset')->with('token', $token);
-            return($cont);
-        } else {
-            $cont = View::make($this->application->cms_package.'::users.reset')->with('token', $token);
-            $layout = View::make('cms::layouts.bare', compact('cont'));
-        }
-        return($layout);
+		return $this->render('users.reset')->with('token', $token);
 	}
 
 	/**

@@ -9,7 +9,7 @@
             {{$headerItem}}
         @endforeach
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <title>BootlegCMS: {{@$application->name}}</title>
         <meta charset="utf-8">
         <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}/packages/bootleg/cms/js/script.min.js"></script>
 
@@ -34,9 +34,9 @@
         @include('cms::layouts.nav')
         <div class="container-fluid">
             <div class="row">
-                @include('cms::layouts.main_menu')
+                @include('cms::layouts.main_menu')  
                 <div>
-                    {{$cont}}
+                    @yield('main-content')
                 </div>
             </div>
         </div>

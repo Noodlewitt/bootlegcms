@@ -53,9 +53,6 @@ class Contentsetting extends Eloquent {
         return($this->belongsTo('Content'));
     }
     
-    public function default_setting(){
-        return $this->belongsTo('Contentdefaultsetting', 'default_id');
-    }
     
     
     /*

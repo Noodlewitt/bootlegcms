@@ -6,7 +6,8 @@
         <div class="panel-body">
             <ul>
                 <li>Name: {{$application->name}}</li>
-                <li>domain: {{$application->url()->first()->domain}}</li>
+                <li>Domain: {{$application->url()->first()->domain}}</li>
+                <li>Creator: {{$application->creator()->first()->username}}</li>                
             </ul>
         </div>
     </div>

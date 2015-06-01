@@ -2,9 +2,7 @@
 
 class CMSController extends BaseController {
     
-    public $application;
     
-    protected $layout = 'cms::layouts.master';
     
     public function __construct() {
         parent::__construct();
@@ -16,15 +14,24 @@ class CMSController extends BaseController {
         $this->beforeFilter('permission:'.Route::currentRouteAction().','.$string, array('except'=>'anyLogin'));
         //
         
-        //todo:tidy up this vv
-        $this->application = Application::getApplication();
-                        
-        $application = Application::getApplication();
-        View::share('application', $application);
-        
-        $applications = Application::with('url')->get();
-        View::share('applications', $applications);       
+        $this->applications = Application::with('url')->get();
+        View::share('applications', $this->applications);       
         //we need to register the package we are using:
-        App::register($this->application->cms_service_provider);
+    }
+
+    /**
+     * Allows for easier view handling by checking for view existance with fallback to defaults
+     * @return [type] [description]
+     */
+    public function render($view, $params = array(), $package=''){
+        if (View::exists($this->application->cms_package.'::'.$view)){
+            $view = $this->application->cms_package . "::" . $view;
+            View::share('cms_package', $package?$package:$this->application->cms_package);              
+        }
+        else{
+            $view = Utils::cmsHintPath . "::" . $view;
+            View::share('cms_package', $package?$package:Utils::cmsHintPath);  
+        }
+        return View::make($view, $params);
     }
 }

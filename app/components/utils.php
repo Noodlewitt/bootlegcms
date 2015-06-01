@@ -5,6 +5,9 @@ class Utils{
     
     //the route for the cms.
     const cmsRoute = 'cms/';
+
+    //hint path for the cms
+    const cmsHintPath = 'cms';
     /*
      * strips out http:// or https:// from string
      */

@@ -1,7 +1,21 @@
 <?php
-class Application extends Eloquent {
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+class Application extends Baum\Node{
+
+    use SoftDeletingTrait;
+
+    protected $dates = ['deleted_at'];
+
+
     protected $table = 'applications';
-    protected $fillable = array('name', 'theme_id', 'parent_id', 'cms_theme_id', 'cms_package', 'cms_service_provider', 'package', 'service_provider');
+    protected $fillable = array('name', 'parent_id', 'cms_package', 'package');
+    protected $guarded = array('id', 'lft', 'rgt', 'depth');
+
+    protected $leftColumn = 'lft';
+    protected $rightColumn = 'rgt';
+    protected $depthColumn = 'depth';
+    protected $parentColumn = 'parent_id';
+
     protected $_settings = NULL; //holds settings for this application item so we don't have to contantly query it.
     
     public static $rules = array(
@@ -9,6 +23,10 @@ class Application extends Eloquent {
 		//'parent_id' => 'required'
     );
     
+    public function creator(){
+        return($this->belongsTo('User', 'user_id'));
+    }
+
     public function url(){
         return($this->hasMany('ApplicationUrl'));
     }

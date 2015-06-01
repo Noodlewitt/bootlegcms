@@ -28,70 +28,46 @@ class ContentwrapperController extends CMSController
      */
     public function anyIndex(){
 
-        $this->content = $this->content->with(array('setting.default_setting', 'default_page'))->fromApplication()->whereNull('parent_id')->first();
-
-        //$permission = Permission::getPermission('content', $this->content->id, 'w');
+        $this->content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
+        $content = $this->content;
 
         $allPermissions = Permission::getControllerPermission($this->content->id, Route::currentRouteAction());
-       // dd($perm);
 
-        //foreach content_default_field on this content item, we want to
-        //add a setting if it exists on the content item (replacing it if necisary)
-        if(@$content->default_page->id){
-            $content_defaults = Contentdefaultsetting::where('content_type_id','=',$this->content->default_page->id)->get();
-            $all_settings = $content_defaults;
+        //foreach template setting we want to add a setting for this row..
+        if(!empty($content->template_setting)){
+            //TODO: There has to be a cleaner way of doing this.
+            $all_settings = new \Illuminate\Database\Eloquent\Collection;
 
-            foreach($content_defaults as $key=>$cd){
+            foreach($content->template_setting as $template_setting){
 
-                $fl = $content->setting->filter(function($d) use($cd){
-                    return($cd->name===$d->name);
+                $fl = $content->setting->filter(function($setting) use ($template_setting){
+                    return($template_setting->name===$setting->name);
                 });
-                //$fl would be items that should replace.
-                if ($fl) {
+                if(($fl->count())){
                     foreach($fl as $f){
-                        //use content->settings value (fl)
+                        //if it's fount int content_settings and template_settings, use
                         $all_settings->push($f);
-                        $all_settings->forget($key);
                     }
                 }
+                else{
+                    $all_settings->push($template_setting);
+                }
             }
-        }
 
-        //we now need to add the current settings if they don't exisit in the defaults.
-        if (@$all_settings) {
-            foreach ($this->content->setting as $setting) {
-                dd($setting->id);
-                $fl = $all_settings->filter(function ($d) use ($setting) {
-                    if ($d->name===$setting->name) {
-                        if ($d->id === $setting->id) {
-                            return(true);
-                        }
-                    }
-                    return(false);
+            foreach($content->setting as $setting){
+
+                $fl = $content->template_setting->filter(function($template_setting) use ($setting){
+                    return($setting->name===$template_setting->name);
                 });
-                if ($fl->isEmpty()) {
+                if(($fl->count() == 0)){
                     $all_settings->push($setting);
                 }
             }
-        } else {
-            //if there's no defaults set for this we can just use what's on the content item already.
-            $all_settings = $this->content->setting;
         }
         $settings = $all_settings->groupBy('section');
 
-        //App::register($this->content->edit_service_provider);
-        $content = $this->content;
         $content = Content::setDefaults($content);
-        if (Request::ajax()) {
-            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'allPermissions'));
-            return($cont);
-        } else {
-            $tree = $this->content->getDescendants();
-            $cont = View::make('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'allPermissions'));
-            $cont = View::make('cms::layouts.tree', compact('cont', 'tree'));
-            $layout = View::make('cms::layouts.master', compact('cont'));
-        }
-        return($layout);
+        return $this->render('layouts.tree', compact('content', 'content_defaults', 'settings', 'allPermissions'));
     }
 
 
@@ -111,7 +87,7 @@ class ContentwrapperController extends CMSController
 
         $content_settings = $this->content->setting()->get();
 
-        return View::make($this->application->cms_package.'::contents.create', compact('content', 'content_settings', 'tree'));
+        return $this->render('contents.create', compact('content', 'content_settings', 'tree'));
     }
 
 
@@ -133,7 +109,6 @@ class ContentwrapperController extends CMSController
             $input['parent_id'] = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
         if ($validation->passes()){
-            $application = Application::getApplication();
 
             Event::fire('content.create', array($this->content));
             Event::fire('content.update', array($this->content));
@@ -232,14 +207,11 @@ class ContentwrapperController extends CMSController
 
         //dd($content->edit_package.'::'.$content->edit_view);
         if (Request::ajax()) {
-            $view = View::make($content->edit_package . '::' . $content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
+            return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         } else {
             $tree = $content->getDescendants();
-            $cont = View::make($content->edit_package.'::'.$content->edit_view, compact('content', 'content_defaults', 'settings', 'allPermissions'));
-            $cont = View::make('cms::layouts.tree', compact('cont', 'tree'));
-            $view = View::make('cms::layouts.master', compact('cont'));
+            return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         }
-        return($view);
     }
 
     /**
@@ -312,6 +284,7 @@ class ContentwrapperController extends CMSController
                         foreach ($settingGroup as $type => $setGrp) {
                             foreach ($setGrp as $key => $setting) {
                                 //we want to delete this setting.
+                                
                                 $toDel = Utils::recursive_array_search('deleted', $setGrp);
                                 if (is_array($setGrp) && @$toDel) {
                                     $contentSetting = Contentsetting::destroy($toDel);
@@ -335,7 +308,8 @@ class ContentwrapperController extends CMSController
                                 else {
 
                                     if ($type != 'Templatesetting') {
-
+                                        //dd($type);
+                                        //dd($name . $content->id . $key);
                                         $contentSetting = Contentsetting::withTrashed()
                                             ->where('name', '=', $name)
                                             ->where('content_id', '=', $content->id)
@@ -351,20 +325,21 @@ class ContentwrapperController extends CMSController
                                         //dd($name);
 
                                         $defaultContentSetting = Templatesetting::find($key);
+
                                         if(!$defaultContentSetting){
                                             $defaultContentSetting = Templatesetting::where('name','=',$name)
                                                                     ->where('template_id', '=', $content->template_id)
                                                                     ->first();
                                         }
-                                        //$defaultContentSetting = Templatesetting::where('name','=',)
-
+                                        
                                         $contentSetting = new Contentsetting();
                                         $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
                                         $contentSetting->value = $setting;
                                         $contentSetting->content_id = $content->id;
-                                        $contentSetting->field_type = $defaultContentSetting->field_type;
-                                        $contentSetting->field_parameters = $defaultContentSetting->field_parameters;
-                                        $contentSetting->section = $defaultContentSetting->section;
+                                        $contentSetting->field_parameters = @$defaultContentSetting->field_parameters;
+                                        $contentSetting->field_type = @$defaultContentSetting->field_type;
+                                        $contentSetting->section = @$defaultContentSetting->section;
+
                                     } else {
 
                                         //otherwise this field exists.. we can overwrite it' settings.
@@ -375,14 +350,11 @@ class ContentwrapperController extends CMSController
 
                                     }
                                     //dd($contentSetting);
-                                    try{
+                                    
+                                        //dd($contentSetting);
                                         $contentSetting->save();
-                                    }
-                                    catch(Exception $e){
-                                        dd($setGrp);
-                                        dd($setting);
-                                        dd($e);
-                                    }
+                                        
+
 
                                     $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
                                 }
@@ -528,11 +500,8 @@ class ContentwrapperController extends CMSController
         $setting[0]->field_type = '_inline';
         $setting[0]->id = 0;
 
-
-
-        $cont = View::make('cms::contents.input_types.upload', compact('setting'));
-        $layout = View::make('cms::layouts.bare', compact('cont'));
-        return($layout);
+        return $this->render('contents.inline-upload', compact('setting'));
+        
     }
 
     /*
@@ -540,57 +509,41 @@ class ContentwrapperController extends CMSController
      */
     public function postUpload($id,  $type = "Contentsetting"){
         $input = array_except(Input::all(), '_method');
-        $application = Application::getApplication();
-        $uploadFolder = @$application->getSetting('Upload Folder');
+        
+        $uploadFolder = @$this->application->getSetting('Upload Folder');
         $inline = false;
-        if($type == 'Applicationsetting'){
-            $content_setting = Applicationsetting::withTrashed()->find($id);
-        }
-        else{
-            if($id == 0){
-                //This is an inline edit - we need to deal with it accordingly.
-                $content_setting = new Contentsetting();
-                $content_setting->name = '_inline';
-                $content_setting->field_type = '_inline'; //just dummy stuff for now..
-                $content_setting->field_parameters = Contentsetting::DEFAULT_UPLOAD_JSON;
-            }
-            else{
-                if($type == 'Contentsetting'){
-                    $content_setting = Contentsetting::withTrashed()->find($id);
-                }
-                else{
-                    //this is on a template field.
-                    if($this->content_mode == 'contents'){
-                        //we need to create an element based off the template if there is anything..
-                        $templateSetting = Templatesetting::findOrFail($id);
-                        $content_setting = new Contentsetting();
-                        $content_setting->name = $templateSetting->name;
-                        $content_setting->field_type = $templateSetting->field_type;
-                        $content_setting->field_parameters = $templateSetting->field_parameters;
-                    }
-                    else{
-                        //TODO:
-                        dd("TODO: " . $this->content_mode);
-                        //we are in template mode, we want to save it as such.
-                    }
-                }
-            }
-        }
-        //TODO: tidy up this.. maybe an upload controller or some jazz..
-        if($content_setting->name == '_inline'){
 
-            $niceName = preg_replace('/\s+/', '', $content_setting->name);
+        $setting = $type::withTrashed()->find($id);
+        if(!$setting){
+            //there's no setting in here already - so we can make one.
+            $setting = new $type;
+
+            //we can try and find it in the template?
+            if(@$this->content_mode == 'contents'){
+                $templateSetting = Templatesetting::findOrFail($id);
+                $setting->name = $templateSetting->name;
+                $setting->field_type = $templateSetting->field_type;
+                $setting->field_parameters = $templateSetting->field_parameters;
+            }
+
+            //otherwise maybe it's custom.
+            $setting = new $type; 
+            $setting->name = '_custom'; //just dummy stuff for now..
+            $setting->field_type = 'upload'; 
+            $setting->field_parameters = Contentsetting::DEFAULT_UPLOAD_JSON;
+        }
+
+        if($setting->name == '_custom'){
+            $niceName = preg_replace('/\s+/', '', $setting->name);
             $f = Input::file();
             $files = (Input::file(key($f)));
-//            dd($files);
         }
         else{
-            $niceName = preg_replace('/\s+/', '', $content_setting->name);
+            $niceName = preg_replace('/\s+/', '', $setting->name);
             $files = (Input::file($niceName));
-
         }
 
-        $params = json_decode($content_setting->field_parameters);
+        $params = json_decode($setting->field_parameters);
 
         if(!empty($files)){
 
@@ -623,12 +576,12 @@ class ContentwrapperController extends CMSController
                     
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
-                    if(@$application->getSetting('Enable s3')){
+                    if(@$this->application->getSetting('Enable s3')){
 
                         //$uploadFolder
                         //file and folder need to be concated and checked.
-                        if(@$application->getSetting('s3 Folder')){
-                            $pth = trim(@$application->getSetting('s3 Folder'),'/\ ').'/'.$fileName;
+                        if(@$this->application->getSetting('s3 Folder')){
+                            $pth = trim(@$this->application->getSetting('s3 Folder'),'/\ ').'/'.$fileName;
                         }
                         else{
                             $pth = $fileName;
@@ -636,17 +589,17 @@ class ContentwrapperController extends CMSController
 
                         $s3 = AWS::get('s3');
                         $s3->putObject(array(
-                            'Bucket'     => @$application->getSetting('s3 Bucket'),
+                            'Bucket'     => @$this->application->getSetting('s3 Bucket'),
                             'Key'        => $pth,
                             'SourceFile' => $destinationPath.$fileName,
                             'ACL'=>'public-read' //todo: check this would be standard - would we ever need to have something else in here?
                         ));
-                        if(@$application->getSetting('s3 Cloudfront Url')){
-                            $cloudUrl = trim($application->getSetting('s3 Cloudfront Url'), " /");
+                        if(@$this->application->getSetting('s3 Cloudfront Url')){
+                            $cloudUrl = trim($this->application->getSetting('s3 Cloudfront Url'), " /");
                             $finalUrl = "//$cloudUrl/$pth";
                         }
                         else{
-                            $finalUrl = "//".@$application->getSetting('s3 Bucket')."/$pth";
+                            $finalUrl = "//".@$this->application->getSetting('s3 Bucket')."/$pth";
                         }
 
 
@@ -656,6 +609,7 @@ class ContentwrapperController extends CMSController
                     //and we need to build the json response.
                     $fileObj = new stdClass();
                     $fileObj->name = $originalName;
+                    $fileObj->id = $id;
                     $fileObj->thumbnailUrl = $finalUrl; //todo
                     $fileObj->deleteUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName"; //todo
                     $fileObj->deleteType = "DELETE";

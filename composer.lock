@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1c208f7acd895133e5fbb0954147e4b9",
+    "hash": "8851a31989f2db8381b5dc7b818eec5d",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "2.8.7",
+            "version": "2.8.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b"
+                "reference": "403b2893635c6f389d692d644af6f6f7def40dc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b",
-                "reference": "399c2f7e2dcd0b9fc1f8beaccfaabb624ac7316b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/403b2893635c6f389d692d644af6f6f7def40dc0",
+                "reference": "403b2893635c6f389d692d644af6f6f7def40dc0",
                 "shasum": ""
             },
             "require": {
@@ -39,11 +39,6 @@
                 "symfony/yaml": "Eases the ability to write manifests for creating jobs in AWS Import/Export"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.7-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "Aws": "src/"
@@ -71,7 +66,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-05-26 21:41:32"
+            "time": "2015-05-27 18:26:54"
         },
         {
             "name": "aws/aws-sdk-php-laravel",

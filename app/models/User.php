@@ -92,6 +92,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         return 'remember_token';
     }
 
+    public function applications(){
+        return($this->hasMany('Application', 'user_id'));
+    }
+
     /*
     Mutator for password setting.
     */
