@@ -1,44 +1,27 @@
 {
-	"name": "bootlegCMS",
-	"description": "An Awesome Laravel Based CMS",
-	"keywords": ["framework", "laravel"],
-	"license": "MIT",
-	"require": {
-		"laravel/framework": "4.2.*",
-        "baum/baum": "1.0.*",
-        "aws/aws-sdk-php-laravel": "1.*",
-        "doctrine/dbal": "~2.3"
-	},
-	"autoload": {
-		"classmap": [
-			"app/commands",
-			"app/controllers",
-            "app/components",
-			"app/models",
-			"app/database/migrations",
-			"app/database/seeds",
-			"app/tests/TestCase.php"
-		]
-	},
-	"scripts": {
-		"post-install-cmd": [
-			"php artisan clear-compiled",
-			"php artisan optimize",
-			"php artisan dump-autoload",
-			"php artisan asset:publish --bench=\"bootleg/cms\""
-		],
-		"post-update-cmd": [
-			"php artisan clear-compiled",
-			"php artisan optimize",
-			"php artisan dump-autoload",
-			"php artisan asset:publish --bench=\"bootleg/cms\""
-		],
-		"post-create-project-cmd": [
-			"php artisan key:generate"
-		]
-	},
-	"config": {
-		"preferred-install": "dist"
-	},
-	"minimum-stability": "dev"
+    "name": "bootleg/cms",
+    "description": "",
+    "authors": [
+        {
+            "name": "Simon Davies",
+            "email": "noodlewitt@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "5.0.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/controllers",
+            "src/models",
+            "src/components",
+            "src/middleware"
+        ],
+        "psr-0": {
+            "Bootleg\\Cms\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
 }
