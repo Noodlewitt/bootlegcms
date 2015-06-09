@@ -9,7 +9,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.0.*"
+        "illuminate/support": "5.0.*",
+        "baum/baum": "~1.1",
+        "laravelcollective/html": "~5.0"
     },
     "autoload": {
         "classmap": [
