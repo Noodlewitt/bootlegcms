@@ -15,7 +15,7 @@ Notes:
     
     app/Http/routes.php
 
-4. Add in service provider:
+4. Add in service providers:
     config/app.php:
 
     service providers:
@@ -35,10 +35,15 @@ Notes:
 6. Publish assets for cms:
     php artisan vendor:publish
 
+7. composer dump-autoload
+    composer dump-autoload
+
 ===
 
-7. Run migration:
+8. Run migration:
     php artisan migrate
+
+9. Run seeding: 
 
 
 

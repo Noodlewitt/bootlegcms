@@ -2,7 +2,7 @@
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends \Baum\Node{ //Eloquent {status
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'view', 'content_type_id', 'application_id', 'status', 'slug');
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'view', 'application_id', 'status', 'slug');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -391,7 +391,6 @@ class Content extends \Baum\Node{ //Eloquent {status
         $newContent->identifier = $themeContent->identifier;
         $newContent->package = $themeContent->package;
         $newContent->view = $themeContent->view;
-        $newContent->content_type_id = $themeContent->content_type_id;
         $newContent->position = $themeContent->position;
         $newContent->edit_view = $themeContent->edit_view;
         $newContent->edit_action = $themeContent->edit_action;

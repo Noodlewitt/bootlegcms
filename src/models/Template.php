@@ -38,11 +38,6 @@ class Template extends Baum\Node{ //Eloquent {
         return $this->belongsTo('Content');
     }
 
-    
-    public function default_fields()
-    {
-        return $this->belongsTo('Contentdefaultfield', 'content_type_id');
-    }
 
     public function permission()
     {

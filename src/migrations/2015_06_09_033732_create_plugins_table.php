@@ -19,8 +19,6 @@ class CreatePluginsTable extends Migration {
 			$table->string('service_provider')->nullable();
 			$table->string('package')->nullable();
 			$table->timestamps();
-			$table->string('type');
-			$table->string('preview')->nullable();
 		});
 	}
 

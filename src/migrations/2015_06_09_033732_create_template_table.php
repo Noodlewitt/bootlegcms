@@ -34,7 +34,6 @@ class CreateTemplateTable extends Migration {
 			$table->string('edit_package')->nullable()->default('cms');
 			$table->timestamps();
 			$table->softDeletes();
-			$table->integer('content_type_id');
 			$table->integer('auto_create');
 			$table->string('edit_action');
 			$table->integer('loopback');

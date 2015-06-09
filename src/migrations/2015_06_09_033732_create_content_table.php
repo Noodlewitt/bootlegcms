@@ -21,7 +21,6 @@ class CreateContentTable extends Migration {
 			$table->integer('status');
 			$table->string('package')->nullable();
 			$table->string('view');
-			$table->integer('content_type_id');
 			$table->integer('application_id');
 			$table->integer('language')->nullable();
 			$table->integer('language_original_id');

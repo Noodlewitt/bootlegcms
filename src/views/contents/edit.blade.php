@@ -103,11 +103,12 @@
                         {!! Form::label('layout', 'Layout:') !!}
                         {!! Form::input('text', 'layout', null, array('class'=>'form-control')) !!}
                     </li>
-
-                    <li class="form-group">
-                        {!! Form::label('content_type_id', 'content_type_id:') !!}
-                        {!! Form::input('number', 'content_type_id', null, array('class'=>'form-control')) !!}
-                    </li>
+                    @if($content_mode == 'content')
+                        <li class="form-group">
+                            {!! Form::label('template_id', 'Template ID:') !!}
+                            {!! Form::input('number', 'template_id', null, array('class'=>'form-control')) !!}
+                        </li>
+                    @endif
                 @endif
                 
                 @if($i == 0)
