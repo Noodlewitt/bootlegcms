@@ -1,5 +1,48 @@
 Notes:
 
+1. install & setup laravel laravel:
+    
+    composer create-project laravel/laravel --prefer-dist
+
+    ..database, migrations, etc
+
+
+2. add in cms to composer:
+    
+    composer require 'bootleg/cms:dev-master'
+
+3. Remove contents of default laravel routes file:
+    
+    app/Http/routes.php
+
+4. Add in service provider:
+    config/app.php:
+
+    service providers:
+    'Illuminate\Workbench\WorkbenchServiceProvider',
+    'Bootleg\Cms\CmsServiceProvider',
+    'Collective\Html\HtmlServiceProvider',
+
+
+    aliasses
+    'Form' => 'Collective\Html\FormFacade',
+    'Html' => 'Collective\Html\HtmlFacade',
+
+5. Add in middleware:
+    app/Http/Kernal.php:
+    'permissions' => 'Bootleg\Cms\Middleware\Permissions',
+
+6. Publish assets for cms:
+    php artisan vendor:publish
+
+===
+
+7. Run migration:
+    php artisan migrate
+
+
+
+
 composer.json:
     add in require:
         "illuminate/workbench": "dev-master",
