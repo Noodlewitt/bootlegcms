@@ -12,6 +12,9 @@ class CreateBLUsersTable extends Migration {
 	 */
 	public function up()
 	{
+		//first we need to remove the standard laravel one:
+		Schema::drop('users');
+		
 		Schema::create('users', function(Blueprint $table)
 		{
 			$table->increments('id');
