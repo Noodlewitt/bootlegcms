@@ -37,7 +37,6 @@ class CreateContentTable extends Migration {
 			$table->string('edit_action')->nullable();
 			$table->text('headers', 65535);
 			$table->string('edit_package')->nullable();
-			$table->string('edit_service_provider')->nullable();
 		});
 	}
 

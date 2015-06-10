@@ -19,6 +19,7 @@
             "src/controllers",
             "src/models",
             "src/components",
+            "src/seeds",
             "src/middleware"
         ],
         "psr-0": {
