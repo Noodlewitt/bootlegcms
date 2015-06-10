@@ -10,12 +10,12 @@ class PermissionsTableSeeder extends Seeder {
      */
     public function run()
     {
-        \DB::table('content')->truncate();
+        \DB::table('permissions')->truncate();
         
-        \DB::table('content')->insert(array (
+        \DB::table('permissions')->insert(array (
             array (
                 'id'=>'39',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -26,7 +26,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'53',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -37,7 +37,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'41',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -48,7 +48,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'42',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -59,7 +59,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'61',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -70,7 +70,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'62',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -81,7 +81,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'40',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -92,7 +92,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'29',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -103,7 +103,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'33',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -114,7 +114,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'14',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -125,7 +125,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'48',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -136,7 +136,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'12',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -147,7 +147,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'28',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -158,7 +158,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'13',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -169,7 +169,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'32',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -180,7 +180,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'36',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -191,7 +191,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'37',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -202,7 +202,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'43',
-                'requestor_id'=> '*'
+                'requestor_id'=> '*',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -213,7 +213,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'45',
-                'requestor_id'=> '*'
+                'requestor_id'=> '*',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -224,7 +224,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'44',
-                'requestor_id'=> '*'
+                'requestor_id'=> '*',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -235,7 +235,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'46',
-                'requestor_id'=> '*'
+                'requestor_id'=> '*',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -246,7 +246,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'27',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -257,7 +257,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'34',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -268,7 +268,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'15',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -279,7 +279,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'10',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -290,7 +290,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'30',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -301,7 +301,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'11',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -312,7 +312,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'31',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -323,7 +323,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'35',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -334,7 +334,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'38',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -345,7 +345,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'21',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -356,7 +356,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'16',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -367,7 +367,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'17',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -378,7 +378,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'18',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -389,7 +389,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'19',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -400,7 +400,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'23',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
@@ -411,7 +411,7 @@ class PermissionsTableSeeder extends Seeder {
             ),
             array (
                 'id'=>'25',
-                'requestor_id'=> '2'
+                'requestor_id'=> '2',
                 'application_id'=>'1',
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 

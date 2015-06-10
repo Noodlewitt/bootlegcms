@@ -2,7 +2,7 @@
 use \Illuminate\Database\Seeder;
 use \Illuminate\Database\Eloquent\Model;
 
-class TemplateTableSeeder extends Seeder {
+class TemplatesTableSeeder extends Seeder {
     /**
      * Auto generated seed file
      *
