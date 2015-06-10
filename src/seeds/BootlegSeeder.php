@@ -13,13 +13,13 @@ class BootlegSeeder extends Seeder {
     {
         Model::unguard();
 
-        $this->call('ApplicationsTableSeeder');
-        $this->call('ApplicationUrlsTableSeeder');
-        $this->call('ContentTableSeeder');
-        $this->call('PermissionsTableSeeder');
-        $this->call('RolesTableSeeder');
-        $this->call('TemplatesTableSeeder');
-        $this->call('UsersTableSeeder');
+        $this->call('Bootleg\Cms\ApplicationsTableSeeder');
+        $this->call('Bootleg\Cms\ApplicationUrlsTableSeeder');
+        $this->call('Bootleg\Cms\ContentTableSeeder');
+        $this->call('Bootleg\Cms\PermissionsTableSeeder');
+        $this->call('Bootleg\Cms\RolesTableSeeder');
+        $this->call('Bootleg\Cms\TemplatesTableSeeder');
+        $this->call('Bootleg\Cms\UsersTableSeeder');
     }
 
 }
