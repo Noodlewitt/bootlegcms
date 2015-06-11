@@ -63,7 +63,7 @@ Notes:
     <?php
     return [
         'name' => 'Simon Davies',
-        'email' => 'noodlewitt@gmail.com',
+        'email' => 'whatever@whatever.com',
     ];
 
     ..and composer dump-autoload
