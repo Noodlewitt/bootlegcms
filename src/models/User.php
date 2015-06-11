@@ -37,7 +37,7 @@ class User extends \Eloquent implements AuthenticatableContract, CanResetPasswor
     
     public function role()
     {
-        return $this->belongsTo('Role');
+        return $this->belongsTo('\Role');
     }
     
     

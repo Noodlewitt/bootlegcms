@@ -34,7 +34,7 @@ class ContentTableSeeder extends Seeder {
                 'identifier' => 'home',
                 'deleted_at' => NULL,
                 'position' => '',
-                'edit_view' => 'contents.form',
+                'edit_view' => 'contents.edit',
                 'edit_package' => 'cms',
             ),
             1 => 
@@ -58,7 +58,7 @@ class ContentTableSeeder extends Seeder {
                 'identifier' => '',
                 'deleted_at' => NULL,
                 'position' => '',
-                'edit_view' => 'contents.form',
+                'edit_view' => 'contents.edit',
                 'edit_package' => 'cms',
             ),
         ));

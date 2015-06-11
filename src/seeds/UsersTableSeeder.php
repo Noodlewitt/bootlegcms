@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder {
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
                 'remember_token' => '',
-                'deleted_at' => date("Y-m-d H:i:s"),
+                'deleted_at' => NULL,
             ),
             1 =>
             array (
@@ -37,7 +37,7 @@ class UsersTableSeeder extends Seeder {
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
                 'remember_token' => '',
-                'deleted_at' => date("Y-m-d H:i:s"),
+                'deleted_at' => NULL,
             ),
         ));
     }

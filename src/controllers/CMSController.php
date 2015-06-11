@@ -13,7 +13,6 @@ class CMSController extends BaseController {
 
     //    $this->beforeFilter('permission:'.\Route::currentRouteAction().','.$string, array('except'=>'anyLogin'));
         //
-        \Debugbar::warning('Watch out…');
         $this->applications = \Application::with('url')->get();
         view()->share('applications', $this->applications);       
         //we need to register the package we are using:

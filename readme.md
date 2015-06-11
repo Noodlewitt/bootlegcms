@@ -44,42 +44,45 @@ Notes:
     php artisan migrate
 
 9. Run seeding: 
+    php artisan db:seed --class="Bootleg\Cms\BootlegSeed"
 
 
 
+===make a theme using L4's Workbench:
 
-composer.json:
-    add in require:
-        "illuminate/workbench": "dev-master",
-        "baum/baum": "~1.1",
-        "laravelcollective/html": "~5.0"
-
-    add in autoload classmap:
-        "workbench/bootleg/cms/src"
+1. composer.json:
+    composer require "illuminate/workbench:dev-master"
 
 
-Add in middleware:
-    app/Http/Kernal.php
-    'permissions' => 'Bootleg\Cms\Middleware\Permissions',
+2. Add in service provider:
+    'Illuminate\Workbench\WorkbenchServiceProvider',
 
-Add in service provider:
-    config/app.php
+3. Create workbench config file
+    config/workbench.php
 
-    TODO: see what can be included at runtime from SP boot method.
-        'Illuminate\Workbench\WorkbenchServiceProvider',
-        'Bootleg\Cms\CmsServiceProvider',
-        'Collective\Html\HtmlServiceProvider',
+    <?php
+    return [
+        'name' => 'Simon Davies',
+        'email' => 'noodlewitt@gmail.com',
+    ];
 
-    Add in aliasses for html helpers:
-        'Form' => 'Collective\Html\FormFacade',
-        'Html' => 'Collective\Html\HtmlFacade',
+    ..and composer dump-autoload
+
+4. Add run workbench command to create a workbench item:
+    php artisan workbench vendor/package --resources
 
 
-Publish assets for cms:
-    php artisan vendor:publish
+5. Add this into composer.json
+    
+    "autoload": {
+        "classmap": [
+            "workbench/vendor/package/src"
+            ..
+        ]
+    }
 
-Publish assets for a theme or plugin:
-    php artisan vendor:publish --provider="Bootleg\Cms\CmsServiceProvider"
+6. Optionally add this into the plugins table 
+OR 
+You can include it into config/app.php
 
-    ..or add it into composer update script.
-    "php artisan asset:publish --provider=\"Bootleg\Cms\CmsServiceProvider\""
+

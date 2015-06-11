@@ -25,6 +25,7 @@ class Permissions {
             if(@\Auth::user()->id){
                 \Session::flash('danger', "You do not have permission to do that.");    
             }
+            
             return($perm);
         }
 

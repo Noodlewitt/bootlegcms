@@ -63,7 +63,7 @@ class Permission extends Eloquent {
                     ->with('danger', $message);
             }
             else{
-                return Redirect::guest(config('bootlegcms.cms_hint_path').'login');   
+                return Redirect::guest(config('bootlegcms.cms_route').'login');   
             }
             
         } else {
