@@ -25,7 +25,7 @@ class UsersController extends CMSController
 
         //add in some standard dash items..
         \Event::listen('dashboard.items', function(){
-            $user = \Auth::user();
+            $user = User::find(\Auth::user()->id);
             return $this->render('users.dash_item', array('user'=>$user));
         });
 

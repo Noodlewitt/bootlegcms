@@ -2,10 +2,10 @@ Notes:
 
 1. install & setup laravel laravel:
     
-    composer create-project laravel/laravel --prefer-dist
+    composer create-project laravel/laravel=5.0.22 mixtapes --prefer-dist
 
     ..database, migrations, etc
-
+    (TODO: upgrade again to 5.1)
 
 2. add in cms to composer:
     
@@ -19,16 +19,15 @@ Notes:
     config/app.php:
 
     service providers:
-    'Illuminate\Workbench\WorkbenchServiceProvider',
-    'Bootleg\Cms\CmsServiceProvider',
-    'Collective\Html\HtmlServiceProvider',
+    Bootleg\Cms\CmsServiceProvider::class, 
+    Collective\Html\HtmlServiceProvider::class
 
 
     aliasses
-    'Form' => 'Collective\Html\FormFacade',
-    'Html' => 'Collective\Html\HtmlFacade',
+    'Form' => Collective\Html\FormFacade::class, 
+    'Html' => Collective\Html\HtmlFacade::class,
 
-5. Add in middleware:
+5. Register permissions middleware:
     app/Http/Kernal.php:
     'permissions' => 'Bootleg\Cms\Middleware\Permissions',
 
@@ -44,7 +43,7 @@ Notes:
     php artisan migrate
 
 9. Run seeding: 
-    php artisan db:seed --class="Bootleg\Cms\BootlegSeed"
+    php artisan db:seed --class="Bootleg\Cms\BootlegSeeder"
 
 
 
@@ -55,7 +54,7 @@ Notes:
 
 
 2. Add in service provider:
-    'Illuminate\Workbench\WorkbenchServiceProvider',
+        Illuminate\Workbench\WorkbenchServiceProvider::class, 
 
 3. Create workbench config file
     config/workbench.php
