@@ -1,5 +1,8 @@
 <?php namespace Bootleg\Cms; 
 
+use \Validator;
+use \Input;
+use \Event;
 
 class ContentwrapperController extends CMSController
 {
@@ -122,7 +125,7 @@ class ContentwrapperController extends CMSController
           //  dd($tree);
 
 
-            return Response::json($this->renderTree($tree));
+            return response()->json($this->renderTree($tree));
 
            // return Redirect::action('ContentsController@anyIndex');
         }
@@ -400,7 +403,7 @@ class ContentwrapperController extends CMSController
     public function anyDestroy($id = null)
     {
         if (!$id) {
-            $id = Input::all();
+            $id = \Input::all();
             if (@$id['id'] == '#') {
                 $id = '';
             } else {
@@ -409,7 +412,9 @@ class ContentwrapperController extends CMSController
         }
         $this->content->find($id)->delete();
 
-        return Redirect::action('ContentsController@anyIndex');
+        if (!\Request::ajax()) {
+            return redirect()->action('ContentsController@anyIndex');
+        }
     }
 
     //requests imediate descendents for given node
@@ -492,7 +497,7 @@ class ContentwrapperController extends CMSController
         }
 
 
-        return Response::json($return);
+        return response()->json($return);
     }
 
     public function anyInlineUpload(){
@@ -540,7 +545,7 @@ class ContentwrapperController extends CMSController
         if($setting->name == '_custom'){
             $niceName = preg_replace('/\s+/', '', $setting->name);
             $f = \Input::file();
-            $files = (\nput::file(key($f)));
+            $files = (\Input::file(key($f)));
         }
         else{
             $niceName = preg_replace('/\s+/', '', $setting->name);
