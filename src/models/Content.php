@@ -238,18 +238,7 @@ class Content extends \Baum\Node{ //Eloquent {status
         }
 
 
-        //and the edit details:
-        if (!@$input['edit_action']) {
-            //set it as parent one..
-            $input['edit_action'] = @$parent->edit_action;
-            
-            //still nothing - we have to set it to default.
-            if(!$input['edit_action']){
-                //last ditch attempt to put something sensible in here
-                $input['edit_action'] = Content::EDIT_ACTION;
-            }
-        }
-
+     
         if(!@$input['edit_package']){
             //set it as parent one..
             $input['edit_package'] = @$parent->edit_package;

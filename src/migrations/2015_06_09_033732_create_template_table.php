@@ -30,7 +30,7 @@ class CreateTemplateTable extends Migration {
 			$table->integer('depth')->nullable();
 			$table->string('identifier')->nullable();
 			$table->string('position')->nullable();
-			$table->string('edit_view')->nullable()->default('contents.form');
+			$table->string('edit_view')->nullable()->default('contents.edit');
 			$table->string('edit_package')->nullable()->default('cms');
 			$table->timestamps();
 			$table->softDeletes();

@@ -32,7 +32,7 @@ class CreateContentTable extends Migration {
 			$table->string('identifier')->nullable();
 			$table->softDeletes();
 			$table->string('position');
-			$table->string('edit_view')->default('contents.form');
+			$table->string('edit_view')->default('contents.edit');
 			$table->integer('template_id')->nullable();
 			$table->string('edit_action')->nullable();
 			$table->text('headers', 65535);
