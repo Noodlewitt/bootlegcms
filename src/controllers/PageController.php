@@ -22,12 +22,12 @@ class PageController extends BaseController
         return($response);
     }
 
-	/*
-	 *Sets language for front end pages.
-	 **/
-	public function getLanguage($language){
-		$language = '';
-	}
+    /*
+     *Sets language for front end pages.
+     **/
+    public function getLanguage($language){
+        $language = '';
+    }
 
 
     public static function page($slug, $application, $applicationurl){
@@ -50,7 +50,9 @@ class PageController extends BaseController
             $slug = str_replace($applicationurl->folder, '', $slug);
         }
 
-
+        //final bit of tweaking..
+        $slug = '/'.trim($slug, '/');
+        
         $content = \Content::where('slug', '=', "$slug")
                 ->fromApplication()
                 ->live()

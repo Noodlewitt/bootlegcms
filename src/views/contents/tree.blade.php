@@ -39,7 +39,8 @@
                                 //this item has sub items - TODO: we need to ask if we can delete:
                             }
                             $.post( "{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyDestroy") }}" ,{
-                                id: $node.id
+                                id: $node.id,
+                                '_token':'{!!csrf_token()!!}'
                             }).done(function(data){
                                 //successfully deleted.
                                 tree.delete_node($node);
@@ -78,7 +79,8 @@
             var parentnode = data.instance.get_node(data.node.parent);         
             $.post( "{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyStore", array('json'=>true)) }}" , {
                 name:data.text,
-                parent_id:parentnode.id
+                parent_id:parentnode.id,
+                '_token':'{!!csrf_token()!!}'
             }).done(function(d){
                 data.node.a_attr.href='aa';
                 data.instance.load_node(parentnode);
@@ -92,7 +94,8 @@
         else{
             $.post("{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyUpdate") }}", {
                 name:data.node.text,
-                id:data.node.id
+                id:data.node.id,
+                '_token':'{!!csrf_token()!!}'
             }).done(function(d){
                 data.instance.refresh_node(data.node);
             }).fail(function(){
@@ -118,7 +121,8 @@
         $.post("{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyUpdate") }}", {
             parent_id:data.parent,
             id:data.node.id,
-            position: data.position
+            position: data.position,
+            '_token':'{!!csrf_token()!!}'
         }).fail(function(){
             data.instance.refresh();
         });
