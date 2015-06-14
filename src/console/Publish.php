@@ -3,8 +3,12 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-
-class Publish extends Command {
+/**
+ * Since we don't want to register the service providers for plugins globally, we cant use
+ * the normal vendor:publush command (since it only looks in app for SPs). Using this we can 
+ * check the db for any plugins and run an seet publish off that.
+ */
+class Publish extends \Illuminate\Console\Command {
 
     /**
      * The console command name.
@@ -18,7 +22,8 @@ class Publish extends Command {
      *
      * @var string
      */
-    protected $description = 'Command description.';
+    protected $description = 'Register plugin assets';
+
 
     /**
      * Create a new command instance.
@@ -37,7 +42,25 @@ class Publish extends Command {
      */
     public function fire()
     {
-        //
+        //echo $this->argument('example');
+        //echo $this->option('example');
+        if($this->option('app_name')){
+            $application = \Application::with('plugins')->where('name',$this->option('app_name'))->get();
+        }
+        else if($this->option('app_id')){
+            $application = \Application::with('plugins')->where('id',$this->option('app_id'))->get();
+        }
+        else{
+            $application = \Application::with('plugins')->get();    
+        }
+        foreach($application as $app){
+            foreach($app->plugins as $plugin){
+                //Register appliation service providers
+                \App::register($plugin->service_provider);
+            }    
+        }
+        //we now need to re asset publish?
+        \Artisan::call('vendor:publish', []);
     }
 
     /**
@@ -48,7 +71,8 @@ class Publish extends Command {
     protected function getArguments()
     {
         return [
-            ['example', InputArgument::REQUIRED, 'An example argument.'],
+            //none.
+            //['example', InputArgument::REQUIRED, 'An example argument.'],
         ];
     }
 
@@ -59,8 +83,10 @@ class Publish extends Command {
      */
     protected function getOptions()
     {
+        //TODO: maybe could use options to publish specific packages?
         return [
-            ['example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null],
+            ['app_name', null, InputOption::VALUE_OPTIONAL, 'The name of the app we want to publish assets for.', null],
+            ['app_id', null, InputOption::VALUE_OPTIONAL, 'The ID of the app we want to publish assets for.', null],
         ];
     }
 
