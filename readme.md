@@ -54,7 +54,7 @@ Notes:
 
 
 2. Add in service provider:
-        Illuminate\Workbench\WorkbenchServiceProvider::class, 
+        "Illuminate\Workbench\WorkbenchServiceProvider", 
 
 3. Create workbench config file
     config/workbench.php

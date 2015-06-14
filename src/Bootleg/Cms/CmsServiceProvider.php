@@ -40,10 +40,20 @@ class CmsServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register()
-	{
-		//
-	}
+   public function register()
+    {
+        $this->registerPublish();
+
+        $this->commands('publish');
+    }
+
+    private function registerPublish()
+    {
+        $this->app['publish'] = $this->app->share(function($app)
+        {
+            return new Bootleg\Cms\Publish;
+        });
+    }
 
 	/**
 	 * Get the services provided by the provider.

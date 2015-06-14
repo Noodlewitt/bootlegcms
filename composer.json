@@ -20,7 +20,8 @@
             "src/models",
             "src/components",
             "src/seeds",
-            "src/middleware"
+            "src/middleware",
+            "src/console"
         ],
         "psr-0": {
             "Bootleg\\Cms\\": "src/"
