@@ -33,27 +33,17 @@ class CmsServiceProvider extends ServiceProvider {
 	    //Load views
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
+
+		//register the command...
+		$this->commands('Bootleg\Cms\Publish');
 	}
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-   public function register()
-    {
-        $this->registerPublish();
 
-        $this->commands('publish');
+
+   	public function register(){
+        
     }
 
-    private function registerPublish()
-    {
-        $this->app['publish'] = $this->app->share(function($app)
-        {
-            return new Bootleg\Cms\Publish;
-        });
-    }
 
 	/**
 	 * Get the services provided by the provider.
