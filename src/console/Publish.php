@@ -53,14 +53,17 @@ class Publish extends \Illuminate\Console\Command {
         else{
             $application = \Application::with('plugins')->get();    
         }
+        echo("\n");
         foreach($application as $app){
             foreach($app->plugins as $plugin){
                 //Register appliation service providers
                 \App::register($plugin->service_provider);
+                echo("Publishing for ".$plugin->name."\n");
             }    
         }
         //we now need to re asset publish?
-        \Artisan::call('vendor:publish', []);
+        //TODO: do we really want to force this 100% of the time?
+        \Artisan::call('vendor:publish', ['--force'=>1]);
     }
 
     /**
