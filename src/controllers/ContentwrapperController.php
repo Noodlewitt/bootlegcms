@@ -292,7 +292,7 @@ class ContentwrapperController extends CMSController
                             foreach ($setGrp as $key => $setting) {
                                 //we want to delete this setting.
                                 
-                                $toDel = \Utils::recursive_array_search('deleted', $setGrp);
+                                $toDel = \Bootleg\Cms\Utils::recursive_array_search('deleted', $setGrp);
                                 if (is_array($setGrp) && @$toDel) {
                                     $contentSetting = \Contentsetting::destroy($toDel);
                                 }
@@ -517,42 +517,48 @@ class ContentwrapperController extends CMSController
      * pass in a content_setting id to upload to.
      */
     public function postUpload($id,  $type = "Contentsetting"){
+        
         $input = array_except(\Input::all(), '_method');
         
         $uploadFolder = @$this->application->getSetting('Upload Folder');
         $inline = false;
+        //dd($type);
+        if($type != 'stdClass'){
+            $setting = @$type::withTrashed()->find($id);
+            if(!$setting){
+                //there's no setting in here already - so we can make one.
+                $setting = new $type;
 
-        $setting = $type::withTrashed()->find($id);
-        if(!$setting){
-            //there's no setting in here already - so we can make one.
-            $setting = new $type;
+                //we can try and find it in the template?
+                if(@$this->content_mode == 'contents'){
+                    $templateSetting = \Templatesetting::findOrFail($id);
+                    $setting->name = $templateSetting->name;
+                    $setting->field_type = $templateSetting->field_type;
+                    $setting->field_parameters = $templateSetting->field_parameters;
+                }
 
-            //we can try and find it in the template?
-            if(@$this->content_mode == 'contents'){
-                $templateSetting = \Templatesetting::findOrFail($id);
-                $setting->name = $templateSetting->name;
-                $setting->field_type = $templateSetting->field_type;
-                $setting->field_parameters = $templateSetting->field_parameters;
+                //otherwise maybe it's custom.
+                $setting = new $type; 
+                $setting->name = '_custom'; //just dummy stuff for now..
+                $setting->field_type = 'upload'; 
+                $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
             }
 
-            //otherwise maybe it's custom.
-            $setting = new $type; 
-            $setting->name = '_custom'; //just dummy stuff for now..
-            $setting->field_type = 'upload'; 
-            $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
-        }
+            if($setting->name == '_custom'){
+                $niceName = preg_replace('/\s+/', '', $setting->name);
+                $f = \Input::file();
+                $files = (\Input::file(key($f)));
+            }
+            else{
+                $niceName = preg_replace('/\s+/', '', $setting->name);
+                $files = (\Input::file($niceName));
+            }
 
-        if($setting->name == '_custom'){
-            $niceName = preg_replace('/\s+/', '', $setting->name);
+            $params = json_decode($setting->field_parameters);
+        }else{
             $f = \Input::file();
             $files = (\Input::file(key($f)));
         }
-        else{
-            $niceName = preg_replace('/\s+/', '', $setting->name);
-            $files = (\Input::file($niceName));
-        }
-
-        $params = json_decode($setting->field_parameters);
 
         if(!empty($files)){
 

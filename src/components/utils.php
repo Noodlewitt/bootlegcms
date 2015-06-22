@@ -1,4 +1,4 @@
-<?php
+<?php namespace Bootleg\Cms;
 class Utils{
 
     /**
