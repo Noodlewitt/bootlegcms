@@ -10,7 +10,7 @@ class TemplateController extends ContentwrapperController
     public $content;
     public $content_mode = 'template';
 
-    public function __construct(Template $content)
+    public function __construct(\Template $content)
     {
         parent::__construct($content);
         $this->content = $content;

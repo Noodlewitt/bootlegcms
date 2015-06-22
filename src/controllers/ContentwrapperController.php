@@ -139,7 +139,7 @@ class ContentwrapperController extends CMSController
     //fixes tree based off parent_id
     public function anyFixtree(){
         $this->content->rebuild();
-        dd(Content::isValidNestedSet());
+        dd(\Content::isValidNestedSet());
     }
 
     //fixes slugs based off depth

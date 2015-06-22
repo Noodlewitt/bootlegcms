@@ -2,7 +2,7 @@
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends \Baum\Node{ //Eloquent {status
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'view', 'application_id', 'status', 'slug');
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -159,6 +159,7 @@ class Content extends \Baum\Node{ //Eloquent {status
 
         if(!@$input['template_id']){
             $parentTemplate = Template::find($parent->template_id);
+
 //            dd($parent->template_id);
             if($parentTemplate){
                 //since we occasionally want to process a looped back tree (which makes the whole tree 
@@ -169,7 +170,6 @@ class Content extends \Baum\Node{ //Eloquent {status
                 else{
                     $parentTemplateChild = @$parentTemplate->getImmediateDescendants()->first();  
                 }                
-            
                 $input['template_id'] = @$parentTemplateChild->id;    
                 
             }
