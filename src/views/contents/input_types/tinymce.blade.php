@@ -40,7 +40,7 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
                 });
             });
             tinymce.remove(); //purge any existing instances of this.
-            tinymce.baseURL = '/packages/bootleg/cms/components/tinymce-builded/js/tinymce';
+            tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
             tinymce.init({
                 selector:'textarea.{{$niceName.$field->id}}',
                 plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
