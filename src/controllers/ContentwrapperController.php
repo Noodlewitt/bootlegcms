@@ -217,7 +217,7 @@ class ContentwrapperController extends CMSController
             return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         } else {
             $tree = $content->getDescendants();
-            return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
+            return $this->render('layouts.tree',  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         }
     }
 
@@ -525,6 +525,7 @@ class ContentwrapperController extends CMSController
         //dd($type);
         if($type != 'stdClass'){
             $setting = @$type::withTrashed()->find($id);
+
             if(!$setting){
                 //there's no setting in here already - so we can make one.
                 $setting = new $type;
@@ -550,8 +551,8 @@ class ContentwrapperController extends CMSController
                 $files = (\Input::file(key($f)));
             }
             else{
-                $niceName = preg_replace('/\s+/', '', $setting->name);
-                $files = (\Input::file($niceName));
+                $niceName = preg_replace('/\s+/', '_', $setting->name);
+                $files = \Input::file($niceName);
             }
 
             $params = json_decode($setting->field_parameters);
@@ -592,6 +593,7 @@ class ContentwrapperController extends CMSController
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
                     if(@$this->application->getSetting('Enable s3')){
+
 
                         //$uploadFolder
                         //file and folder need to be concated and checked.
