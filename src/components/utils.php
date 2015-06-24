@@ -1,6 +1,6 @@
 <?php namespace Bootleg\Cms;
 
-use \DateTime;
+use DateTime;
 
 class Utils{
 

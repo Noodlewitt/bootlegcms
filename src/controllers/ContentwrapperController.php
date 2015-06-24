@@ -130,7 +130,7 @@ class ContentwrapperController extends CMSController
            // return Redirect::action('ContentsController@anyIndex');
         }
 
-        return Redirect::action('ContentsController@anyCreate')
+        return Redirect::action('\Bootleg\Cms\ContentsController@anyCreate')
             ->withInput()
             ->withErrors($validation)
             ->with('message', 'There were validation errors.');
@@ -388,7 +388,7 @@ class ContentwrapperController extends CMSController
             //TODO:
             $validation = 'no id';
         }
-        return redirect()->action('ContentsController@anyEdit', $id)
+        return redirect()->action('\Bootleg\Cms\ContentsController@anyEdit', $id)
             ->withInput()
             ->withErrors($validation)
             ->with('danger', 'There were validation errors.');
@@ -413,7 +413,7 @@ class ContentwrapperController extends CMSController
         $this->content->find($id)->delete();
 
         if (!\Request::ajax()) {
-            return redirect()->action('ContentsController@anyIndex');
+            return redirect()->action('\Bootleg\Cms\ContentsController@anyIndex');
         }
     }
 
