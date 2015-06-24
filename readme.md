@@ -19,13 +19,13 @@ Notes:
     config/app.php:
 
     service providers:
-    Bootleg\Cms\CmsServiceProvider::class, 
-    Collective\Html\HtmlServiceProvider::class
+    'Bootleg\Cms\CmsServiceProvider', 
+    'Collective\Html\HtmlServiceProvider'
 
 
     aliasses
-    'Form' => Collective\Html\FormFacade::class, 
-    'Html' => Collective\Html\HtmlFacade::class,
+    'Form' => 'Collective\Html\FormFacade', 
+    'Html' => 'Collective\Html\HtmlFacade',
 
 5. Register permissions middleware:
     app/Http/Kernal.php:
