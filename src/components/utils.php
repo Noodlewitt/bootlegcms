@@ -1,4 +1,7 @@
 <?php namespace Bootleg\Cms;
+
+use \DateTime;
+
 class Utils{
 
     /**
