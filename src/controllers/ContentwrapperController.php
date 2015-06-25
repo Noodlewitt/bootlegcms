@@ -130,7 +130,7 @@ class ContentwrapperController extends CMSController
            // return Redirect::action('ContentsController@anyIndex');
         }
 
-        return Redirect::action('\Bootleg\Cms\ContentsController@anyCreate')
+        return Redirect::action('ContentsController@anyCreate')
             ->withInput()
             ->withErrors($validation)
             ->with('message', 'There were validation errors.');
@@ -175,6 +175,7 @@ class ContentwrapperController extends CMSController
         $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
 
         //foreach template setting we want to add a setting for this row..
+        //dd($content->template_setting);
         if(!empty($content->template_setting)){
             //TODO: There has to be a cleaner way of doing this.
             $all_settings = new \Illuminate\Database\Eloquent\Collection;
@@ -388,7 +389,7 @@ class ContentwrapperController extends CMSController
             //TODO:
             $validation = 'no id';
         }
-        return redirect()->action('\Bootleg\Cms\ContentsController@anyEdit', $id)
+        return redirect()->action('ContentsController@anyEdit', $id)
             ->withInput()
             ->withErrors($validation)
             ->with('danger', 'There were validation errors.');
@@ -413,7 +414,7 @@ class ContentwrapperController extends CMSController
         $this->content->find($id)->delete();
 
         if (!\Request::ajax()) {
-            return redirect()->action('\Bootleg\Cms\ContentsController@anyIndex');
+            return redirect()->action('ContentsController@anyIndex');
         }
     }
 
@@ -503,8 +504,8 @@ class ContentwrapperController extends CMSController
     public function anyInlineUpload(){
         //$setting = array();
         $setting = new \Illuminate\Database\Eloquent\Collection;
-        $setting->add(new Contentsetting());
-        $setting[0]->field_parameters = Contentsetting::DEFAULT_UPLOAD_JSON;
+        $setting->add(new \Contentsetting());
+        $setting[0]->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
         $setting[0]->name = '_inline';
         $setting[0]->field_type = '_inline';
         $setting[0]->id = 0;
@@ -531,7 +532,7 @@ class ContentwrapperController extends CMSController
                 $setting = new $type;
 
                 //we can try and find it in the template?
-                if(@$this->content_mode == 'contents'){
+                if(@$this->content_mode == 'contents' && $id){
                     $templateSetting = \Templatesetting::findOrFail($id);
                     $setting->name = $templateSetting->name;
                     $setting->field_type = $templateSetting->field_type;
@@ -604,7 +605,7 @@ class ContentwrapperController extends CMSController
                             $pth = $fileName;
                         }
 
-                        $s3 = AWS::get('s3');
+                        $s3 = \AWS::get('s3');
                         $s3->putObject(array(
                             'Bucket'     => @$this->application->getSetting('s3 Bucket'),
                             'Key'        => $pth,
