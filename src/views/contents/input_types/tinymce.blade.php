@@ -10,6 +10,8 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
     <script>
         var inline_image = "";
         $(function() {
+             //purge any existing instances of this.
+            tinymce.remove("#{{$niceName.$field->id}}");
 
             tinymce.PluginManager.add('uploadImage', function(editor, url) {
                 // Add a button that opens a window
@@ -39,10 +41,9 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
                     }
                 });
             });
-            tinymce.remove(); //purge any existing instances of this.
             tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
             tinymce.init({
-                selector:'textarea.{{$niceName.$field->id}}',
+                selector:'#{{$niceName.$field->id}}',
                 plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
                 toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload",
                 relative_urls: false,
@@ -51,4 +52,3 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
         });
     </script>
 @endforeach
-
