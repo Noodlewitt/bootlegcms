@@ -52,14 +52,14 @@
 You then should set up the database:
 
 8. Run migration:
-```
-php artisan migrate
-```
+    ```
+    php artisan migrate
+    ```
 
 9. Run seeding: 
-```
-php artisan db:seed --class="Bootleg\Cms\BootlegSeeder"
-```
+    ```
+    php artisan db:seed --class="Bootleg\Cms\BootlegSeeder"
+    ```
 
 ===
 
@@ -68,37 +68,41 @@ php artisan db:seed --class="Bootleg\Cms\BootlegSeeder"
 ######via Laravel 4.2's workbench:
 You can still use laravel 4's workbench to set up a theme.
 1. composer.json:
+    ```
     composer require "illuminate/workbench:dev-master"
-
+    ```
+    
 2. Add in service provider:
-        "Illuminate\Workbench\WorkbenchServiceProvider", 
+    ```
+    "Illuminate\Workbench\WorkbenchServiceProvider", 
+    ```
 
 3. Create workbench config file
     config/workbench.php
-
-```
-<?php
-return [
-    'name' => 'Simon Davies',
-    'email' => 'whatever@whatever.com',
-];
-```
-
+    ```
+    <?php
+    return [
+        'name' => 'Simon Davies',
+        'email' => 'whatever@whatever.com',
+    ];
+    ```
     ..and composer dump-autoload
 
 4. Add run workbench command to create a workbench item:
+    ```
     php artisan workbench vendor/package --resources
-
+    ```
 
 5. Add this into composer.json
-    
+    ```
     "autoload": {
         "classmap": [
             "workbench/vendor/package/src"
             ..
         ]
     }
-
+    ```
+    
 6. Optionally add this into the plugins table 
 OR 
 You can include it into config/app.php
