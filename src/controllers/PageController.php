@@ -85,6 +85,7 @@ class PageController extends BaseController
 
         //share these accross everything.
         view()->share('content', $content);
+        view()->share('application', $application);
 
         if($extension == 'json'){
             $view = response()->json($content);
@@ -101,7 +102,8 @@ class PageController extends BaseController
         else{
             $code = 200;
         }
-
+        view()->share('application',$application);
+        
         $response = response($view);
 
         if(@$headers){
