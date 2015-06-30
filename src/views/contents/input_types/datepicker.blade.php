@@ -9,8 +9,9 @@ $options = array_merge($options, $options2);
 @if($params->max_number  && $params->max_number > 1)
     <div class='text-fields'>
         @foreach($setting as $field)
-        <div class='input-group text {{$niceName}}' >   
+        <div class='input-group datetimepicker {{$niceName}}' >   
             {!! Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, $options) !!}
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
             <span class="input-group-btn">
                 <button class="del-row btn btn-danger" type="button"><span class='glyphicon glyphicon-remove'></span></button>
             </span>
@@ -32,10 +33,20 @@ $options = array_merge($options, $options2);
         });
     </script>
 @else
-<div class='text {{$niceName}}' >   
+<div class='datetime input-group {{$niceName}}' >   
     @foreach($setting as $field)
     {!! Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, $options)!!}
+    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
     @endforeach
 </div>
 @endif
+
+<script type="text/javascript">
+$(function () {
+    $('.{{$niceName}}').datetimepicker({
+        'format':'YYYY-MM-DD H:mm:SS',
+        'useCurrent':true
+    });
+});
+</script>
 
