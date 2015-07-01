@@ -88,7 +88,7 @@ class PageController extends BaseController
         view()->share('application', $application);
 
         if($extension == 'json'){
-            $view = response()->json($content);
+            return response()->json($content);
         }
         else{
             $view = view("$package::$view");
