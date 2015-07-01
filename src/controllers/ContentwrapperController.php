@@ -459,7 +459,7 @@ class ContentwrapperController extends CMSController
         $depth ++;
         $branch = new \stdClass();
         $branch->id = $tree->id;
-        $branch->text = $tree->name.$depth;
+        $branch->text = $tree->name;
         $branch->a_attr = new \stdClass();
         if($tree->edit_action){
             $branch->a_attr->href = action($tree->edit_action, array($tree->id));
