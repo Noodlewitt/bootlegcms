@@ -108,6 +108,6 @@ OR
 You can include it into config/app.php
 
 ######via Manual:
-You can of course create a plugin manually with whatever structure makes sense to you.. A base template for a theme can be found online.
+You can of course create a plugin manually with whatever structure makes sense to you.. A base template for a theme can be found here: [Sample theme](https://github.com/Noodlewitt/bootlegcms-sampleplugin).
 
 
