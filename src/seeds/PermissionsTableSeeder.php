@@ -457,6 +457,18 @@ class PermissionsTableSeeder extends Seeder {
                 'created_at'=>date("Y-m-d H:i:s"),
                 'comment'=>''
             ),
+            array (
+                'id'=>'26',
+                'requestor_id'=> '2',
+                'application_id'=>'1',
+                'requestor_type'=>'role',
+                'controller_id'=>'*', 
+                'x'=>'1',
+                'controller_type'=>'Bootleg\\Cms\\ContentsController@anyInlineUpload',
+                'updated_at'=>date("Y-m-d H:i:s"),
+                'created_at'=>date("Y-m-d H:i:s"),
+                'comment'=>''
+            ),
         ));
     }
 }

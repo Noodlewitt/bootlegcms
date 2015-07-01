@@ -43,6 +43,7 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
             });
             tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
             tinymce.init({
+                height:{{$params->height}},
                 selector:'#{{$niceName.$field->id}}',
                 plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
                 toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload",

@@ -418,7 +418,7 @@ class ContentwrapperController extends CMSController
         }
     }
 
-    //requests imediate descendents for given node
+        //requests imediate descendents for given node
     //TODO: recursive.
     public function anyTree()
     {
@@ -434,7 +434,7 @@ class ContentwrapperController extends CMSController
             $id = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
 
-        $tree = $this->content->where('id','=',$id)->first()->getDescendants()->toHierarchy();
+        $tree = $this->content->where('id','=',$id)->first()->getDescendants(config('bootlegcms.cms_tree_descendents'))->toHierarchy();
         if(count($tree)){
             foreach($tree as $t){
                 $treeOut[] = $this->renderTree($t);
@@ -447,13 +447,19 @@ class ContentwrapperController extends CMSController
         }
 
     }
-
-    public function renderTree($tree)
+    
+    /**
+     * Renders a tree from a given node.. for use in jstree.
+     * @param  [type]  $tree  [description]
+     * @param  integer $depth current depth - used to see where to put children nodes.
+     * @return [type]         [description]
+     */
+    public function renderTree($tree, $depth = 0)
     {
-
+        $depth ++;
         $branch = new \stdClass();
         $branch->id = $tree->id;
-        $branch->text = $tree->name;
+        $branch->text = $tree->name.$depth;
         $branch->a_attr = new \stdClass();
         if($tree->edit_action){
             $branch->a_attr->href = action($tree->edit_action, array($tree->id));
@@ -470,17 +476,24 @@ class ContentwrapperController extends CMSController
 
         $branch->children = array();
         //$branch->children = ($tree->rgt - $tree->lft > 1);
+        if(count($tree->children)){
 
-        foreach($tree->children as $child){
+            foreach($tree->children as $child){
 
-            $c = $this->renderTree($child);
+                $c = $this->renderTree($child, $depth);
 
-            $branch->children[] = $c;
+                $branch->children[] = $c;
+            }    
         }
+        else{
+            if($depth <= config('bootlegcms.cms_tree_descendents')){
+                $branch->children = true;    
+            }
+        }
+        
 
         return($branch);
     }
-
 
     /*delete uploaded file(s)*/
     public function deleteUpload($id = ''){
@@ -565,10 +578,10 @@ class ContentwrapperController extends CMSController
         if(!empty($files)){
 
             foreach($files as $file) {
-
+                dd($file->getMimeType());
                 $rules = array(
                     //TODO.
-                    'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf|max:20000'
+                    'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf,mpeg|max:20000'
                 );
                 $validator = \Validator::make(array('file'=> $file), $rules);
 

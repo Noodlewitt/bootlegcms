@@ -48,6 +48,12 @@ class Contentsetting extends Eloquent {
         "tooltip":"",
         "max_number":1
     }';
+
+    const DEFAULT_TINYMCE_JSON = '{
+        "tooltip":"",
+        "max_number":1,
+        "height":300
+    }';
     
     
     public function content(){
@@ -86,6 +92,9 @@ class Contentsetting extends Eloquent {
         }
         else if($setting->field_type == 'datepicker'){
             $params = self::DEFAULT_DATEPICKER_JSON;
+        }
+        else if($setting->field_type == 'tinymce'){
+            $params = self::DEFAULT_TINYMCE_JSON;
         }
         else{
             $params = self::DEFAULT_TEXT_JSON;
