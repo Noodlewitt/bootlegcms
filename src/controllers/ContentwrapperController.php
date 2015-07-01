@@ -89,7 +89,7 @@ class ContentwrapperController extends CMSController
 
 
         if($content){
-            $tree = $content->getDescendantsAndSelf();
+            $tree = $content->getDescendantsAndSelf(config('bootlegcms.cms_tree_descendents'));
         }
 
         $content_settings = $this->content->setting()->get();
@@ -217,7 +217,7 @@ class ContentwrapperController extends CMSController
         if (\Request::ajax()) {
             return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         } else {
-            $tree = $content->getDescendants();
+            $tree = $content->getDescendants(config('bootlegcms.cms_tree_descendents'));
             return $this->render('layouts.tree',  compact('content', 'content_defaults', 'settings', 'allPermissions'));
         }
     }
@@ -477,7 +477,6 @@ class ContentwrapperController extends CMSController
         $branch->children = array();
         //$branch->children = ($tree->rgt - $tree->lft > 1);
         if(count($tree->children)){
-
             foreach($tree->children as $child){
 
                 $c = $this->renderTree($child, $depth);
@@ -487,6 +486,7 @@ class ContentwrapperController extends CMSController
         }
         else{
             if($depth <= config('bootlegcms.cms_tree_descendents')){
+                //we don't know if there's anymore children.. so assume there is
                 $branch->children = true;    
             }
         }
