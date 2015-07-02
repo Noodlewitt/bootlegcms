@@ -578,7 +578,7 @@ class ContentwrapperController extends CMSController
         if(!empty($files)){
 
             foreach($files as $file) {
-                dd($file->getMimeType());
+                
                 $rules = array(
                     //TODO.
                     'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf,mpeg|max:20000'
