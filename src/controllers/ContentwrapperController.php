@@ -230,14 +230,16 @@ class ContentwrapperController extends CMSController
      */
     public function anyUpdate($id = false)
     {
+        //TODO: if they are updateding on a language, only save that, NOT the main content item.
+        
         if (!@$id) {
             $input = array_except(\Input::all(), '_method');
             $id = $input['id'];
         }
         if ($id !== false) {
-
+            
             $input = array_except(\Input::all(), '_method');
-
+            
             $validation = \Validator::make($input, $this->content->rules);
             if ($validation->passes()) {
                 //we need to update the settings too:
@@ -249,10 +251,10 @@ class ContentwrapperController extends CMSController
                 if (@$input['parent_id'] == '#') {
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
-
+                
                 $oldPosition = $content->position;
                 $content->update($input);
-
+                
                 //position needs looking at too..
                 if(isset($input['position']) && $oldPosition != $input['position']){
 
@@ -578,7 +580,7 @@ class ContentwrapperController extends CMSController
         if(!empty($files)){
 
             foreach($files as $file) {
-                
+                dd($file->getMimeType());
                 $rules = array(
                     //TODO.
                     'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf,mpeg|max:20000'

@@ -56,8 +56,13 @@ class Contentsetting extends Eloquent {
     }';
     
     
-    public function content(){
-        return($this->belongsTo('Content'));
+    public function languages($code = NULL){
+
+        $langs = $this->hasMany('ContentsettingLanguage', 'content_setting_id');
+        if($code){
+            $langs->where('code',$code);
+        }
+        return($langs);
     }
     
     
@@ -100,5 +105,15 @@ class Contentsetting extends Eloquent {
             $params = self::DEFAULT_TEXT_JSON;
         } 
         return($params);
+    }
+
+    public function getValueAttribute($value){
+        $this->language = $this->languages(\App::getLocale())->first();
+        return @$this->language->value?$this->language->value:$value;
+    }
+
+    public function getNameAttribute($name){
+        $this->language = $this->languages(\App::getLocale())->first();
+        return @$this->language->name?$this->language->name:$name;
     }
 }

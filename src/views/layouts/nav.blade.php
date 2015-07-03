@@ -12,12 +12,12 @@
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
             <li>
-                <a href="#">Home</a>
+                <a href="#">{{trans('cms::messages.menu.home')}}</a>
             </li>
             @if(count($applications) > 1 || Permission::getPermission('\Bootleg\Cms\ApplicationController@anyCreate','')->result)
 
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{trans('cms::messages.menu.applications')}} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     @foreach($applications as $app)
                         @if(@$app->url[0])
@@ -34,14 +34,22 @@
 
             @if(count($application->languages))
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Languages <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{trans('cms::messages.menu.language')}} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     @foreach($application->languages as $lang)
-                        <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route').$lang->code}}">{{$lang->name}}</a></li>
+                        @if($lang->code == $application->default_locale)
+                            <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}">{{$lang->name}}</a></li>
+                        @else
+                            <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$lang->code}}">{{$lang->name}}</a></li>
+                        @endif
                     @endforeach
                 </ul>
             </li>
             @endif
+
+            <li class="align-right">
+                {{\App::getLocale()}}
+            </li>
 
             <?php
                 $navItems = Event::fire('nav.links', array());

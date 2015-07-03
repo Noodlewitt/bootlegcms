@@ -32,22 +32,22 @@ else{
 
 Route::group(array('prefix'=>@$applicationurl->folder), function () use ($application, $applicationurl) {
 //dd(Request::path());
-    $languages = array('en'); //TODO <<
-    $locale = null;
+    $languages = $application->languages()->lists('code');
+    
+    $locale = $application->default_locale;
 
 
     //we need to hunt down the right bit of the url to use for language.
     $pathArr = explode('/', Request::path());
     foreach ($pathArr as $segment) {
         if (in_array($segment, $languages)) {
-
             //this is our language!
-            $locale = $segment;
+            $urlLocale = $segment;
             break;
         }
     }
-    //this doesn't exists in artisan thus we have to if it here.
 
+    //this doesn't exists in artisan thus we have to if it here.
     if (@$_SERVER['HTTP_HOST']) {
         foreach($application->plugins as $plugin){
             App::register($plugin->service_provider);
@@ -56,7 +56,14 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
 
     Event::fire('routes.before');
 
-    App::setLocale($locale);
+    if(@$urlLocale){
+        App::setLocale($urlLocale);    
+    }
+    else{
+        $urlLocale = NULL;
+        App::setLocale($locale);       
+    }
+    
 
     Route::get('/upload', function () {
         return Redirect::action('Bootleg\Cms\PagesController@getUpload');
@@ -68,14 +75,13 @@ Route::group(array('prefix'=>@$applicationurl->folder), function () use ($applic
 
     Route::any(config('bootlegcms.cms_route').'login', array('uses'=>'Bootleg\Cms\UsersController@anyLogin'));
 
-    Route::group(array('prefix'=>config('bootlegcms.cms_route')), function () use ($locale) {
+    Route::group(array('prefix'=>config('bootlegcms.cms_route')), function () use ($urlLocale) {
 
-        Route::group(array('prefix'=>$locale), function () {
-
+        Route::group(array('prefix'=>$urlLocale), function () {
 
             Route::any('/', array('uses'=>'Bootleg\Cms\UsersController@anyDashboard'));
 
-            Route::controller('content', 'Bootleg\Cms\ContentsController');
+            Route::controller('contents', 'Bootleg\Cms\ContentsController');
 
             Route::controller('template', 'Bootleg\Cms\TemplateController');
 

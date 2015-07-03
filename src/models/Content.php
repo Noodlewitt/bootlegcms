@@ -72,6 +72,14 @@ class Content extends \Baum\Node{ //Eloquent {status
     {
         return $this->morphMany('Permission', 'controller');
     }
+
+    public function languages($code = NULL){
+        $langs = $this->hasMany('ContentLanguage', 'content_id');
+        if($code){
+            $langs->where('code',$code);
+        }
+        return($langs);
+    }
     
     public function childs()
     {
@@ -404,5 +412,23 @@ class Content extends \Baum\Node{ //Eloquent {status
                 }
             }
         }
+    }
+
+
+    public function getNameAttribute($value){
+        //dd(Application::getApplication()->languages);
+        //$this->language()->first();
+        
+        $this->language = $this->languages(\App::getLocale())->first();
+        
+        return @$this->language->name?$this->language->name:$value;
+    }
+
+    public function getSlugAttribute($value){
+        //dd(Application::getApplication()->languages);
+        
+        $this->language = $this->languages(\App::getLocale())->first();
+        
+        return @$this->language->slug?$this->language->slug:$value;
     }
 }

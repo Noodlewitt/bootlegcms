@@ -30,6 +30,9 @@ class CmsServiceProvider extends ServiceProvider {
 	    //publish the config
 	    $this->publishes([__DIR__.'/../../config/bootlegcms.php' => config_path('bootlegcms.php')]); //config
 
+	    //load translations..
+	    $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'cms');
+
 	    //Load views
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';

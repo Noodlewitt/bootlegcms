@@ -1,3 +1,4 @@
+
     <div class='overlay'></div>
     <div class="page-header row">
         <!-- Page header, center on small screens -->
@@ -5,6 +6,7 @@
     </div>
     @include('cms::layouts.flash_messages')
     <ul class="nav nav-tabs">
+
         <?php $i = 0; $advanced = false; $contentSection = false?>
 
         @foreach($settings as $key=>$section)
@@ -26,6 +28,28 @@
             <li><a href="#tab-Advanced" data-toggle="tab">Advanced</a></li>
         @endif
             <li><a href="#tab-Permission" data-toggle="tab">Permisssions</a></li>
+
+            @if(count($application->languages) > 1)
+                <li class='js-language-select'>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Languages:{{\App::getLocale()}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                        @foreach($application->languages as $language)
+                            @if($language->code == $application->default_locale)
+                                <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{'/'. $content_mode .'/'.'edit'.'/'.$content->id}}">{{$language->name}}</a></li>
+                            @else
+                                <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$language->code}}{{'/'. $content_mode .'/'.'edit'.'/'.$content->id}}">{{$language->name}}</a></li>
+                            @endif
+
+                        @endforeach
+                        <li role="separator" class="divider"></li>
+                            <li><a href="#">Set Current Language As My Default</a></li>
+                        </ul>
+                    </div>
+                </li>
+            @endif
     </ul>
     @if($content_mode == 'template')
     {!! Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('\Bootleg\Cms\TemplateController@anyUpdate', @$content->id))) !!}
@@ -147,8 +171,8 @@
 
                 <li class="form-group">
                     <div class='btn-group btn-group-lg'>
-                        {!! Form::submit(@$content->id?'Update':'Create', array('class' => 'btn btn-success ')) !!}
-                        {!! link_to_action('\Bootleg\Cms\ContentsController@anyEdit', 'Cancel', @$content->id, array('class' => 'btn btn-danger ')) !!}
+                        {!! Form::submit(@$content->id?trans('cms::messages.button.update'):trans('cms::messages.button.create'), array('class' => 'btn btn-success ')) !!}
+                        {!! link_to_action('\Bootleg\Cms\ContentsController@anyEdit', trans('cms::messages.button.cancel'), @$content->id, array('class' => 'btn btn-danger ')) !!}
                     </div>
                 </li>
             </ul>
@@ -168,6 +192,16 @@
             str = '/'+str.replace(/[^a-zA-Z0-9-_]/g, '');
             $('.js-slug').val(str.toLowerCase());
         });
+
+        @if(count($application->languages) > 1)
+        $('.js-language-select a').click(function(e){
+            e.preventDefault();
+            $.get(($(this).attr('href')), function(data){
+                $('.main-content').html(data);
+            });
+            
+        });
+        @endif
     });
     </script>
     {!! Form::close() !!}

@@ -3,14 +3,14 @@
         <li class="{{Request::is(config('bootlegcms.cms_route').'users/dashboard*')?'active':''}}">
             <a href="{{action('\Bootleg\Cms\UsersController@anyDashboard', array())}}">
                 <i class="menu-icon glyphicon glyphicon-home"></i>
-                <span class="mm-text">Dashboard</span>
+                <span class="mm-text">{{trans('cms::messages.menu.dashboard')}}</span>
             </a>
         </li>
         @if(Permission::getPermission('Bootleg\Cms\ContentsController@anyIndex','')->result)
         <li class="{{Request::is(config('bootlegcms.cms_route').'content/*')?'active':''}}">
             <a href="{{action('\Bootleg\Cms\ContentsController@anyIndex', array())}}">
                 <i class="menu-icon glyphicon glyphicon-list-alt"></i>
-                <span class="mm-text">Content</span>
+                <span class="mm-text">{{trans('cms::messages.menu.content')}}</span>
             </a>
         </li>
         @endif
@@ -18,7 +18,7 @@
         <li class="{{Request::is(config('bootlegcms.cms_route').'users/*')?'active':''}}">
             <a href="{{action('\Bootleg\Cms\UsersController@anyIndex', array())}}">
                 <i class="menu-icon glyphicon glyphicon-user"></i>
-                <span class="mm-text">Users</span>
+                <span class="mm-text">{{trans('cms::messages.menu.users')}}</span>
             </a>
         </li>
         @endif
@@ -39,7 +39,7 @@
         <li class="{{Request::is(config('bootlegcms.cms_route').'application/settings*')?'active':''}}">
             <a href="{{action('\Bootleg\Cms\ApplicationController@anySettings', array())}}">
                 <i class="menu-icon glyphicon glyphicon-cog"></i>
-                <span class="mm-text">Settings</span>
+                <span class="mm-text">{{trans('cms::messages.menu.settings')}}</span>
             </a>
         </li>
         @endif
