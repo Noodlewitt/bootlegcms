@@ -1,4 +1,4 @@
-<?php namespace Bootleg\Cms; 
+<?php namespace Bootleg\Cms;
 
 use \Validator;
 use \Input;
@@ -73,7 +73,7 @@ class ContentwrapperController extends CMSController
         $settings = $all_settings->groupBy('section');
 
         $content = \Content::setDefaults($content);
-        
+
         return $this->render('layouts.tree', compact('content', 'content_defaults', 'settings', 'allPermissions'));
     }
 
@@ -292,7 +292,7 @@ class ContentwrapperController extends CMSController
                         foreach ($settingGroup as $type => $setGrp) {
                             foreach ($setGrp as $key => $setting) {
                                 //we want to delete this setting.
-                                
+
                                 $toDel = \Bootleg\Cms\Utils::recursive_array_search('deleted', $setGrp);
                                 if (is_array($setGrp) && @$toDel) {
                                     $contentSetting = \Contentsetting::destroy($toDel);
@@ -339,7 +339,7 @@ class ContentwrapperController extends CMSController
                                                                     ->where('template_id', '=', $content->template_id)
                                                                     ->first();
                                         }
-                                        
+
                                         $contentSetting = new \Contentsetting();
                                         $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
                                         $contentSetting->value = $setting;
@@ -358,10 +358,10 @@ class ContentwrapperController extends CMSController
 
                                     }
                                     //dd($contentSetting);
-                                    
+
                                         //dd($contentSetting);
                                         $contentSetting->save();
-                                        
+
 
 
                                     $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
@@ -434,7 +434,11 @@ class ContentwrapperController extends CMSController
             $id = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
 
-        $tree = $this->content->where('id','=',$id)->first()->getDescendants(config('bootlegcms.cms_tree_descendents'))->toHierarchy();
+        $config =\Config::get('bootlegcms.cms_tree_descendents');
+        $tree = $this->content->where('id','=',$id)->first();
+        $tree = $config != null ? $tree->getDescendants($config) : $tree->getDescendants();
+        $tree = $tree->toHierarchy();
+
         if(count($tree)){
             foreach($tree as $t){
                 $treeOut[] = $this->renderTree($t);
@@ -447,7 +451,7 @@ class ContentwrapperController extends CMSController
         }
 
     }
-    
+
     /**
      * Renders a tree from a given node.. for use in jstree.
      * @param  [type]  $tree  [description]
@@ -482,15 +486,15 @@ class ContentwrapperController extends CMSController
                 $c = $this->renderTree($child, $depth);
 
                 $branch->children[] = $c;
-            }    
+            }
         }
         else{
             if($depth <= config('bootlegcms.cms_tree_descendents')){
                 //we don't know if there's anymore children.. so assume there is
-                $branch->children = true;    
+                $branch->children = true;
             }
         }
-        
+
 
         return($branch);
     }
@@ -524,16 +528,16 @@ class ContentwrapperController extends CMSController
         $setting[0]->id = 0;
 
         return $this->render('contents.inline-upload', compact('setting'));
-        
+
     }
 
     /*
      * pass in a content_setting id to upload to.
      */
     public function postUpload($id,  $type = "Contentsetting"){
-        
+
         $input = array_except(\Input::all(), '_method');
-        
+
         $uploadFolder = @$this->application->getSetting('Upload Folder');
         $inline = false;
         //dd($type);
@@ -553,9 +557,9 @@ class ContentwrapperController extends CMSController
                 }
 
                 //otherwise maybe it's custom.
-                $setting = new $type; 
+                $setting = new $type;
                 $setting->name = '_custom'; //just dummy stuff for now..
-                $setting->field_type = 'upload'; 
+                $setting->field_type = 'upload';
                 $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
             }
 
@@ -578,7 +582,7 @@ class ContentwrapperController extends CMSController
         if(!empty($files)){
 
             foreach($files as $file) {
-                
+
                 $rules = array(
                     //TODO.
                     'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf,mpeg|max:20000'
@@ -603,7 +607,7 @@ class ContentwrapperController extends CMSController
                     }
 
                     $finalUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName";
-                    
+
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
                     if(@$this->application->getSetting('Enable s3')){
