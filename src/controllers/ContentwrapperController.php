@@ -541,7 +541,7 @@ class ContentwrapperController extends CMSController
         $uploadFolder = @$this->application->getSetting('Upload Folder');
         $inline = false;
         //dd($type);
-        if($type != 'stdClass'){
+        if($type == 'Contentsetting' || $type == 'Templatesetting'){
             $setting = @$type::withTrashed()->find($id);
 
             if(!$setting){
