@@ -63,9 +63,9 @@ class Permission extends Eloquent {
                     ->with('danger', $message);
             }
             else{
-                return Redirect::guest(config('bootlegcms.cms_route').'login');   
+                return Redirect::guest(config('bootlegcms.cms_route').'login');
             }
-            
+
         } else {
             return(true);
         }
@@ -79,7 +79,7 @@ class Permission extends Eloquent {
             $user = \Auth::user();
         }
         $controller_type = trim($controller_type, '/\\');
-        
+
         //$controller_type = (addslashes($controller_type));
 
         //$p = Permission::where('controller_type', $controller_type)->first();
@@ -122,15 +122,15 @@ class Permission extends Eloquent {
         ->get();
 
         //dd($perm);
-        
+
         $return = new stdClass();
         $return->result = false;
         foreach ($perm as $p) {
-            if ($p->x === 1) {
+            if ($p->x == 1) {
                 $return->result = true;
                 $return->picked = $p;
                 break;
-            } elseif ($p->x === 0) {
+            } elseif ($p->x == 0) {
                 $return->result = false;
                 $return->picked = $p;
                 break;
