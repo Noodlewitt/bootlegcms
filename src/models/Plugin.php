@@ -20,7 +20,7 @@ class Plugin extends Eloquent {
         });
 
         if($settings->count() == 0){
-            if($default == false) return getSetting($getSetting, true); //fallback to default settings
+            if($default == false) return $this->getSetting($getSetting, true); //fallback to default settings
             else return null; //if no default setting, return null
         }
         if($settings->count() > 1){
