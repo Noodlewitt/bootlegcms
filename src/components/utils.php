@@ -2,7 +2,7 @@
 
 use DateTime;
 
-class utils
+class Utils
 {
     /**
      * strips out http:// or https:// from string
