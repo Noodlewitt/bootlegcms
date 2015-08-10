@@ -1,8 +1,7 @@
-<?php namespace Bootleg\Cms; 
+<?php namespace Bootleg\Cms;
 
 class PageController extends BaseController
 {
-
     public function getRoot()
     {
         //this is here to generate the root url from. TODO: there's probably a better way of doing this.
@@ -10,7 +9,7 @@ class PageController extends BaseController
 
 
     //returns whatever file from the uploads dir.
-    public function getUploads ($url = "")
+    public function getUploads($url = "")
     {
         dd($url);
         //TODO: security on this file.
@@ -25,17 +24,25 @@ class PageController extends BaseController
     /*
      *Sets language for front end pages.
      **/
-    public function getLanguage($language){
+    public function getLanguage($language)
+    {
         $language = '';
     }
 
-
-    public static function page($slug, $application, $applicationurl){
+    /**
+     * renders a foreward pointing (non admin) page.
+     * @param  string $slug           the url, excluding whatever domain junk
+     * @param  string $application    the current application model
+     * @param  string $applicationurl the current application_url model
+     * @return [type]                 [description]
+     */
+    public static function page($slug, $application, $applicationurl)
+    {
         $pathInfo = pathinfo($slug);
-        if($pathInfo['dirname'] == '/'){
+        if ($pathInfo['dirname'] == '/') {
             $pathInfo['dirname'] = '';
         }
-        if($slug != '/'){
+        if ($slug != '/') {
             $slug = $pathInfo['dirname']."/".$pathInfo['filename'];
             $slug = str_replace('./', '', $slug);
         }
@@ -52,7 +59,7 @@ class PageController extends BaseController
 
         //final bit of tweaking..
         $slug = '/'.trim($slug, '/');
-        
+
         $content = \Content::where('slug', '=', "$slug")
                 ->fromApplication()
                 ->live()
@@ -60,7 +67,7 @@ class PageController extends BaseController
                 ->first();
         //dd($slug);
         if (is_null($content)) {
-             \App::abort(404, "No content found at url:'$slug'"); //chuck 404 error.. WE HAVE NO SLUG THAT MATCHES WITHIN THIS APP
+            \App::abort(404, "No content found at url:'$slug'"); //chuck 404 error.. WE HAVE NO SLUG THAT MATCHES WITHIN THIS APP
         }
         //$perm = Permission::getPermission('content', $content->id, 'x');
 
@@ -87,28 +94,26 @@ class PageController extends BaseController
         view()->share('content', $content);
         view()->share('application', $application);
 
-        if($extension == 'json'){
+        if ($extension == 'json') {
             return response()->json($content);
-        }
-        else{
+        } else {
             $view = view("$package::$view");
         }
 
         //Next wee need to organise some headers for us.
-        if($content->headers){
+        if ($content->headers) {
             $headers = (array) json_decode($content->headers);
             $code = @$headers['Response'];
-        }
-        else{
+        } else {
             $code = 200;
         }
-        view()->share('application',$application);
-        
+        view()->share('application', $application);
+
         $response = response($view);
 
-        if(@$headers){
-            foreach($headers as $key=>$header){
-                if($key != 'Response'){
+        if (@$headers) {
+            foreach ($headers as $key=>$header) {
+                if ($key != 'Response') {
                     $response->header($key, $header);
                 }
             }

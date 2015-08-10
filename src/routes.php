@@ -33,6 +33,9 @@ else{
 Route::group(array('prefix'=>@$applicationurl->folder), function () use ($application, $applicationurl) {
 //dd(Request::path());
     $languages = $application->languages()->lists('code');
+    if(!$languages){
+        Config::set('bootlegcms.languages', false);
+    }
     
     $locale = $application->default_locale;
 

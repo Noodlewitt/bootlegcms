@@ -12,7 +12,7 @@
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
             <li>
-                <a href="#">{{trans('cms::messages.menu.home')}}</a>
+                <a href="/{{config('bootlegcms.cms_route')}}">{{trans('cms::messages.menu.home')}}</a>
             </li>
             @if(count($applications) > 1 || Permission::getPermission('\Bootleg\Cms\ApplicationController@anyCreate','')->result)
 

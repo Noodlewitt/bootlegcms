@@ -3,6 +3,7 @@
 class ContentsettingLanguage extends Eloquent {
     
     protected $table = 'content_settings_lang';
+    protected $fillable = array('content_setting_id', 'name', 'value', 'field_type');
 
     public function content()
     {

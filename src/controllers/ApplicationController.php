@@ -1,12 +1,14 @@
-<?php namespace Bootleg\Cms; 
+<?php namespace Bootleg\Cms;
 
-class ApplicationController extends CmsController {
-
-    public function __construct() {
+class ApplicationController extends CmsController
+{
+    public function __construct()
+    {
         parent::__construct();
     }
     
-    public function anyIndex(){
+    public function anyIndex()
+    {
         $applications = $this->application->descendantsAndSelf()->paginate(15);
         return $this->render('application.index', compact('applications')) ;
     }
@@ -15,17 +17,20 @@ class ApplicationController extends CmsController {
      * render children
      * @return [type] [description]
      */
-    public function anyChildren(){
+    public function anyChildren()
+    {
         $applications = $this->application->descendantsAndSelf()->paginate(15);
         return $this->render('application.index', compact('applications')) ;
     }
 
-    public function anyCreate(){
+    public function anyCreate()
+    {
         $newApp = new \Application();
         return $this->render('application.create', ['newApp' => $newApp]) ;
     }
 
-    public function deleteDestroy($id){
+    public function deleteDestroy($id)
+    {
         $application = \Application::findOrFail($id);
         $application->delete();
     }
@@ -35,18 +40,18 @@ class ApplicationController extends CmsController {
      * @param  [type] $id [description]
      * @return [type]     [description]
     */
-    public function getView($id){
+    public function getView($id)
+    {
         $application = \Application::findOrFail($id);
         return $this->render('application.view', ['application' => $application]) ;
     }
     
-    public function postStore(){
-        
+    public function postStore()
+    {
         $input = \Input::all();
-        if($input['parent_id']){
+        if ($input['parent_id']) {
             $parentApplication = \Application::find($input['parent_id']);
-        }
-        else{
+        } else {
             $parentApplication = $this->application;
         }
 
@@ -54,7 +59,6 @@ class ApplicationController extends CmsController {
         $validation = \Validator::make($input, \Application::$rules);
        // dd($input);
         if ($validation->passes()) {
-
             $newApp = new \Application();
             $newApp->name = $input['name'];
             $newApp->user_id = \Auth::user()->id;
@@ -71,7 +75,7 @@ class ApplicationController extends CmsController {
             //we need to do the urls..
             $domains = explode(',', $input['domain']);
             $appUrls = [];
-            foreach($domains as $domain){
+            foreach ($domains as $domain) {
                 $appUrl = new \ApplicationUrl();
                 $appUrl->domain = $domain;
                 $appUrl->folder = '/'; //TODO: folders - is this ever going to work?
@@ -81,17 +85,18 @@ class ApplicationController extends CmsController {
 
             //and the plugins
             $parentPlugins = $parentApplication->plugins()->get();
-            foreach($parentPlugins as $parentPlugin){
+            foreach ($parentPlugins as $parentPlugin) {
                 $newApp->plugins()->attach($parentPlugin->id);//associate($parentPlugin)
             }
 
             return redirect()->action('\Bootleg\Cms\ApplicationController@anyIndex')->with(['success'=>'Application Succesfully Created']);
         }
         \Request::flash();
-        return redirect()->back()->withErrors($validation->errors());        
+        return redirect()->back()->withErrors($validation->errors());
     }
     
-    public function anySettings(){
+    public function anySettings()
+    {
 
         //$application = Application::getApplication();
         //dd($this->application->cms_package);
@@ -106,26 +111,25 @@ class ApplicationController extends CmsController {
     /**
      * Sets language of back end
      **/
-    public function anySetlang(){
-        
+    public function anySetlang()
+    {
     }
     
-    public function anyUpdate(){
-        $input = array_except(\Input::all(), '_method');        
+    public function anyUpdate()
+    {
+        $input = array_except(\Input::all(), '_method');
         $validation = \Validator::make($input, \Application::$rules);
-        if ($validation->passes()){
-            
-
+        if ($validation->passes()) {
             $this->application->update($input);
             //dd($input);
             //DOMAINS
             $domains = explode(',', $input['domains']);
             //remove all the domains currently on the application:
-            foreach($this->application->url as $url){
+            foreach ($this->application->url as $url) {
                 $url->delete();
             }
             $appUrls = [];
-            foreach($domains as $domain){
+            foreach ($domains as $domain) {
                 $appUrl = new \ApplicationUrl();
                 $appUrl->domain = $domain;
                 $appUrl->folder = '/'; //TODO: folders - is this ever going to work?
@@ -134,17 +138,16 @@ class ApplicationController extends CmsController {
             $this->application->url()->saveMany($appUrls);
 
 
-            if(@$input['setting']){
-                foreach($settingGroup as $type=>$setGrp){
-                    foreach($setGrp as $key=>$setting){
+            if (@$input['setting']) {
+                foreach ($settingGroup as $type=>$setGrp) {
+                    foreach ($setGrp as $key=>$setting) {
                         //we want to delete this setting.
-                        if(is_array($setting) && array_key_exists('deleted',$setting)){
+                        if (is_array($setting) && array_key_exists('deleted', $setting)) {
                             $applicationSetting = \Applicationsetting::destroy($key);
-                        }
-                        else{
+                        } else {
                             //if it's not found (even in trashed) then we need to make a new field.
                             //if it's contentdefault, we need to create it too since it doesn't exist!
-                            
+
                             //otherwise this field exists.. we can overwrite it' settings.
                             $applicationSetting->name = $name;
                             $applicationSetting->value = $setting;
@@ -160,8 +163,5 @@ class ApplicationController extends CmsController {
             }
             return redirect()->action('\Bootleg\Cms\ApplicationController@anySettings')->with('success', 'Settings Updated');
         }
-    
     }
-
-
 }

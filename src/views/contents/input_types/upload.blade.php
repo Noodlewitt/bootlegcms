@@ -1,15 +1,15 @@
 <?php
 $params = Contentsetting::parseParams($setting[0]);
-$niceName = preg_replace('/\s+/', '_', $setting[0]->name);
+$niceName = preg_replace('/\s+/', '_', $setting[0]->orig_name);
 $files = array();
 foreach($setting as $field){
-    if(@$field->name){
+    if(@$field->orig_name){
         
         $url = $field->value;
 
         $fileName = pathinfo($url,PATHINFO_FILENAME);
         $fileObj = new stdClass();
-        $fileObj->name = $fileName;
+        $fileObj->orig_name = $fileName;
         $fileObj->thumbnailUrl = "$url"; //todo
         $fileObj->url = "$url";
         $fileObj->deleteUrl = action('\Bootleg\Cms\ContentsController@deleteUpload', array('id'=>$field->id)); //todo
@@ -24,8 +24,8 @@ $files = json_encode($files);
 ?>
 <div class="wrap">
     <div class='upload {{$niceName}}' >   
-        @if($setting[0]->name !="_inline")
-        {!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
+        @if($setting[0]->orig_name !="_inline")
+        {!! Form::label("setting[".$setting[0]->orig_name."][".$setting[0]->id."]", ucfirst($setting[0]->orig_name.":")) !!}
         @endif
         
 
@@ -35,7 +35,7 @@ $files = json_encode($files);
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
                 <div class="col-lg-7 
-                @if($setting[0]->name == "_inline")
+                @if($setting[0]->orig_name == "_inline")
                     text-center
                 @endif
                 ">
@@ -46,13 +46,13 @@ $files = json_encode($files);
                             <span class="btn btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 <span>Choose file...</span>
-                                <input type="file" name="{{$setting[0]->name}}[]" multiple>
+                                <input type="file" name="{{$setting[0]->orig_name}}[]" multiple>
                             </span>
                         @else
                             <span class="btn btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 <span>Add file...</span>
-                                <input type="file" name="{{$setting[0]->name}}[]" multiple>
+                                <input type="file" name="{{$setting[0]->orig_name}}[]" multiple>
                             </span>
                         @endif
                         {{--
@@ -66,7 +66,7 @@ $files = json_encode($files);
                             <span>Delete</span>
                         </button>
                     </div>
-                    @if($setting[0]->name !="_inline")
+                    @if($setting[0]->orig_name !="_inline")
                         <input type="checkbox" class="toggle">
                     @endif
                     <!-- The global file processing state -->
@@ -106,7 +106,7 @@ $files = json_encode($files);
                                 <span>Start</span>
                             </button>
                         {% } %}
-                        @if($setting[0]->name !="_inline")
+                        @if($setting[0]->orig_name !="_inline")
                         {% if (!i) { %}
                             <button class="btn btn-warning cancel">
                                 <i class="glyphicon glyphicon-ban-circle"></i>
@@ -126,7 +126,7 @@ $files = json_encode($files);
                     <td class="vertical-middle preview-wrap">
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
-                                <input value="{%=file.url%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
+                                <input value="{%=file.url%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->orig_name}}][{{get_class($field)}}][{%=file.id%}]"/>
                                 <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" data-gallery><img src="{%=file.thumbnailUrl%}" alt="preview" class="img-thumbnail"></a>
                             {% } %}
                         </span>

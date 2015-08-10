@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Database\Eloquent\SoftDeletes;
 class Template extends Baum\Node{ //Eloquent {
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
+    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id', 'loopback', 'auto_create');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -38,6 +38,14 @@ class Template extends Baum\Node{ //Eloquent {
         return $this->belongsTo('Content');
     }
 
+
+    public function languages($code = NULL){
+        $langs = $this->hasMany('TemplateLanguage', 'template_id');
+        if($code){
+            $langs->where('code',$code);
+        }
+        return($langs);
+    }
 
     public function permission()
     {
@@ -181,6 +189,23 @@ class Template extends Baum\Node{ //Eloquent {
         //SAVE CONTENT ITEM
         $saved = $parent->children()->create($input);  
         return($saved);
+    }
+
+    public function getNameAttribute($value){
+        //dd(Application::getApplication()->languages);
+        //$this->language()->first();
+        
+        $this->language = $this->languages(\App::getLocale())->first();
+        //dd(@$this->language->name?$this->language->name:$value);
+        return @$this->language->name?$this->language->name:$value;
+    }
+
+    public function getSlugAttribute($value){
+        //dd(Application::getApplication()->languages);
+        
+        $this->language = $this->languages(\App::getLocale())->first();
+        
+        return @$this->language->slug?$this->language->slug:$value;
     }
     
 }

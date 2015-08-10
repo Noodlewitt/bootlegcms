@@ -1,7 +1,8 @@
 <?php
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Templatesetting extends Eloquent {
+class Templatesetting extends Eloquent
+{
     protected $fillable = array('template_id', 'name', 'value', 'field_type');
 
     protected $table = 'template_settings';
@@ -34,11 +35,35 @@ class Templatesetting extends Eloquent {
 
     
     
-    public function content(){
+    public function content()
+    {
         return($this->belongsTo('Content'));
     }
 
-    public function template(){
+    public function template()
+    {
         return($this->belongsTo('Template'));
+    }
+
+    public function languages($code = NULL){
+
+        $langs = $this->hasMany('TemplatesettingLanguage', 'template_setting_id');
+        if($code){
+            $langs->where('code',$code);
+        }
+        return($langs);
+    }
+
+
+    public function getValueAttribute($value){
+        $this->language = $this->languages(\App::getLocale())->first();
+        $this->orig_value = $value;
+        return @$this->language->value?$this->language->value:$value;
+    }
+
+    public function getNameAttribute($name){
+        $this->language = $this->languages(\App::getLocale())->first();
+        $this->orig_name = $name;
+        return @$this->language->name?$this->language->name:$name;
     }
 }

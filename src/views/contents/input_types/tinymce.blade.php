@@ -3,10 +3,10 @@ $params = Contentsetting::parseParams($setting[0]);
 $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 ?>
 
-{!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
+{!! Form::label("setting[".$setting[0]->orig_name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
 <div id="upload_target" src="/random"></div>
 @foreach($setting as $field)
-    {!! Form::textarea("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'tinymce '.$niceName.$field->id, 'id'=>$niceName.$field->id)) !!}
+    {!! Form::textarea("setting[".$field->orig_name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'tinymce '.$niceName.$field->id, 'id'=>$niceName.$field->id)) !!}
     <script>
         var inline_image = "";
         $(function() {

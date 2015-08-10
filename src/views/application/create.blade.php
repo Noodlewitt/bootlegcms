@@ -29,7 +29,7 @@
                     </li>
 
                     <li class="form-group {{@$errors->first('parent_id') ? 'has-error has-feedback':""}}">
-                        {!! Form::label('parent_id', 'Parent Store:', ['class'=>'control-label']) !!}
+                        {!! Form::label('parent_id', 'Parent Application:', ['class'=>'control-label']) !!}
                         {!! Form::text('parent_id', \Input::old('parent_id'), array('class'=>'form-control')) !!}
                         @if(@$errors->first('parent_id'))
                             <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
