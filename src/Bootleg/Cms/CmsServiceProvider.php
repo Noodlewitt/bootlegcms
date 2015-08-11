@@ -4,6 +4,11 @@ use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider {
 
+
+    public function __construct($app) {
+        parent::__construct($app);
+        require_once __DIR__.'/../../handlers/ExceptionHandler.php';
+    }
 	/**
 	 * Indicates if loading of the provider is deferred.
 	 *
@@ -40,19 +45,21 @@ class CmsServiceProvider extends ServiceProvider {
 
 
 
-   	public function register(){
-        
+    public function register()
+    {
+        $this->app->singleton(
+            'Illuminate\Contracts\Debug\ExceptionHandler',
+            'Bootleg\Cms\ExceptionHandler'
+        );
     }
-
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return [];
-	}
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return ['Illuminate\Contracts\Debug\ExceptionHandler'];
+    }
 
 }
