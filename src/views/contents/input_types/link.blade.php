@@ -1,4 +1,8 @@
-{!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
+<?php
+$params = Contentsetting::parseParams($setting[0]);
+$field_title = isset($params->field_title) ? $params->field_title : $setting[0]->name;
+?>
+{!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($field_title.":")) !!}
 @foreach($setting as $field)
 <h2>TODO: FINISH THIS </h2>
 <div class='input-group'>

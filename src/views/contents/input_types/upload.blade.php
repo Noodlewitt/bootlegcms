@@ -1,6 +1,7 @@
 <?php
 $params = Contentsetting::parseParams($setting[0]);
-$niceName = isset($params->field_title) ? $params->field_title : preg_replace('/\s+/', '_', $setting[0]->name);
+$niceName = preg_replace('/\s+/', '_', $setting[0]->name);
+$field_title = isset($params->field_title) ? $params->field_title : $setting[0]->name;
 $files = array();
 foreach($setting as $field){
     if(@$field->name){
@@ -25,7 +26,7 @@ $files = json_encode($files);
 <div class="wrap">
     <div class='upload {{$niceName}}' >
         @if($setting[0]->name !="_inline")
-        {!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
+        {!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($field_title.":")) !!}
         @endif
 
 

@@ -1,11 +1,12 @@
 <?php
 $params = Contentsetting::parseParams($setting[0]);
-$niceName = isset($params->field_title) ? $params->field_title : preg_replace('/\s+/', '', $setting[0]->name);
+$niceName = preg_replace('/\s+/', '', $setting[0]->name);
+$field_title = isset($params->field_title) ? $params->field_title : $setting[0]->name;
 $options = array('data-provide'=>"datepicker", 'class'=>'form-control datepicker');
 $options2 = ((array) $params->options);
 $options = array_merge($options, $options2);
 ?>
-{!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
+{!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($field_title.":")) !!}
 @if($params->max_number  && $params->max_number > 1)
     <div class='text-fields'>
         @foreach($setting as $field)
