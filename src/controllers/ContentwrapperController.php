@@ -107,8 +107,8 @@ class ContentwrapperController extends CMSController
 
 
 
-        $input = Input::all();
-        $validation = Validator::make($input, $this->content->rules);
+        $input = \Input::all();
+        $validation = \Validator::make($input, $this->content->rules);
 
         if(!isset($input['parent_id']) || $input['parent_id'] == '#'){
             //we ar not allowed to create a new root node like this.. so set it to the current root.
@@ -117,11 +117,11 @@ class ContentwrapperController extends CMSController
         }
         if ($validation->passes()){
 
-            Event::fire('content.create', array($this->content));
-            Event::fire('content.update', array($this->content));
+            \Event::fire('content.create', array($this->content));
+            \Event::fire('content.update', array($this->content));
             $tree = $this->content->superSave($input);
-            Event::fire('content.created', array($this->content));
-            Event::fire('content.updated', array($this->content));
+            \Event::fire('content.created', array($this->content));
+            \Event::fire('content.updated', array($this->content));
           //  dd($tree);
 
 
@@ -130,7 +130,7 @@ class ContentwrapperController extends CMSController
            // return Redirect::action('ContentsController@anyIndex');
         }
 
-        return Redirect::action('ContentsController@anyCreate')
+        return \Redirect::action('\Bootleg\Cms\ContentsController@anyCreate')
             ->withInput()
             ->withErrors($validation)
             ->with('message', 'There were validation errors.');
@@ -144,12 +144,12 @@ class ContentwrapperController extends CMSController
 
     //fixes slugs based off depth
     public function anyFixslug(){
-        $Content = Content::where('depth','=','5')->get();
+        $Content = \Content::where('depth','=','5')->get();
         foreach($Content as $cont){
             $input = array();
             $input['name'] = $cont->name;
-            $parent = Content::find($cont->parent_id);
-            $slug = Content::createSlug($input,$parent,true);
+            $parent = \Content::find($cont->parent_id);
+            $slug = \Content::createSlug($input,$parent,true);
             $cont->slug = $slug;
             var_dump($slug);
             $cont->save();
@@ -389,7 +389,7 @@ class ContentwrapperController extends CMSController
             //TODO:
             $validation = 'no id';
         }
-        return redirect()->action('ContentsController@anyEdit', $id)
+        return redirect()->action('\Bootleg\Cms\ContentsController@anyEdit', $id)
             ->withInput()
             ->withErrors($validation)
             ->with('danger', 'There were validation errors.');
@@ -414,7 +414,7 @@ class ContentwrapperController extends CMSController
         $this->content->find($id)->delete();
 
         if (!\Request::ajax()) {
-            return redirect()->action('ContentsController@anyIndex');
+            return redirect()->action('\Bootleg\Cms\ContentsController@anyIndex');
         }
     }
 
@@ -502,9 +502,9 @@ class ContentwrapperController extends CMSController
     /*delete uploaded file(s)*/
     public function deleteUpload($id = ''){
         if($id){
-            $content_setting = Contentsetting::findOrFail($id);
+            $content_setting = \Contentsetting::findOrFail($id);
             //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
-            $delete = new stdClass();
+            $delete = new \stdClass();
             $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
 
             $delete->{$fileName} = true;
@@ -600,7 +600,7 @@ class ContentwrapperController extends CMSController
                     $size               = $file->getSize();
                     try {
                         $upload_success     = $file->move($destinationPath.$uploadFolder, $fileId.'.'.$extension);
-                    } catch(Exception $e) {
+                    } catch(\Exception $e) {
                         dd($e->getMessage());
                         //TODO: proper error handling should really take place here..
                         //in the mean time we'll make do with a dd.
