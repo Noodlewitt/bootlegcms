@@ -65,11 +65,12 @@ class ExceptionHandler extends \App\Exceptions\Handler
         $package = 'cms'; //@todo - allow for custom CMS packages and themes
         $status = $e->getStatusCode();
 
-        if (view()->exists($package."::errors.{$status}")) {
-            return $this->toIlluminateResponse($this->renderHttpException($e), $e);
+        if (!view()->exists($package."::errors.".$status)) {
+            $status = 'default';
         }
 
-        return response()->view($package."::errors.default", ['exception' => $e], $status);
+        return response()->view($package."::errors.".$status, ['exception' => $e], $status);
+
 
     }
 }
