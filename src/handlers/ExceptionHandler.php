@@ -8,15 +8,13 @@ class ExceptionHandler extends \App\Exceptions\Handler
 {
     public function render($request, Exception $e)
     {
-        if (config('app.debug')) {
-            //we can target any error we like
-            if ($e instanceof \Bootleg\Cms\CustomError) {
-                //we can potentially return something different for ajax requests
-                if ($request->ajax()) {
-                    return $this->renderExceptionWithWhoops($request, $e);
-                } else {
-                    return $this->renderExceptionWithWhoops($request, $e);
-                }
+        //we can target any error we like
+        if ($e instanceof \Bootleg\Cms\CustomError) {
+            //we can potentially return something different for ajax requests
+            if ($request->ajax()) {
+                return $this->renderExceptionWithWhoops($request, $e);
+            } else {
+                return $this->renderExceptionWithWhoops($request, $e);
             }
         }
         if ($this->isHttpException($e)) {
@@ -44,12 +42,16 @@ class ExceptionHandler extends \App\Exceptions\Handler
      */
     protected function renderExceptionWithWhoops($request, Exception $e)
     {
-        $whoops = new \Whoops\Run;
-        $whoops->pushHandler($request->ajax() ? new \Whoops\Handler\JsonResponseHandler : new \Whoops\Handler\PrettyPageHandler);
-        $whoops->allowQuit(false);
-        $whoops->writeToOutput(false);
+        if (config('app.debug')) {
+            $whoops = new \Whoops\Run;
+            $whoops->pushHandler($request->ajax() ? new \Whoops\Handler\JsonResponseHandler : new \Whoops\Handler\PrettyPageHandler);
+            $whoops->allowQuit(false);
+            $whoops->writeToOutput(false);
 
-        return response($whoops->handleException($e), $whoops->sendHttpCode());
+            return response($whoops->handleException($e), $whoops->sendHttpCode());
+        } else {
+            return renderHttpExceptionView($e);
+        }
     }
 
     /**
