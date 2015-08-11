@@ -5,10 +5,10 @@ class Contentsetting extends Eloquent {
     protected $fillable = array('content_id', 'name', 'value', 'field_type');
 
     protected $table = 'content_settings';
-    
+
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    
+
     const DEFAULT_UPLOAD_JSON = '{
         "validation": {
           "mimes":"gif,jpeg,bmp,png",
@@ -17,7 +17,7 @@ class Contentsetting extends Eloquent {
         "tooltip": "",
         "max_number": 1
     }';
-    
+
     const DEFAULT_DROPDOWN_JSON = '{
         "values": {
           "": "Please Select",
@@ -25,6 +25,13 @@ class Contentsetting extends Eloquent {
         },
         "max_number":1,
         "tooltip": ""
+    }';
+
+    const DEFAULT_RELATIONSHIP_JSON = '{
+        "table":"",
+        "id_col": "id",
+        "value_col": "name",
+        "is_baum":0
     }';
 
     const DEFAULT_DATEPICKER_JSON = '{
@@ -43,7 +50,14 @@ class Contentsetting extends Eloquent {
         },
         "tooltip": ""
     }';
-    
+    const DEFAULT_RADIO_JSON = '{
+        "values": {
+          "yes": "1",
+          "no": "0"
+        },
+        "tooltip": ""
+    }';
+
     const DEFAULT_TEXT_JSON = '{
         "tooltip":"",
         "max_number":1
@@ -54,20 +68,28 @@ class Contentsetting extends Eloquent {
         "max_number":1,
         "height":300
     }';
-    
-    
+
+
     public function content(){
         return($this->belongsTo('Content'));
     }
-    
-    
-    
+
+
+
     /*
      * Grabs the params field from wherever it can and parses the json.
      */
     public static function parseParams($setting){
         if(@$setting->field_parameters){
-            $params = $setting->field_parameters;
+
+            //OLD CODE: Uses supplied parameters, but must include ALL paramaters
+            //$params = $setting->field_parameters;
+
+            //NEW CODE: Merges supplied paramaters, and defaults on parameters that were not supplied
+            $default_settings = json_decode(self::getDefaultParams($setting), true);
+            $provided_settings = json_decode($setting->field_parameters, true);
+
+            $params = json_encode($provided_settings + $default_settings);
         }
         else if(@$setting->default_setting->field_parameters){
             $params = @$setting->default_setting->field_parameters;
@@ -77,7 +99,7 @@ class Contentsetting extends Eloquent {
         }
         return(json_decode($params));
     }
-    
+
     public static function getDefaultParams($setting){
         //todo: there must be a nicer way than this..
         //dd($setting->field_type);
@@ -96,9 +118,15 @@ class Contentsetting extends Eloquent {
         else if($setting->field_type == 'tinymce'){
             $params = self::DEFAULT_TINYMCE_JSON;
         }
+        else if($setting->field_type == 'relationship'){
+            $params = self::DEFAULT_RELATIONSHIP_JSON;
+        }
+        else if($setting->field_type == 'radio'){
+            $params = self::DEFAULT_RADIO_JSON;
+        }
         else{
             $params = self::DEFAULT_TEXT_JSON;
-        } 
+        }
         return($params);
     }
 }

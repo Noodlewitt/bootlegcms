@@ -1,10 +1,10 @@
 <?php
 $params = Contentsetting::parseParams($setting[0]);
-$niceName = preg_replace('/\s+/', '_', $setting[0]->name);
+$niceName = isset($params->field_title) ? $params->field_title : preg_replace('/\s+/', '_', $setting[0]->name);
 $files = array();
 foreach($setting as $field){
     if(@$field->name){
-        
+
         $url = $field->value;
 
         $fileName = pathinfo($url,PATHINFO_FILENAME);
@@ -20,28 +20,28 @@ foreach($setting as $field){
         //TODO: handle multiple files here?
     }
 }
-$files = json_encode($files);   
+$files = json_encode($files);
 ?>
 <div class="wrap">
-    <div class='upload {{$niceName}}' >   
+    <div class='upload {{$niceName}}' >
         @if($setting[0]->name !="_inline")
         {!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
         @endif
-        
+
 
             <!-- The table listing the files available for upload/download -->
             <table id="{{uniqid()}}" role="presentation" class="table table-striped uploaded"><tbody class="files"></tbody></table>
 
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
-                <div class="col-lg-7 
+                <div class="col-lg-7
                 @if($setting[0]->name == "_inline")
                     text-center
                 @endif
                 ">
                     <div class="btn-group">
                     <!-- The fileinput-button span is used to style the file input field as button -->
-                        
+
                         @if($params->max_number == 1)
                             <span class="btn btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
@@ -204,22 +204,22 @@ $files = json_encode($files);
                 });
 
                 $form{{$niceName}}.bind('fileuploaddone', function (e, data) {
-                    //added file, we wait for 1 second for some reason                  
+                    //added file, we wait for 1 second for some reason
                     setTimeout(function(){
                         //and add in the image preview
                         $input = $('input.upload-value', $container{{$niceName}});
                         $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
                         window.parent.inline_image = $input.val();
                     }, 1000);
-                }).bind('fileuploaddestroyed', function (e, data) {     
+                }).bind('fileuploaddestroyed', function (e, data) {
                     //on deleted, we remove the input file
                     var $input = $('input.upload-value', $(data.context).closest('tr')).val('');
                     $input.clone().appendTo( $container{{$niceName}});
-                    
+
                     //$inp = $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id'));
                     //$inp.attr('name',$inp.attr('name')+'[deleted]');
                     //$('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id')).remove();
-                }); 
+                });
 
                 @if(@$files)
                     var files{{$niceName}} = {!!$files!!};

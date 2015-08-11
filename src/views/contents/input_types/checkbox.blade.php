@@ -3,7 +3,7 @@
 We have to do checkboxes as hidden fields becuase if it's unchecked http doesn't send the data over in POST.
 In order to combat this rediculous issue I either have to re-m,odel the content-settings, template-settings behavior OR just do it with JS.
  */
-$niceName = preg_replace('/\s+/', '', $setting[0]->name);
+$niceName = isset($params->field_title) ? $params->field_title : preg_replace('/\s+/', '', $setting[0]->name);
 $params = Contentsetting::parseParams($setting[0]);
 
 ?>

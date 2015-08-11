@@ -1,6 +1,6 @@
 <?php
 $params = Contentsetting::parseParams($setting[0]);
-$niceName = preg_replace('/\s+/', '', $setting[0]->name);
+$niceName = isset($params->field_title) ? $params->field_title : preg_replace('/\s+/', '', $setting[0]->name);
 $options = array('data-provide'=>"datepicker", 'class'=>'form-control datepicker');
 $options2 = ((array) $params->options);
 $options = array_merge($options, $options2);
@@ -9,7 +9,7 @@ $options = array_merge($options, $options2);
 @if($params->max_number  && $params->max_number > 1)
     <div class='text-fields'>
         @foreach($setting as $field)
-        <div class='input-group datetimepicker {{$niceName}}' >   
+        <div class='input-group datetimepicker {{$niceName}}' >
             {!! Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, $options) !!}
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
             <span class="input-group-btn">
@@ -33,7 +33,7 @@ $options = array_merge($options, $options2);
         });
     </script>
 @else
-<div class='datetime input-group {{$niceName}}' >   
+<div class='datetime input-group {{$niceName}}' >
     @foreach($setting as $field)
     {!! Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, $options)!!}
     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
