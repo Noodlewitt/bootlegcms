@@ -622,24 +622,18 @@ class ContentwrapperController extends CMSController
                             $pth = $fileName;
                         }
 
-
-                        //temp fix to AWS API changes.
-                        //@todo this stuff should be handled by env file?
-                        $application = \Application::getApplication(null, null, false, true);
                         $aws = \Aws\Common\Aws::factory(array(
                             'includes' => array('_aws'),
                             'services' => array(
                                 'default_settings' => array(
                                     'params' => array(
-                                        'key'    => @$application->setting->filter(function($model){return $model->name === 's3 access key';})->first()->value,
-                                        'secret' => @$application->setting->filter(function($model){return $model->name === 's3 secret';})->first()->value,
-                                        'region' => @$application->setting->filter(function($model){return $model->name === 's3 region';})->first()->value
+                                        'key'    => @$this->application->getSetting('s3 access key'),
+                                        'secret' => @$this->application->getSetting('s3 secret'),
+                                        'region' => @$this->application->getSetting('s3 region')
                                     )
                                 )
                             )
                         ));
-                        // end @todo
-
                         $s3 = $aws->get('s3');
                         $s3->putObject(array(
                             'Bucket'     => @$this->application->getSetting('s3 Bucket'),
