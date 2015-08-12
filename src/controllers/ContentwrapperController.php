@@ -598,8 +598,9 @@ class ContentwrapperController extends CMSController
                     $originalName       = $file->getClientOriginalName();
                     $mime_type          = $file->getMimeType();
                     $size               = $file->getSize();
+                    $fileFullPath       = $destinationPath.$uploadFolder, $fileId.'.'.$extension;
                     try {
-                        $upload_success     = $file->move($destinationPath.$uploadFolder, $fileId.'.'.$extension);
+                        $upload_success     = $file->move($fileFullPath);
                     } catch(\Exception $e) {
                         dd($e->getMessage());
                         //TODO: proper error handling should really take place here..
@@ -649,8 +650,12 @@ class ContentwrapperController extends CMSController
                             $finalUrl = "//".@$this->application->getSetting('s3 Bucket')."/$pth";
                         }
 
-
                         //todo: remove old file in /uploads?
+                        $deleteOnUpload = @$this->application->getSetting('deleteUploads');
+                        if ($deleteOnUpload && \File::exists($fileFullPath)) {
+                            \File::delete($fileFullPath);
+                        }
+
                     }
 
                     //and we need to build the json response.
