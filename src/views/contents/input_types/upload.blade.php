@@ -177,7 +177,7 @@ $files = json_encode($files);
                 $form{{$niceName}}.fileupload({
                     // Uncomment the following to send cross-domain cookies:
                     //xhrFields: {withCredentials: true},
-                    url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>get_class($setting[0])))}}}",
+                    url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id))}}}",
                     maxNumberOfFiles:{{$params->max_number or '1'}},
                     @if(isset($params->max_number) && $params->max_number>1)
                     singleFileUploads:'false',
@@ -187,6 +187,8 @@ $files = json_encode($files);
                     limitConcurrentUploads:3,
                     formData:{
                         type: '{{get_class($setting[0])}}',
+                        maxsize: '{{ $params->validation->size * 1024 }}',
+                        mimes: '{{ $params->validation->mimes }}',
                         '_token': "{{csrf_token()}}"
                     },
                     autoUpload: true,

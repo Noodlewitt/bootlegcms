@@ -534,7 +534,7 @@ class ContentwrapperController extends CMSController
     /*
      * pass in a content_setting id to upload to.
      */
-    public function postUpload($id,  $type = "Contentsetting"){
+    public function postUpload($id){
 
         $u = [
             'local' => [
@@ -567,6 +567,8 @@ class ContentwrapperController extends CMSController
         $input = array_except(\Input::all(), '_method');
 
         $inline = false;
+
+        $type = $input['type'];
         //dd($type);
         if($type == 'Contentsetting' || $type == 'Templatesetting'){
             $setting = @$type::withTrashed()->find($id);
@@ -601,7 +603,7 @@ class ContentwrapperController extends CMSController
             }
 
             $params = json_decode($setting->field_parameters);
-        }else{
+        } else {
             $f = \Input::file();
             $files = (\Input::file(key($f)));
         }
@@ -612,7 +614,7 @@ class ContentwrapperController extends CMSController
 
                 $rules = array(
                     // @todo.
-                    'file' => 'required|mimes:png,gif,jpeg,txt,pdf,doc,rtf,mpeg|max:20000'
+                    'file' => 'required|mimes:'.$input['mimes'].'|max:'.$input['maxsize']
                 );
                 $validator = \Validator::make(array('file'=> $file), $rules);
 
