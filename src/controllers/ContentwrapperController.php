@@ -546,9 +546,6 @@ class ContentwrapperController extends CMSController
                 'folder' => trim(@$this->application->getSetting('s3 Folder'),'/\ '),
                 'bucket' => @$this->application->getSetting('s3 Bucket'),
                 'cloudfront_url' => trim(@$this->application->getSetting('s3 Cloudfront Url'), " /"),
-                'key'    => @$this->application->getSetting('s3 access key'),
-                'secret' => @$this->application->getSetting('s3 secret'),
-                'region' => @$this->application->getSetting('s3 region')
             ]
         ];
         $a = [
@@ -556,9 +553,9 @@ class ContentwrapperController extends CMSController
             'services' => [
                 'default_settings' => [
                     'params' => [
-                        'key'    => $u['s3']['key'],
-                        'secret' => $u['s3']['secret'],
-                        'region' => $u['s3']['region']
+                        'key'    => @$this->application->getSetting('s3 access key'),
+                        'secret' => @$this->application->getSetting('s3 secret'),
+                        'region' => @$this->application->getSetting('s3 region')
                     ]
                 ]
             ]
