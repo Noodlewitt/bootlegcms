@@ -659,9 +659,9 @@ class ContentwrapperController extends CMSController
                             'SourceFile' =>     public_path($f['upload_full']),
                             'ACL'        =>     'public-read' //todo: check this would be standard - would we ever need to have something else in here?
                         ]);
-                        if($u['s3']['bucket']) {
+                        if($u['s3']['cloudfront_url']) {
                             $f['url'] = '//'.$u['s3']['bucket'].'/'.$upload_path;
-                        } elseif($u['s3']['cloudfront_url']){
+                        } elseif($u['s3']['bucket']){
                             $f['url'] = '//'.$u['s3']['cloudfront_url'].'/'.$upload_path;
                         }
 
