@@ -27,7 +27,7 @@ class CmsServiceProvider extends ServiceProvider {
 	    $this->publishes([__DIR__.'/../../../public' => public_path('vendor/bootleg/cms')], 'public');
 
 	    //publish the migrations:
-	    $this->publishes([__DIR__.'/../../migrations/' => public_path('../database/migrations')], 'migrations');
+	    $this->publishes([__DIR__.'/../../migrations/' => base_path('database/migrations')], 'migrations');
 
 	    // TODO: ^^ when we upgrade next - seems this has been fixed:
 	    //$this->publishes([__DIR__.'/../../../src//migrations/' => database_path('/migrations')], 'migrations');
