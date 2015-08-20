@@ -89,9 +89,11 @@ $files = json_encode($files);
             <script id="{{uniqid()}}" class='upload-template' type="text/x-tmpl">
             {% for (var i=0, file; file=o.files[i]; i++) { %}
                 <tr class="template-upload fade">
+                    @if($params->show_preview)
                     <td class="vertical-middle preview-wrap">
                         <span class="preview"></span>
                     </td>
+                    @endif
                     <td class='vertical-middle'>
                         <p class="name">{%=file.name%}</p>
                         <strong class="error text-danger"></strong>
@@ -124,6 +126,7 @@ $files = json_encode($files);
             {% for (var i=0, file; file=o.files[i]; i++) { %}
                 {% if (file.thumbnailUrl) { %}
                 <tr data-item_id="{%=i%}" class="template-download fade">
+                    @if($params->show_preview)
                     <td class="vertical-middle preview-wrap">
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
@@ -132,12 +135,13 @@ $files = json_encode($files);
                             {% } %}
                         </span>
                     </td>
+                    @endif
                     <td class='vertical-middle'>
                         <p class="name">
                             {% if (file.url) { %}
-                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
+                                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.original_name%}</a>
                             {% } else { %}
-                                <span>{%=file.name%}</span>
+                                <span>{%=file.original_name%}</span>
                             {% } %}
                         </p>
                         {% if (file.error) { %}

@@ -675,8 +675,10 @@ class ContentwrapperController extends CMSController
                     //and we need to build the json response.
                     $fileObj = new \stdClass();
                     $fileObj->name = $f['name'];
+                    $fileObj->original_name = $f['original_name'];
                     $fileObj->id = $id;
                     $fileObj->thumbnailUrl = $f['url']; //@todo
+                    $fileObj->url = $f['url'];
 
                     //is this stuff still needed?
                     $fileObj->deleteUrl = url($f['upload_full']); //todo

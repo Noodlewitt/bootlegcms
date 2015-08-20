@@ -14,6 +14,7 @@ class Contentsetting extends Eloquent {
           "mimes":"gif,jpeg,bmp,png",
           "size":"5120"
         },
+        "show_preview": true,
         "tooltip": "",
         "max_number": 1
     }';
@@ -81,14 +82,12 @@ class Contentsetting extends Eloquent {
      */
     public static function parseParams($setting){
         if(@$setting->field_parameters){
-
             //OLD CODE: Uses supplied parameters, but must include ALL paramaters
             //$params = $setting->field_parameters;
 
             //NEW CODE: Merges supplied paramaters, and defaults on parameters that were not supplied
             $default_settings = json_decode(self::getDefaultParams($setting), true);
             $provided_settings = json_decode($setting->field_parameters, true);
-
             $params = json_encode($provided_settings + $default_settings);
         }
         else if(@$setting->default_setting->field_parameters){
