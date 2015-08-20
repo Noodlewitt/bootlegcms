@@ -151,7 +151,7 @@ $files = json_encode($files);
                     <td  class='vertical-middle'>
                         <span class="size">{%=o.formatFileSize(file.size)%}</span>
                     </td>
-                    <td class='vertical-middle'>
+                    <td class='vertical-middle text-right'>
                         {% if (file.deleteUrl) { %}
                             <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                                 <i class="glyphicon glyphicon-trash"></i>
