@@ -130,13 +130,13 @@ $files = json_encode($files);
                     <td class="vertical-middle preview-wrap">
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
-                                <input value="{%=file.url%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
                                 <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" data-gallery><img src="{%=file.thumbnailUrl%}" alt="preview" class="img-thumbnail"></a>
                             {% } %}
                         </span>
                     </td>
                     @endif
                     <td class='vertical-middle'>
+                        <input value="{%=file.url%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
                         <p class="name">
                             {% if (file.url) { %}
                                 <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.original_name%}</a>
