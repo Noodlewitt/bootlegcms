@@ -678,6 +678,7 @@ class ContentwrapperController extends CMSController
                     $fileObj->original_name = $f['original_name'];
                     $fileObj->id = $id;
                     $fileObj->thumbnailUrl = $f['url']; //@todo
+                    $fileObj->size = $f['size'];
                     $fileObj->url = $f['url'];
 
                     //is this stuff still needed?
