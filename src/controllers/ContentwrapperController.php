@@ -536,13 +536,15 @@ class ContentwrapperController extends CMSController
      */
     public function postUpload($id){
 
+        $input = array_except(\Input::all(), '_method');
+
         $u = [
             'local' => [
                 'folder' => trim(@$this->application->getSetting('Upload Folder'),'/\ '),
                 'delete_uploads' => @$this->application->getSetting('deleteUploads'),
             ],
             's3' => [
-                'enabled' => @$this->application->getSetting('Enable s3'),
+                'enabled' => $input['s3_enabled'] ? @$this->application->getSetting('Enable s3') : false,
                 'folder' => trim(@$this->application->getSetting('s3 Folder'),'/\ '),
                 'bucket' => @$this->application->getSetting('s3 Bucket'),
                 'cloudfront_url' => trim(@$this->application->getSetting('s3 Cloudfront Url'), " /"),
@@ -560,8 +562,6 @@ class ContentwrapperController extends CMSController
                 ]
             ]
         ];
-
-        $input = array_except(\Input::all(), '_method');
 
         $inline = false;
 
@@ -634,7 +634,7 @@ class ContentwrapperController extends CMSController
                         //in the mean time we'll make do with a dd.
                     }
 
-                    $f['url'] = url($f['upload_full']);
+                    $f['url'] = '/'.$f['upload_full'];
 
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?

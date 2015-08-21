@@ -192,6 +192,7 @@ $files = json_encode($files);
                     formData:{
                         type: '{{get_class($setting[0])}}',
                         maxsize: '{{ $params->validation->size * 1024 }}',
+                        s3_enabled: '{{ $params->s3_enabled }}',
                         mimes: '{{ $params->validation->mimes }}',
                         '_token': "{{csrf_token()}}"
                     },
