@@ -5,7 +5,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 /**
  * Since we don't want to register the service providers for plugins globally, we cant use
- * the normal vendor:publush command (since it only looks in app for SPs). Using this we can 
+ * the normal vendor:publush command (since it only looks in app for SPs). Using this we can
  * check the db for any plugins and run an seet publish off that.
  */
 class Publish extends \Illuminate\Console\Command {
@@ -44,22 +44,26 @@ class Publish extends \Illuminate\Console\Command {
     {
         //echo $this->argument('example');
         //echo $this->option('example');
-        if($this->option('app_name')){
-            $application = \Application::with('plugins')->where('name',$this->option('app_name'))->get();
+        $app_name = $this->option('app_name');
+        $app_id = $this->option('app_id');
+        if($app_name){
+            $plugins = \Plugins::whereHas('applications',function($q) use ($app_name){
+                $q->where('name',$app_name);
+            })->get();
         }
-        else if($this->option('app_id')){
-            $application = \Application::with('plugins')->where('id',$this->option('app_id'))->get();
+        else if($app_id){
+            $plugins = \Plugins::whereHas('applications',function($q) use ($app_id){
+                $q->where('id',$app_id);
+            })->get();
         }
         else{
-            $application = \Application::with('plugins')->get();    
+            $plugins = \Plugins::get();
         }
         echo("\n");
-        foreach($application as $app){
-            foreach($app->plugins as $plugin){
-                //Register appliation service providers
-                \App::register($plugin->service_provider);
-                echo("Publishing for ".$plugin->name."\n");
-            }    
+        foreach($plugins as $plugin){
+            //Register appliation service providers
+            \App::register($plugin->service_provider);
+            echo("Publishing for ".$plugin->name."\n");
         }
         //we now need to re asset publish?
         //TODO: do we really want to force this 100% of the time?
