@@ -47,17 +47,17 @@ class Publish extends \Illuminate\Console\Command {
         $app_name = $this->option('app_name');
         $app_id = $this->option('app_id');
         if($app_name){
-            $plugins = \Plugins::whereHas('applications',function($q) use ($app_name){
+            $plugins = \Plugin::whereHas('applications',function($q) use ($app_name){
                 $q->where('name',$app_name);
             })->get();
         }
         else if($app_id){
-            $plugins = \Plugins::whereHas('applications',function($q) use ($app_id){
+            $plugins = \Plugin::whereHas('applications',function($q) use ($app_id){
                 $q->where('id',$app_id);
             })->get();
         }
         else{
-            $plugins = \Plugins::get();
+            $plugins = \Plugin::get();
         }
         echo("\n");
         foreach($plugins as $plugin){
