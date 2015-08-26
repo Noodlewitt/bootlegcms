@@ -1,24 +1,25 @@
 <?php
 use Illuminate\Database\Eloquent\SoftDeletes;
 class Template extends Baum\Node{ //Eloquent {
+    use \Bootleg\Cms\Models\Traits\HasSettingModelTrait;
     protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'service_provider', 'view', 'layout', 'content_type_id', 'application_id');
-    
+
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
-    
+
     public $table = 'template';
-        
+
     public $policy, $signature;
-    
+
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    
+
     protected $scoped = array('application_id');
-    
-    protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.    
-    
+
+    protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.
+
     protected $closure = '\contentClosure';
-       
-    
+
+
     public $rules = array(
 		//'content' => 'required',
 		//'parent_id' => 'required'
@@ -27,7 +28,7 @@ class Template extends Baum\Node{ //Eloquent {
     public function author(){
         return $this->belongsTo('User');
     }
-    
+
     public function application()
     {
         return($this->belongsTo('Application'));
@@ -43,12 +44,12 @@ class Template extends Baum\Node{ //Eloquent {
     {
         return $this->morphMany('Permission', 'controller');
     }
-    
+
     public function childs()
     {
         return $this->hasMany('Content', 'parent_id');
     }
-	
+
 	public function content()
     {
         return $this->hasMany('Content', 'template_id');
@@ -58,25 +59,25 @@ class Template extends Baum\Node{ //Eloquent {
     {
         return $this->hasMany('Templatesetting', 'template_id', 'template_id');
     }
-    
+
     //keeps content within this application.
     public function scopeFromApplication($query)
     {
         $qu = $query->where('application_id', '=', Application::getApplication()->id);
         return($qu);
     }
-    
-    
-        
+
+
+
     public function setting()
     {
         return $this->hasMany('Templatesetting');
     }
-    
+
 //    public function contenttype(){
 //    	return $this->belongsTo('Contenttype');
 //    }
-    
+
     const DRAFT_STATUS = 0;
     const LIVE_STATUS = 1;
 
@@ -86,34 +87,34 @@ class Template extends Baum\Node{ //Eloquent {
 
     public static function boot(){
         parent::boot();
-		
-        
+
+
 //        App::register($this->service_provider);
-        
-        
-        
+
+
+
     }
-    
+
     public function createSlug(){
         if($this->slug){
             return($slug);
         }
         else{
             $parent = Content::find($this->tmp_parent_id);
-            
+
             if($this->title){
-                $pageSlug = $this->title;    
+                $pageSlug = $this->title;
             }
             else if($this->name){
-                $pageSlug = $this->name;    
+                $pageSlug = $this->name;
             }
             else{
-                $pageSlug = uniqid();    
+                $pageSlug = uniqid();
             }
-            
+
             $pageSlug = str_replace(" ", "-", $pageSlug);    //spaces
             $pageSlug = urlencode($pageSlug);  //last ditch attempt to sanitise
-            
+
             $wholeSlug = rtrim(@$parent->slug,"/")."/$pageSlug";
             //does it already exist?
             if(Content::where("slug","=",$wholeSlug)->first()){
@@ -131,9 +132,9 @@ class Template extends Baum\Node{ //Eloquent {
             }
         }
     }
-    
-    
-    
+
+
+
     /*TODO: figure out this better.*/
     public function getTree($parent_id = null, $recurse = false){
         //TODO: look at this.
@@ -143,7 +144,7 @@ class Template extends Baum\Node{ //Eloquent {
         else{
             $contentTree = $this->immediateDescendants();
         }
-        
+
         $obj = new stdClass;
         $data = array();
         foreach($contentTree as $content){
@@ -159,17 +160,7 @@ class Template extends Baum\Node{ //Eloquent {
         }
         $data[count($data)] = rtrim($data[count($data)], ',');
     }
-    
-    /*
-     * returns a single setting given the name;
-     */
-    public function getSetting($getSetting){
-        return($this->setting->filter(function($model) use(&$getSetting){
-            return $model->name === $getSetting;
-            
-        })->first()->value);
-    }
-    
+
 
         /*recursivly create sub pages.*/
     public function superSave($input){
@@ -179,8 +170,8 @@ class Template extends Baum\Node{ //Eloquent {
 
         unset($input['parent_id']);
         //SAVE CONTENT ITEM
-        $saved = $parent->children()->create($input);  
+        $saved = $parent->children()->create($input);
         return($saved);
     }
-    
+
 }
