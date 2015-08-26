@@ -212,14 +212,12 @@ $files = json_encode($files);
                 });
 
                 $form{{$niceName}}.bind('fileuploaddone', function (e, data) {
-                    //Ryan: commented out for now - not sure if necessary?
-                    //added file, we wait for 1 second for some reason
-                    //setTimeout(function(){
-                    //    //and add in the image preview
-                    //    $input = $('input.upload-value', $container{{$niceName}});
-                    //    $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
-                    //    window.parent.inline_image = $input.val();
-                    //}, 1000);
+                    setTimeout(function(){
+                        //and add in the image preview
+                        $input = $('input.upload-value', $container{{$niceName}});
+                        $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
+                        window.parent.inline_image = $input.val();
+                    }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {
                     //on deleted, we remove the input file
                     var $input = $('input.upload-value', $(data.context).closest('tr')).val('');
