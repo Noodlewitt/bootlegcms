@@ -58,7 +58,7 @@ class Content extends \Baum\Node{ //Eloquent {status
 		return $this->belongsTo('Template', 'template_id');
 	}
 
-    public function default_setting()
+    public function template_setting()
     {
         return $this->hasMany('Templatesetting', 'template_id', 'template_id');
     }

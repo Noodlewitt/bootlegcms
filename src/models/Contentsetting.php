@@ -89,7 +89,7 @@ class Contentsetting extends Eloquent {
             //NEW CODE: Merges supplied paramaters, and defaults on parameters that were not supplied
             $default_settings = json_decode(self::getDefaultParams($setting), true);
             $provided_settings = json_decode($setting->field_parameters, true);
-            $params = json_encode(array_merge($default_settings,$provided_settings));
+            $params = json_encode(\Bootleg\Cms\Utils::array_merge_recursive_distinct($default_settings,$provided_settings));
         }
         else if(@$setting->default_setting->field_parameters){
             $params = @$setting->default_setting->field_parameters;
