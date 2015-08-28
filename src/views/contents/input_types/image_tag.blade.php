@@ -1,0 +1,1 @@
+<input value='{{ $setting[0]->value }}' id="{{$setting[0]->name}}" type="hidden" name="setting[{{$setting[0]->name}}][Imagetag][{{$setting[0]->id}}]"/>

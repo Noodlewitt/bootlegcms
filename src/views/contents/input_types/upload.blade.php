@@ -83,7 +83,22 @@ $files = json_encode($files);
                     <div class="progress-extended">&nbsp;</div>
                 </div>
             </div>
-
+            <div class="modal fade" id="modal_{{$niceName}}">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Tag image</h4>
+                  </div>
+                  <div class="modal-body">
+                    <img src="" style="max-width:100%" />
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default modal-close">Close</button>
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
 
             <!-- The template to display files available for upload -->
             <script id="{{uniqid()}}" class='upload-template' type="text/x-tmpl">
@@ -136,7 +151,7 @@ $files = json_encode($files);
                     </td>
                     @endif
                     <td class='vertical-middle'>
-                        <input value="{%=file.url%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
+                        <input value="{%=file.url%}" data-imageid="{%=file.id%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->name}}][{{get_class($field)}}][{%=file.id%}]"/>
                         <p class="name">
                             {% if (file.url) { %}
                                 <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.original_name%}</a>
@@ -152,6 +167,10 @@ $files = json_encode($files);
                         <span class="size">{%=o.formatFileSize(file.size)%}</span>
                     </td>
                     <td class='vertical-middle text-right'>
+                        <button class="btn btn-info image-tag" data-imageid="{%=file.id%}" type="button">
+                            <i class="glyphicon glyphicon-tag"></i>
+                            <span>Tag</span>
+                        </button>
                         {% if (file.deleteUrl) { %}
                             <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                                 <i class="glyphicon glyphicon-trash"></i>
@@ -169,14 +188,42 @@ $files = json_encode($files);
                 {% } %}
             {% } %}
         </script>
-        <?php
-        ?>
+
+
         <script type="text/javascript">
 
             $(function() {
 
                 var $container{{$niceName}} = $('div.upload.{{$niceName}}');
                 var $form{{$niceName}} = $container{{$niceName}}.closest('div.wrap');
+                var {{$niceName}}_image = $('#modal_{{$niceName}} .modal-body > img');
+
+                $('body').on('click','#modal_{{$niceName}} .modal-close', function(){
+                    $('#modal_{{$niceName}}').modal('hide');
+                    {{$niceName}}_image.data("plugin_taggableImage").destroy();
+                });
+                $('body').on('click','div.upload.{{$niceName}} .image-tag', function(){
+                    var image_id = $(this).data('imageid');
+                    var image_src = $('input[data-imageid="'+image_id+'"]').val();
+
+                    $('#modal_{{$niceName}} .modal-save').data('imageid',image_id);
+                    {{$niceName}}_image.attr('src',image_src);
+                    {{$niceName}}_image.taggableImage({
+                        admin: true,
+                        tags: $('#{{$niceName}}_tag'+image_id).length ? $.parseJSON($('#{{$niceName}}_tag'+image_id).val()) : [],
+                        onTagUpdate: function(){
+                            //select setting text field, or create if it does not exist
+                            var tag_setting = $('#{{$niceName}}_tag'+image_id);
+                            if(!tag_setting.length){
+                                tag_setting = $('<input value="" id="{{$niceName}}_tag'+image_id+'" type="hidden" name="setting[{{$niceName}}_tag'+image_id+'][Imagetag]['+image_id+']" />');
+                                tag_setting.appendTo('div.upload.{{$niceName}}');
+                            }
+                            tag_setting.val(JSON.stringify(this.getTags()));
+                        }
+                    });
+                    $('#modal_{{$niceName}}').modal('show');
+                    //return false;
+                });
                 // Initialize the jQuery File Upload widget:
                 $form{{$niceName}}.fileupload({
                     // Uncomment the following to send cross-domain cookies:
@@ -214,12 +261,12 @@ $files = json_encode($files);
                 $form{{$niceName}}.bind('fileuploaddone', function (e, data) {
                     //Ryan: commented out for now - not sure if necessary?
                     //added file, we wait for 1 second for some reason
-                    //setTimeout(function(){
-                    //    //and add in the image preview
-                    //    $input = $('input.upload-value', $container{{$niceName}});
-                    //    $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
-                    //    window.parent.inline_image = $input.val();
-                    //}, 1000);
+                    setTimeout(function(){
+                        //and add in the image preview
+                        $input = $('input.upload-value', $container{{$niceName}});
+                        $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
+                        window.parent.inline_image = $input.val();
+                    }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {
                     //on deleted, we remove the input file
                     var $input = $('input.upload-value', $(data.context).closest('tr')).val('');

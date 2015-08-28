@@ -138,6 +138,7 @@ class ContentwrapperController extends CMSController
 
     //fixes tree based off parent_id
     public function anyFixtree(){
+        //Make surethist doesn't time out
         set_time_limit(-1);
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '2048M');
@@ -328,7 +329,17 @@ class ContentwrapperController extends CMSController
                                     }
                                     //if it's not found (even in trashed) then we need to make a new field.
                                     //if it's contentdefault, we need to create it too since it doesn't exist!
-                                    if ($type == 'Templatesetting' || is_null($contentSetting)) {
+                                    if ($type == 'Imagetag'){
+                                        if(is_null($contentSetting)){
+                                            $contentSetting = new \Contentsetting();
+                                            $contentSetting->name = $name;
+                                            $contentSetting->content_id = $content->id;
+                                            $contentSetting->field_parameters = '{"image_content_id":"$key"}';
+                                            $contentSetting->field_type = "image_tag";
+                                            $contentSetting->section = '';
+                                        }
+                                        $contentSetting->value = $setting;
+                                    } else if ($type == 'Templatesetting' || is_null($contentSetting)) {
                                         //TODO: Do we want protection in there so there has to be a
                                         //template setting in her for this?
 
@@ -360,13 +371,8 @@ class ContentwrapperController extends CMSController
                                         $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
 
                                     }
-                                    //dd($contentSetting);
 
-                                        //dd($contentSetting);
-                                        $contentSetting->save();
-
-
-
+                                    $contentSetting->save();
                                     $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
                                 }
                             }
