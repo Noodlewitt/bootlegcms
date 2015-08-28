@@ -34,7 +34,6 @@
 
     cursor: pointer;
 
-    color: transparent;
     border: none;
     outline: none;
     background: transparent;
@@ -44,7 +43,6 @@
 .slick-next:hover,
 .slick-next:focus
 {
-    color: transparent;
     outline: none;
     background: transparent;
 }
@@ -64,12 +62,11 @@
 .slick-prev:before,
 .slick-next:before
 {
-    font-family: 'slick';
+    font-family: 'Glyphicons Halflings';
     font-size: 20px;
     line-height: 1;
 
     opacity: .75;
-    color: white;
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -86,11 +83,11 @@
 }
 .slick-prev:before
 {
-    content: '←';
+    content: "\e079";
 }
 [dir='rtl'] .slick-prev:before
 {
-    content: '→';
+    content: "\e079";
 }
 
 .slick-next
@@ -104,11 +101,11 @@
 }
 .slick-next:before
 {
-    content: '→';
+    content: "\e080";
 }
 [dir='rtl'] .slick-next:before
 {
-    content: '←';
+    content: "\e080";
 }
 
 /* Dots */
