@@ -153,7 +153,7 @@ class Utils
     * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
     * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
     */
-    public static function  array_merge_recursive_distinct ( array &$array1, array &$array2 )
+    public static function array_merge_recursive_distinct ( array &$array1, array &$array2 )
     {
       $merged = $array1;
 
@@ -161,7 +161,7 @@ class Utils
       {
         if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
         {
-          $merged [$key] = array_merge_recursive_distinct ( $merged [$key], $value );
+          $merged [$key] = self::array_merge_recursive_distinct ( $merged [$key], $value );
         }
         else
         {
