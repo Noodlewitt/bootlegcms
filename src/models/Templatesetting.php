@@ -41,8 +41,4 @@ class Templatesetting extends Eloquent {
     public function template(){
         return($this->belongsTo('Template'));
     }
-
-    public function __toString(){
-        return @$this->value;
-    }
 }

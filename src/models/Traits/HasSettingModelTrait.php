@@ -9,18 +9,32 @@ trait HasSettingModelTrait
 
     //__NAMESPACE__
 
+    /*
+        $options = [
+            'first'=>false,
+            'fallback'=>null,
+            'do_fallback'=>true,
+            'return_object'=>false
+        ];
+    */
+    public function getSetting($getSetting, $options = []){
 
-    public function getSetting($getSetting, $first = false, $fallback = null, $do_fallback = false){
-        $setting_type = $do_fallback && method_exists($this, $fallback) ? $this->{$fallback} : $this->setting;
+        $setting_type = @$options['do_fallback'] && @$options['fallback'] && method_exists($this, $options['fallback']) ? $this->{$options['fallback']} : $this->setting;
         $settings = $setting_type->filter(function($model) use(&$getSetting){
             return $model->name === $getSetting;
         });
         if($settings->count() == 0){
-            if($fallback && !$do_fallback) return $this->getSetting($getSetting, false, $fallback, true); //fallback to default settings
-            else return null; //if no default setting, return null
+            if(@$options['fallback'] && !@$options['do_fallback']){
+                $options['do_fallback'] = true;
+                return $this->getSetting($getSetting, $options); //fallback to default settings
+            }
+            else
+            {
+                return null; //if no default setting, return null
+            }
         }
-        if($settings->count() > 1 && !$first){
-            $return = array();
+        if($settings->count() > 1 && !@$options['first']){
+            $return = [];
             foreach($settings as $setting){
                 $return[] = $setting;
             }
@@ -28,6 +42,10 @@ trait HasSettingModelTrait
         else{
             $return = $settings->first();
         }
-        return($return);
+        if(@$options['return_object']){
+            return $return;
+        } else {
+            return $return->value;
+        }
     }
 }
