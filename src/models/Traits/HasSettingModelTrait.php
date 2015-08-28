@@ -11,7 +11,6 @@ trait HasSettingModelTrait
 
 
     public function getSetting($getSetting, $fallback = null, $first = false){
-        if($fallback) $fallback = $fallback.'_setting';
         $setting_type = property_exists($this, $fallback) ? $this->{$fallback} : $this->setting;
 
         $settings = $setting_type->filter(function($model) use(&$getSetting){
