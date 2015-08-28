@@ -129,4 +129,8 @@ class Contentsetting extends Eloquent {
         }
         return($params);
     }
+
+    public function __toString(){
+        return @$this->value;
+    }
 }

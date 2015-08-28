@@ -81,7 +81,7 @@
                     this._initialW = relX;
                     this._initialH = relY;
 
-                    this._marquee = $('<a class="marquee-tag"></a>').css({
+                    this._marquee = $('<a target="_blank" class="marquee-tag"></a>').css({
                         'left': this.settings.responsiveTags ? relX / this.original.width * 100 + '%' : relX,
                         'top': this.settings.responsiveTags ? relY / this.original.height * 100 + '%' : relY
                     });

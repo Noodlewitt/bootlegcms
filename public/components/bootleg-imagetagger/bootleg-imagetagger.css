@@ -7,7 +7,7 @@
     border:1px dashed rgba(0,0,0,0.5);
 }
 .marquee-tag.tag-preview.selected:before{
-    background-color:rgba(255,0,0,0.2);
+    background-color:rgba(255,0,0,0.5);
 }
 .marquee-tag.tag-preview:before{
     position:absolute;
@@ -17,14 +17,17 @@
     top:-5px;
     bottom:-5px;
     border-radius:5px;
-    background-color:rgba(0,0,0,0.2);
-    border:5px solid rgba(0,0,0,0.1);
+    background-color:rgba(0,0,0,0.5);
+    border:5px solid rgba(0,0,0,0.25);
 }
 .taggable_image_outer,
 .taggable_image_inner{
     display:inline-block;
     position:relative;
     overflow:hidden;
+}
+.taggable_image_inner > img{
+    width:100%;
 }
 .tag-edit-row{
     padding:10px;

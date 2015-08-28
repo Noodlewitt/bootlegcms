@@ -22,11 +22,11 @@ trait HasSettingModelTrait
         if($settings->count() > 1 && !$first){
             $return = array();
             foreach($settings as $setting){
-                $return[] = $setting->value;
+                $return[] = $setting;
             }
         }
         else{
-            $return = $settings->first()->value;
+            $return = $settings->first();
         }
         return($return);
     }

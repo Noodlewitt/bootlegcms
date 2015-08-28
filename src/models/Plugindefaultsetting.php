@@ -8,4 +8,8 @@ class Plugindefaultsetting extends \Eloquent {
         return $this->belongsTo('Plugin');
     }
 
+    public function __toString(){
+        return @$this->value;
+    }
+
 }

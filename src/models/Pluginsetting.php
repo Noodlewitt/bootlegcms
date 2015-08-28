@@ -11,4 +11,8 @@ class Pluginsetting extends \Contentsetting {
         return $this->belongsTo('Plugin');
     }
 
+    public function __toString(){
+        return @$this->value;
+    }
+
 }
