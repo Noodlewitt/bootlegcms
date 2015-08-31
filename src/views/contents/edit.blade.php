@@ -8,26 +8,14 @@
     <ul class="nav nav-tabs">
 
         <?php $i = 0; $advanced = false; $contentSection = false?>
-
+            <li class='active'><a href="#tab-Content" data-toggle="tab" data-target='.edit-Content-tab'>Content</a></li>
         @foreach($settings as $key=>$section)
-            <?php
-            if($key == 'Advanced'){
-                $advanced = true;
-            }
-            if($key == 'Content'){
-                $contentSection = true;
-            }
-            ?>
-            <li class='{{$i==0?"active":""}}'><a href="#tab-{{$key}}" data-toggle="tab">{{$key}}</a></li>
-            <?php $i++; ?>
+            @if($key != 'Content')
+                <li><a href="#tab-{{$key}}" data-toggle="tab" data-target='.edit-{{$key}}-tab'>{{$key}}</a></li>
+            @endif
         @endforeach
-        @if(!$contentSection)
-            <li class="active"><a href="#tab-Content" data-toggle="tab">Content</a></li>
-        @endif
-        @if(!$advanced)
-            <li><a href="#tab-Advanced" data-toggle="tab">Advanced</a></li>
-        @endif
-            <li><a href="#tab-Permission" data-toggle="tab">Permisssions</a></li>
+            <li><a href="#tab-advanced" data-toggle="tab" data-target='.edit-advanced-tab'>Advanced</a></li>
+            <li><a href="#tab-permission" data-toggle="tab" data-target='.edit-permission-tab'>Permisssions</a></li>
 
             @if(count($application->languages) > 1)
                 <li class='js-language-select'>
@@ -36,176 +24,170 @@
                         Languages:{{\App::getLocale()}} <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                        @foreach($application->languages as $language)
+                            @foreach($application->languages as $language)
 
-                        <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$language->code}}{{'/'. $content_mode .'/'.'edit'.'/'.$content->id}}">{{$language->name}}</a></li>
+                            <li>
+                                <a class='align-right js-add-panel js-add-panel-{{$language->code}}' data-lang-code="{{$language->code}}" href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$language->code}}{{'/'. $content_mode .'/'.'edit-tabs'.'/'.$content->id}}"><span class='glyphicon glyphicon-plus'></span></a>
+                                <a class='main ' href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$language->code}}{{'/'. $content_mode .'/'.'edit'.'/'.$content->id}}">{{$language->name}}</a>
+                            </li>
 
-                        @endforeach
-                        <li role="separator" class="divider"></li>
-                            <li><a href="#">Set Current Language As My Default</a></li>
+                            @endforeach
+
                         </ul>
                     </div>
                 </li>
             @endif
     </ul>
-    @if($content_mode == 'template')
-    {!! Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('\Bootleg\Cms\TemplateController@anyUpdate', @$content->id))) !!}
-    @else
-    {!! Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('\Bootleg\Cms\ContentsController@anyUpdate', @$content->id))) !!}
-    @endif
-    <div class="tab-content">
-    <?php 
-    $i = 0; 
-    if(!$contentSection){
-        $settings['Content'] = 'dummy';
-    }
-    if(!$advanced){
-        $settings['Advanced'] = 'dummy';
-    }
-
-    ?>
-    @foreach($settings as $key=>$section)
-        <?php
-        //we need to group this correctly.. I think there is a bug in Laravel that prevents 
-        //nested groups working correctly. TODO: Probably look at this again later after I've
-        //had some sleep]
-        $fields = "";
-        if($key != 'Advanced'){
-            $model = new Baum\Extensions\Eloquent\Collection;
-            
-            if(count($section) >= 1 && ($section != 'dummy')){
-                foreach($section as $flds){
-                    $model->push($flds);
-                }
-                $fields = $model->groupBy('name');
-            }
-        }
-        ?>
-        <div class="tab-pane {{$i==0?'active in':''}} fade edit-content-tab" id="tab-{{$key}}">
-            <ul>
-                @if($key == 'Advanced')
-
-                    <li class="form-group">
-                        {!! Form::label('slug', 'Slug:') !!} <button class='btn btn-default btn-xs js-generate-slug'>generate</button>
-                        <div class="input-group">
-
-                            <?php
-                            $niceFullSlug = "http://".ApplicationUrl::getApplicationUrl()->domain;
-                            $niceFullSlug .= ApplicationUrl::getApplicationUrl()->folder=='/'?'':ApplicationUrl::getApplicationUrl()->folder;
-                            ?>
-                            <span class="input-group-addon">{{$niceFullSlug}}</span>
-                        {!! Form::text('slug', null, array('class'=>'form-control')) !!}
-                        </div>
-                    </li>
-
-                    <li class="form-group">
-                        {!! Form::label('identifier', 'Identifier:') !!}
-                        {!! Form::input('identifier', 'identifier', null, array('class'=>'form-control')) !!}
-                    </li>
-                    
-                    <li class="form-group">
-                        {!! Form::label('package', 'Package:') !!}
-                        {!! Form::input('text', 'package', null, array('class'=>'form-control')) !!}
-                    </li>
-                    <li class="form-group">
-                        {!! Form::label('view', 'View:') !!}
-                        {!! Form::input('text', 'view', null, array('class'=>'form-control')) !!}
-                    </li>
-                    <li class="form-group">
-                        {!! Form::label('headers', 'Headers:') !!}
-                        {!! Form::input('text', 'headers', null, array('class'=>'form-control')) !!}
-                    </li>
-                    @if($content_mode == 'contents')
-                        <li class="form-group">
-                            {!! Form::label('template_id', 'Template ID:') !!}
-                            {!! Form::input('number', 'template_id', null, array('class'=>'form-control')) !!}
-                        </li>
-                    @else
-                        <li class="form-group">
-                            <div class="checkbox">
-                                <label>
-                                    {!! Form::checkbox('loopback','1',$content->loopback) !!}
-                                    Loopback
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label>
-                                    {!! Form::checkbox('auto_create','1',$content->auto_create) !!}
-                                    Auto Create
-                                </label>
-                            </div>
-                        </li>
-                    @endif
-
-                @endif
-                
-                @if($i == 0)
-                    <li class="form-group">
-                        {!! Form::label('name', 'Name:') !!}
-                        {!! Form::text('name', null, array('class'=>'form-control js-content-name')) !!}
-                    </li>
-                    <li class="form-group">
-                        <label>Status:</label>
-                        <div class="radio">
-                            <label>
-                                {!! Form::radio('status','0','') !!}
-                                Draft
-                            </label>
-                        </div>
-                        <div class="radio">
-                            <label>
-                                {!!Form::radio('status','1','') !!}
-                                Published
-                            </label>
-                        </div>
-                    </li>
-                @endif
-                @if(@$fields)
-                    @foreach($fields as $field)
-                    {{-- This is where the custom input types are rendered in. --}}
-                        <li class="form-group">
-                            <?php
-                            $view = @$field[0]->field_type?$field[0]->field_type:'text';
-                            ?>
-                            @include("cms::contents.input_types.$view", array('setting'=>$field, 'content'=>$content))
-                        </li>
-                    @endforeach
-                @endif
-
-
-                <li class="form-group">
-                    <div class='btn-group btn-group-lg'>
-                        {!! Form::submit(@$content->id?trans('cms::messages.button.update'):trans('cms::messages.button.create'), array('class' => 'btn btn-success ')) !!}
-                        {!! link_to_action('\Bootleg\Cms\ContentsController@anyEdit', trans('cms::messages.button.cancel'), @$content->id, array('class' => 'btn btn-danger ')) !!}
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <?php $i++; ?>
-    @endforeach
-        <div class="tab-pane edit-content-tab fade" id="tab-Permission">
-            @include($content->edit_package.'::contents.permission', array('content'=>@$content, 'permission'=>@$permission))
-        </div>
+    <div class='form-wrap row'>
+    @include('cms::contents.edit-tabs')
     </div>
-
     <script type="text/javascript">
-    $(function () {
-        $('.js-generate-slug').click(function(e){
-            e.preventDefault();
-            var str = $('.js-content-name').val().replace(/ /g, '-');
-            str = '/'+str.replace(/[^a-zA-Z0-9-_]/g, '');
-            $('.js-slug').val(str.toLowerCase());
-        });
+        $(function () {
+            $('.form-wrap').on('click','.js-generate-slug', function(e){
+                e.preventDefault();
 
-        @if(count($application->languages) > 1)
-        $('.js-language-select a').click(function(e){
-            e.preventDefault();
-            $.get(($(this).attr('href')), function(data){
-                $('.main-content').html(data);
+                $form = $(this).closest('form');
+
+                var str = $('.js-content-name', $form).val().replace(/ /g, '-');
+                str = '/'+str.replace(/[^a-zA-Z0-9-_]/g, '');
+                $('.js-slug', $form).val(str.toLowerCase());
             });
+        
+
+            $('.form-wrap').on('click','.js-content-update', function(e){
+                e.stopPropagation();
+                e.preventDefault();
+                $form = $(this).closest('form');
+                $.post($form.attr('action'), $form.serialize(), function(data){
+                    //boop.
+                //    tree.jstree("refresh");
+                });
+            });
+
+
+            @if(count($application->languages) > 1)
+            //language selection
+            $('.js-language-select a.main').click(function(e){
+                e.preventDefault();
+                $.get(($(this).attr('href')), function(data){
+                    $('.main-content').html(data);
+                });
+                
+            });
+
+            //need to grab more langs if there are any?
+            var cSettings = Cookies.getJSON('bootleg-settings');
+            if(cSettings && ('contentLanguageTabs' in cSettings)){
+                //clear what's in there already so we can start appending the lang blocks..
+                if(cSettings.contentLanguageTabs.length > 1){
+            //        $('.tab-language').remove();
+            //        console.log('hhj');
+                    var numOfTabs = 1;
+                    var column = 1;
+                    $.each(cSettings.contentLanguageTabs, function(){
+                        if($('.main-content .tab-language-'+this.code).length == 0){
+                            var $currentTabs = $('.main-content .tab-language');
+                            var $container = $currentTabs.parent();
+
+                            numOfTabs ++;
+
+                            $link = $('.js-language-select ul li a.js-add-panel-' + this.code);
+                            $.get($link.attr('href'), function(data){
+                                $container.append(data);
+                                $('.main-content .tab-language').removeClass(function (index, classes) {
+                                    return (classes.match (/\bcol-sm-\S+/g) || []).join(' ');
+                                }).addClass('col-sm-'+column);
+                            });
+                        }
+                    });
+                    console.log(numOfTabs);
+                    column = 12/(numOfTabs);
+                }
+            }
             
+            //hitting the close-lang button closes the panel.
+            $('.form-wrap').on('click','.js-close-language-tab', function(e){
+                e.stopPropagation();
+                e.preventDefault();
+                var $tab = $(this).closest('.tab-language');
+                var $tmp = $tab;
+                var $currentTabs = $('.tab-language');
+                var numTabs = $currentTabs.length;
+                var column = 12/(numTabs-1);
+                var cSettings = Cookies.getJSON('bootleg-settings');
+                $tab.remove();
+
+
+                if(cSettings && ('contentLanguageTabs' in cSettings)){
+                    
+                    //add in existing langs:
+                    $.each(cSettings.contentLanguageTabs, function(i){
+                        //if it's the language we are currently removing, remove it from settings too.
+                        if(this.code == $tab.data('lang-code')){
+                            console.log(i);
+                            cSettings.contentLanguageTabs.splice(i, 1);
+                        }
+                        else{
+                            console.log('skip' + this.code);
+                        }
+                    });
+
+                    Cookies.set('bootleg-settings', cSettings);
+                }
+
+                
+               // $tab.remove();
+                $('.main-content .tab-language').removeClass(function (index, classes) {
+                    return (classes.match (/\bcol-sm-\S+/g) || []).join(' ');
+                }).addClass('col-sm-'+column);
+            });
+
+
+
+            //Hitting the + button on the language splits the screen into 2 sections
+            $('.js-language-select a.js-add-panel').click(function(e){
+                e.preventDefault();
+                var $me = $(this);
+                var $currentTabs = $('.main-content .tab-language');
+                var $container = $currentTabs.parent();
+                var numberOfTabs = $currentTabs.length;
+                var column = 12/(numberOfTabs+1);
+
+                //does this already exist?
+                //console.log($('.main-content .tab-language .tab-language-'+$me.data('lang-code')));
+                //console.log($('.main-content .tab-language .tab-language-'+$me.data('lang-code')).length);
+                if($('.main-content .tab-language-'+$me.data('lang-code')).length == 0){
+                    $.get(($(this).attr('href')), function(data){
+                        
+                        //var settings = Cookies.getJSON('bootleg-settings');
+                        var settings = {
+                            contentLanguageTabs:[]
+                        };
+
+                        //add in existing langs:
+                        $.each($currentTabs, function(){
+                            //we need to set the cookie based off this..
+                            settings.contentLanguageTabs.push({
+                                code:$(this).data('lang-code')
+                            });
+                        });
+
+                        //and add the current one:
+                        settings.contentLanguageTabs.push({
+                            code:$me.data('lang-code')
+                        });
+                        Cookies.set('bootleg-settings', settings);
+                        
+                        $container.append(data);
+                        $('.main-content .tab-language').removeClass(function (index, classes) {
+                            return (classes.match (/\bcol-sm-\S+/g) || []).join(' ');
+                        }).addClass('col-sm-'+column);
+                    });
+                }
+                else{
+                    $('.main-content .tab-language-'+$me.data('lang-code')).addClass('pulsate').removeClass('pulsate');
+                }
+            });
+            @endif
         });
-        @endif
-    });
     </script>
-    {!! Form::close() !!}

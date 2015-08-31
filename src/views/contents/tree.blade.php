@@ -82,7 +82,9 @@
                 parent_id:parentnode.id,
                 '_token':'{!!csrf_token()!!}'
             }).done(function(d){
-                data.node.a_attr.href='aa';
+                console.log(d);
+                console.log(parentnode);
+                data.node.a_attr.href=d.a_attr.href;
                 data.instance.load_node(parentnode);
                 //data.instance.refresh_node(data.node);
 

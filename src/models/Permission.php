@@ -53,7 +53,7 @@ class Permission extends Eloquent {
     //$c = Content::permission()->perm()->get();
 
     public static function checkPermission($controller_type, $controller_id = null, $message="You do not have permission to do that."){
-
+        //dd($controller_type);
         $perm = self::getPermission($controller_type, $controller_id);
 
         if ($perm->result === false) {

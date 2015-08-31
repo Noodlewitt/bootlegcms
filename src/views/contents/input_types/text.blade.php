@@ -1,4 +1,13 @@
 <?php
+if(@$content){
+
+    $settingAfterEvent = \Event::fire('content.text.draw', array('content'=>$content, 'setting'=>$setting));    
+    $settingAfterEvent = reset($settingAfterEvent);
+    if(!empty($settingAfterEvent)){
+        $setting = $settingAfterEvent;
+    }
+}
+
 $params = \Contentsetting::parseParams($setting[0]);
 $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 ?>

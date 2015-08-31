@@ -49,6 +49,15 @@ class Contentsetting extends Eloquent {
         "max_number":1
     }';
 
+    const DEFAULT_TAGS_JSON = '{
+        "values": {
+          "default": "A Default Tag",
+          "customise": "If you want more default tags"
+        },
+        "max_number":1,
+        "tooltip": ""
+    }';
+
     const DEFAULT_TINYMCE_JSON = '{
         "tooltip":"",
         "max_number":1,
@@ -101,6 +110,9 @@ class Contentsetting extends Eloquent {
         else if($setting->field_type == 'tinymce'){
             $params = self::DEFAULT_TINYMCE_JSON;
         }
+        else if($setting->field_type == 'tags'){
+            $params = self::DEFAULT_TAGS_JSON;
+        }
         else{
             $params = self::DEFAULT_TEXT_JSON;
         } 
@@ -117,5 +129,39 @@ class Contentsetting extends Eloquent {
         $this->language = $this->languages(\App::getLocale())->first();
         $this->orig_name = $name;
         return @$this->language->name?$this->language->name:$name;
+    }
+
+
+    public static function collectSettings($content){
+        if (!empty($content->template_setting)) {
+            //TODO: There has to be a cleaner way of doing this.
+            $all_settings = new \Illuminate\Database\Eloquent\Collection;
+
+            foreach ($content->template_setting as $template_setting) {
+                $fl = $content->setting->filter(function ($setting) use ($template_setting) {
+                    return($template_setting->name===$setting->name);
+                });
+                if (($fl->count())) {
+                    foreach ($fl as $f) {
+                        //if it's fount int content_settings and template_settings, use
+                        $all_settings->push($f);
+                    }
+                } else {
+                    $all_settings->push($template_setting);
+                }
+            }
+
+            foreach ($content->setting as $setting) {
+                $fl = $content->template_setting->filter(function ($template_setting) use ($setting) {
+                    return($setting->name===$template_setting->name);
+                });
+                if (($fl->count() == 0)) {
+                    $all_settings->push($setting);
+                }
+            }
+        }
+
+        $settings = $all_settings->groupBy('section');
+        return $settings;
     }
 }

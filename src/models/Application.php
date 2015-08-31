@@ -17,11 +17,13 @@ class Application extends Baum\Node{
 
     protected $_settings = NULL; //holds settings for this application item so we don't have to contantly query it.
     
-    public static $rules = array(
-		'name' => 'required|unique:applications',
-        'domain' => 'required',
-		//'parent_id' => 'required'
-    );
+    public static function rules($id){
+        return array(
+            'name' => 'required|unique:applications,name,'.$id,
+            'domains' => 'required',
+            //'parent_id' => 'required'
+        );
+    }
     
     public function creator(){
         return($this->belongsTo('Bootleg\Cms\User', 'user_id'));

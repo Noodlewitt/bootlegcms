@@ -1,4 +1,13 @@
 <?php
+if(@$content){
+    $settingAfterEvent = \Event::fire('content.upload.draw', array('content'=>$content, 'setting'=>$setting));    
+    $settingAfterEvent = reset($settingAfterEvent);
+    if(!empty($settingAfterEvent)){
+        $setting = $settingAfterEvent;
+    }
+}
+
+
 $params = Contentsetting::parseParams($setting[0]);
 $niceName = preg_replace('/\s+/', '_', $setting[0]->orig_name);
 $files = array();
@@ -21,9 +30,10 @@ foreach($setting as $field){
     }
 }
 $files = json_encode($files);   
+$unique = uniqid();
 ?>
 <div class="wrap">
-    <div class='upload {{$niceName}}' >   
+    <div class='upload {{$niceName}}-{{$unique}}' >   
         @if($setting[0]->orig_name !="_inline")
         {!! Form::label("setting[".$setting[0]->orig_name."][".$setting[0]->id."]", ucfirst($setting[0]->orig_name.":")) !!}
         @endif
@@ -34,7 +44,7 @@ $files = json_encode($files);
 
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
-                <div class="col-lg-7 
+                <div class="col-sm-12
                 @if($setting[0]->orig_name == "_inline")
                     text-center
                 @endif
@@ -164,19 +174,26 @@ $files = json_encode($files);
                 {% } %}
             {% } %}
         </script>
-        <?php
-        ?>
+
         <script type="text/javascript">
 
             $(function() {
 
-                var $container{{$niceName}} = $('div.upload.{{$niceName}}');
-                var $form{{$niceName}} = $container{{$niceName}}.closest('div.wrap');
+                var $container = $('div.upload.{{$niceName}}-{{$unique}}');
+                var $form = $container.closest('div.wrap');
                 // Initialize the jQuery File Upload widget:
-                $form{{$niceName}}.fileupload({
+                $form.fileupload({
                     // Uncomment the following to send cross-domain cookies:
                     //xhrFields: {withCredentials: true},
-                    url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>get_class($setting[0])))}}}",
+                    @if(@$applicationItem)
+                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>'Applicationsetting'))}}}",
+                    @elseif(@$contentItem)
+                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>'Contentsetting'))}}}",
+                    @elseif(@$templateItem)
+                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>'Templatesetting'))}}}",
+                    @else(@$contentItem)
+                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload')}}}",
+                    @endif
                     maxNumberOfFiles:{{$params->max_number or '1'}},
                     @if(isset($params->max_number) && $params->max_number>1)
                     singleFileUploads:'false',
@@ -193,28 +210,28 @@ $files = json_encode($files);
                     maxFileSize: {{$params->validation->size * 1024}},
                     acceptFileTypes: /(\.|\/)({{str_replace(',','|',$params->validation->mimes)}})$/i,
 
-                    fileInput: $('input[type=file]', $container{{$niceName}}),
+                    fileInput: $('input[type=file]', $container),
 
-                    filesContainer: $('.files',$container{{$niceName}}),
+                    filesContainer: $('.files',$container),
 
-                    uploadTemplateId: $('.upload-template', $container{{$niceName}}).attr('id'),
+                    uploadTemplateId: $('.upload-template', $container).attr('id'),
 
-                    downloadTemplateId: $('.download-template', $container{{$niceName}}).attr('id'),
+                    downloadTemplateId: $('.download-template', $container).attr('id'),
 
                 });
 
-                $form{{$niceName}}.bind('fileuploaddone', function (e, data) {
+                $form.bind('fileuploaddone', function (e, data) {
                     //added file, we wait for 1 second for some reason                  
                     setTimeout(function(){
                         //and add in the image preview
-                        $input = $('input.upload-value', $container{{$niceName}});
-                        $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
+                        $input = $('input.upload-value', $container);
+                        $input.val($('span.preview img', $container).attr('src'));
                         window.parent.inline_image = $input.val();
                     }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {     
                     //on deleted, we remove the input file
                     var $input = $('input.upload-value', $(data.context).closest('tr')).val('');
-                    $input.clone().appendTo( $container{{$niceName}});
+                    $input.clone().appendTo( $container);
                     
                     //$inp = $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id'));
                     //$inp.attr('name',$inp.attr('name')+'[deleted]');
@@ -222,25 +239,13 @@ $files = json_encode($files);
                 }); 
 
                 @if(@$files)
-                    var files{{$niceName}} = {!!$files!!};
-                    $form{{$niceName}}.fileupload('option', 'done').call($form{{$niceName}}, $.Event('done'), {result: {files: files{{$niceName}} }});
+                    var files = {!!$files!!};
+                    $form.fileupload('option', 'done').call($form, $.Event('done'), {result: {files: files }});
                 @endif
 
                 // Enable iframe cross-domain access via redirect option:
-                $form{{$niceName}}.fileupload('option', 'redirect',
+                $form.fileupload('option', 'redirect',
                 window.location.href.replace(/\/[^\/]*$/, '/cors/cors.html?%s'));
-
-                // Upload server status check for browsers with CORS support:
-                if ($.support.cors) {
-                    $.ajax({
-                        url: '//'+window.location.hostname+'/',
-                        type: 'HEAD'
-                    }).fail(function() {
-                        $('<div class="alert alert-danger"/>')
-                            .text('Upload server currently unavailable - ' + new Date())
-                            .appendTo('form');
-                    });
-                }
             });
 
         </script>

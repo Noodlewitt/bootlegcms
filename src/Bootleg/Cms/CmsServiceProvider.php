@@ -42,9 +42,16 @@ class CmsServiceProvider extends ServiceProvider {
 	}
 
 
-
+ 
    	public function register(){
-        
+   		//regiester aws sp
+        $this->app->register('Aws\Laravel\AwsServiceProvider');
+        $this->app->register('Collective\Html\HtmlServiceProvider');
+        //register aws alias
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias("AWS",'Aws\Laravel\AwsFacade');
+        $loader->alias("Form",'Collective\Html\FormFacade');
+        $loader->alias("Html",'Collective\Html\HtmlFacade');
     }
 
 

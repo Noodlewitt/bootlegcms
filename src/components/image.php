@@ -1,4 +1,4 @@
-<?php
+<?php namespace Bootleg\Cms;
 
 class Img{
     //A bunch of tools for resizing and interacting with images.
@@ -11,7 +11,7 @@ class Img{
         return($finalUrl);
     }
 
-    public function resize($source_path, $desired_x=300, $desired_y=150, $mode = 'crop', $upload = true){
+    public static function resize($source_path, $desired_x=300, $desired_y=150, $mode = 'crop', $upload = true){
         //TODO: resize with GD library.
 
         list($source_width, $source_height, $source_type) = getimagesize($source_path);

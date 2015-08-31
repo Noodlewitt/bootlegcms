@@ -34,15 +34,18 @@
 
             @if(count($application->languages))
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{trans('cms::messages.menu.language')}} <b class="caret"></b></a>
-                <ul class="dropdown-menu">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle" aria-haspopup="true" id="application-dropdown" data-toggle="dropdown">{{trans('cms::messages.menu.language')}} <b class="caret"></b></a>
+                <ul class="dropdown-menu" aria-labelledby="application-dropdown">
                     @foreach($application->languages as $lang)
                         @if($lang->code == $application->default_locale)
-                            <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}">{{$lang->name}}</a></li>
+                            <li><a  href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}">{{$lang->name}}</a></li>
                         @else
                             <li><a href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$lang->code}}">{{$lang->name}}</a></li>
                         @endif
                     @endforeach
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Set Current Language As My Default</a></li>
+                            <li><a href="#">Add Language</a></li>
                 </ul>
             </li>
             @endif

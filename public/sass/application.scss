@@ -31,6 +31,21 @@ body {
     padding: 0 $gutter-half;
 }
 
+
+
+.pulsate{
+    backgorund-color:inherit;
+    -webkit-transition: background-color 3s ease-in-out;
+    -moz-transition: background-color 3s ease-in-out;
+    -ms-transition: background-color 3s ease-in-out;
+    -o-transition: background-color 3s ease-in-out;
+}
+
+.pulsate-in{
+    background-color:tomato;
+}
+
+
 /*
  * Global add-ons
  */
@@ -180,6 +195,19 @@ form.main-form{
         }
     }
 }
+
+// a slight update to the dropdown lists:
+.dropdown-menu{
+    & > li{
+        & > a.align-right{
+            float:right;
+            clear:none;
+        }
+        & > a.main{
+            clear:none;   
+        }
+    } 
+} 
 
 .dash-item{
 

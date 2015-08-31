@@ -1,6 +1,11 @@
 <?php
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Applicationsetting extends Eloquent
 {
+
+        use SoftDeletes;
+    protected $dates = ['deleted_at'];
+    
     protected $fillable = array('application_id', 'name', 'value', 'field_type');
     protected $table = 'application_settings';
     
@@ -8,5 +13,27 @@ class Applicationsetting extends Eloquent
     {
         return($this->belongsTo('Application'));
     }
+
+    public function languages($code = NULL){
+
+        $langs = $this->hasMany('ApplicationsettingLanguage', 'application_setting_id');
+        if($code){
+            $langs->where('code',$code);
+        }
+        return($langs);
+    }
+
+    public function getValueAttribute($value){
+        $this->language = $this->languages(\App::getLocale())->first();
+        $this->orig_value = $value;
+        return @$this->language->value?$this->language->value:$value;
+    }
+
+    public function getNameAttribute($name){
+        $this->language = $this->languages(\App::getLocale())->first();
+        $this->orig_name = $name;
+        return @$this->language->name?$this->language->name:$name;
+    }
+
     
 }

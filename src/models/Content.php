@@ -134,6 +134,7 @@ class Content extends \Baum\Node{ //Eloquent {status
     
     /*recursivly create sub pages.*/
     public function superSave($input){
+
         $input = Content::loadDefaultValues($input);
         $parent = Content::with('children')->find($input['parent_id']);
         $template = Template::find($input['template_id']);
@@ -164,12 +165,12 @@ class Content extends \Baum\Node{ //Eloquent {status
     public static function loadDefaultValues($input = ''){
 		
         $parent = Content::find($input['parent_id']);
-
-        if(!@$input['template_id']){
+        
+        if(!isset($input['template_id']) || !$input['template_id']){
             $parentTemplate = Template::find($parent->template_id);
 
-//            dd($parent->template_id);
-            if($parentTemplate){
+            
+            if($parentTemplate->id){
                 //since we occasionally want to process a looped back tree (which makes the whole tree 
                 //invalid, we can't use baum's built in functions to get the first child.
                 if($parentTemplate->loopback){
@@ -179,7 +180,6 @@ class Content extends \Baum\Node{ //Eloquent {status
                     $parentTemplateChild = @$parentTemplate->getImmediateDescendants()->first();  
                 }                
                 $input['template_id'] = @$parentTemplateChild->id;    
-                
             }
             if(!@$input['template_id']){
                 //if it's still nothing we can safely set this to 0;

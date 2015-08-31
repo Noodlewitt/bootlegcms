@@ -31,44 +31,12 @@ class ContentwrapperController extends CMSController
      * @return Response
      */
     public function anyIndex()
-    {
-        //dd('here');
+    {     
+
         $this->content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
-
         $content = $this->content;
-
         $allPermissions = \Permission::getControllerPermission($this->content->id, \Route::currentRouteAction());
-
-        //foreach template setting we want to add a setting for this row..
-        if (!empty($content->template_setting)) {
-            //TODO: There has to be a cleaner way of doing this.
-            $all_settings = new \Illuminate\Database\Eloquent\Collection;
-
-            foreach ($content->template_setting as $template_setting) {
-                $fl = $content->setting->filter(function ($setting) use ($template_setting) {
-                    return($template_setting->name===$setting->name);
-                });
-                if (($fl->count())) {
-                    foreach ($fl as $f) {
-                        //if it's fount int content_settings and template_settings, use
-                        $all_settings->push($f);
-                    }
-                } else {
-                    $all_settings->push($template_setting);
-                }
-            }
-
-            foreach ($content->setting as $setting) {
-                $fl = $content->template_setting->filter(function ($template_setting) use ($setting) {
-                    return($setting->name===$template_setting->name);
-                });
-                if (($fl->count() == 0)) {
-                    $all_settings->push($setting);
-                }
-            }
-        }
-        $settings = $all_settings->groupBy('section');
-
+        $settings = \Contentsetting::collectSettings($content);
         $content = \Content::setDefaults($content);
         
         return $this->render('layouts.tree', compact('content', 'content_defaults', 'settings', 'allPermissions'));
@@ -155,24 +123,11 @@ class ContentwrapperController extends CMSController
     }
 
 
-
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
+     * Constructs the edit form for rendering.
+     * @return [type] [description]
      */
-    public function anyEdit($id = false)
-    {
-        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
-
-        //dd($content->setting);
-        //$permission = Permission::getPermission('content', $content->id, 'w');
-        //$allPermissions = Permission::getContentPermissions($id);
-        $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
-
-        //foreach template setting we want to add a setting for this row..
-        //dd($content->template_setting);
+    public function getSettings(){
         if (!empty($content->template_setting)) {
             //TODO: There has to be a cleaner way of doing this.
             $all_settings = new \Illuminate\Database\Eloquent\Collection;
@@ -202,17 +157,49 @@ class ContentwrapperController extends CMSController
         }
 
         $settings = $all_settings->groupBy('section');
-        //dd($content->edit_package);
-        //dd($content->edit_service_provider);
-        //App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
+    }
+
+
+    /**
+     * render just the form tabs
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function anyEditTabs($id = false)
+    {
+        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
+        $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
+        $settings = \Contentsetting::collectSettings($content);
         $content = \Content::setDefaults($content);
 
-        //dd($content->edit_package.'::'.$content->edit_view);
         if (\Request::ajax()) {
-            return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
+            return $this->render($content->edit_view.'-tabs',  compact('content', 'settings', 'allPermissions'));
         } else {
             $tree = $content->getDescendants(config('bootlegcms.cms_tree_descendents'));
-            return $this->render('layouts.tree',  compact('content', 'content_defaults', 'settings', 'allPermissions'));
+            return $this->render('layouts.tree',  compact('content', 'settings', 'allPermissions'));
+        }
+    }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function anyEdit($id = false)
+    {
+        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
+        $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
+        $settings = \Contentsetting::collectSettings($content);
+        $content = \Content::setDefaults($content);
+
+        if (\Request::ajax()) {
+            return $this->render($content->edit_view,  compact('content', 'settings', 'allPermissions'));
+        } else {
+            $tree = $content->getDescendants(config('bootlegcms.cms_tree_descendents'));
+            return $this->render('layouts.tree',  compact('content', 'settings', 'allPermissions'));
         }
     }
 
@@ -316,6 +303,12 @@ class ContentwrapperController extends CMSController
                     foreach ($input['setting'] as $name => $settingGroup) {
                         foreach ($settingGroup as $type => $setGrp) {
                             foreach ($setGrp as $key => $setting) {
+                                
+                                if(is_array($setting)){
+                                    //we have an array of stuff in this field - maybe for a tag field or something.
+                                    $setting = implode(',', $setting);
+                                }
+
                                 if ($this->content_mode == 'template') {
                                     $contentSetting = \Templatesetting::withTrashed()
                                         ->where('name', '=', $name)
@@ -462,8 +455,12 @@ class ContentwrapperController extends CMSController
         if (!$id) {
             $id = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
-
-        $tree = $this->content->where('id', '=', $id)->first()->getDescendants(config('bootlegcms.cms_tree_descendents'))->toHierarchy();
+        if(config('bootlegcms.cms_tree_descendents')){
+            $tree = $this->content->where('id', '=', $id)->first()->getDescendants(config('bootlegcms.cms_tree_descendents'))->toHierarchy();    
+        }
+        else{
+            $tree = $this->content->where('id', '=', $id)->first()->getDescendants()->toHierarchy();
+        }
         if (count($tree)) {
             foreach ($tree as $t) {
                 $treeOut[] = $this->renderTree($t);
@@ -552,50 +549,26 @@ class ContentwrapperController extends CMSController
     /*
      * pass in a content_setting id to upload to.
      */
-    public function postUpload($id,  $type = "Contentsetting")
+    public function postUpload($id,  $type = "Custom")
     {
-        $input = array_except(\Input::all(), '_method');
-        
-        $uploadFolder = @$this->application->getSetting('Upload Folder');
-        $inline = false;
-        //dd($type);
-        if ($type != 'stdClass') {
-            $setting = @$type::withTrashed()->find($id);
-
-            if (!$setting) {
-                //there's no setting in here already - so we can make one.
-                $setting = new $type;
-
-                //we can try and find it in the template?
-                if (@$this->content_mode == 'contents' && $id) {
-                    $templateSetting = \Templatesetting::findOrFail($id);
-                    $setting->name = $templateSetting->name;
-                    $setting->field_type = $templateSetting->field_type;
-                    $setting->field_parameters = $templateSetting->field_parameters;
-                }
-
-                //otherwise maybe it's custom.
-                $setting = new $type;
-                $setting->name = '_custom'; //just dummy stuff for now..
-                $setting->field_type = 'upload';
-                $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
-            }
-
-            if ($setting->name == '_custom') {
-                $niceName = preg_replace('/\s+/', '', $setting->orig_name);
-                $f = \Input::file();
-                $files = (\Input::file(key($f)));
-            } else {
-                $niceName = preg_replace('/\s+/', '_', $setting->orig_name);
-                $files = \Input::file($niceName);
-            }
-
-            $params = json_decode($setting->field_parameters);
-        } else {
-            $f = \Input::file();
-            $files = (\Input::file(key($f)));
+        $setting = $type::find($id);
+        if(!$setting && $type == "Contentsetting"){
+            //if there's no setting and the field type is 
+            //content - we can assume this is coming from 
+            //a template instead - we can safely change 
+            //this to template and continue
+            
+            $setting = \Templatesetting::find($id);
         }
-        //dd($files);
+
+        $params = \Contentsetting::parseParams($setting);
+
+        $input = array_except(\Input::all(), '_method');
+
+        $uploadFolder = @$this->application->getSetting('Upload Folder');
+
+        $f = \Input::file();
+        $files = (\Input::file(key($f)));
 
         if (!empty($files)) {
             foreach ($files as $file) {
@@ -625,6 +598,7 @@ class ContentwrapperController extends CMSController
                     
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
+                    
                     if (@$this->application->getSetting('Enable s3')) {
 
 

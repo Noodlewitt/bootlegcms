@@ -117,9 +117,13 @@ class ApplicationController extends CmsController
     
     public function anyUpdate()
     {
+
         $input = array_except(\Input::all(), '_method');
-        $validation = \Validator::make($input, \Application::$rules);
+
+        $validation = \Validator::make($input, \Application::rules($this->application->id));
+
         if ($validation->passes()) {
+
             $this->application->update($input);
             //dd($input);
             //DOMAINS
@@ -132,36 +136,33 @@ class ApplicationController extends CmsController
             foreach ($domains as $domain) {
                 $appUrl = new \ApplicationUrl();
                 $appUrl->domain = $domain;
-                $appUrl->folder = '/'; //TODO: folders - is this ever going to work?
+                $appUrl->folder = '/'; //TODO: folders?
                 $appUrls[] = $appUrl;
             }
             $this->application->url()->saveMany($appUrls);
 
 
             if (@$input['setting']) {
-                foreach ($settingGroup as $type=>$setGrp) {
-                    foreach ($setGrp as $key=>$setting) {
-                        //we want to delete this setting.
-                        if (is_array($setting) && array_key_exists('deleted', $setting)) {
-                            $applicationSetting = \Applicationsetting::destroy($key);
-                        } else {
-                            //if it's not found (even in trashed) then we need to make a new field.
-                            //if it's contentdefault, we need to create it too since it doesn't exist!
+                foreach ($input['setting'] as $type=>$setGrp) {
 
-                            //otherwise this field exists.. we can overwrite it' settings.
-                            $applicationSetting->name = $name;
-                            $applicationSetting->value = $setting;
+                    foreach ($setGrp as $key=>$setting) {
+                        foreach($setting as $settingId=>$set){
+                            $applicationSetting = \ApplicationSetting::withTrashed()->find($settingId);
+                            $applicationSetting->name = $type;
+                            $applicationSetting->value = $set;
                             $applicationSetting->application_id = $this->application->id;
                             $applicationSetting->field_type = $applicationSetting->field_type?$applicationSetting->field_type:'text';
 
-
                             $applicationSetting->save();
                             $applicationSetting->restore();     //TODO: do we always want to restore the deleted field here?
-                        }
+                        }                        
                     }
                 }
             }
             return redirect()->action('\Bootleg\Cms\ApplicationController@anySettings')->with('success', 'Settings Updated');
+        }
+        else{
+            dd($input,$validation->errors()->all());
         }
     }
 }

@@ -35,7 +35,7 @@
                         <ul>
                             @if(!@$j)
                                 <li class="form-group">
-                                    {!! Form::label('name', 'Name:') !!}
+                                    {!! Form::label('name', 'Application Name:') !!}
                                     {!! Form::text('name', null, array('class'=>'form-control')) !!}
                                 </li>
                                 <?php
@@ -48,8 +48,8 @@
                                     $domains[] = $url->domain;
                                 }
                                 ?>
-                                {!! Form::label('domains', 'Domain(s):') !!}
-                                {!! Form::text('domains', implode(',',$domains), array('class'=>' tag form-control')) !!}
+                                {!! Form::label('domains', 'Application Domain(s):') !!}
+                                {!! Form::text('domains', implode(',',$domains), array('class'=>'form-control')) !!}
                             </li>
                             @if(@$fields)
                                 @foreach($fields as $field)
@@ -57,7 +57,7 @@
                                         <?php
                                         $view = @$field[0]->field_type?$field[0]->field_type:'text';
                                         ?>
-                                        @include("cms::contents.input_types.$view", array('setting'=>$field, 'application'=>$application))
+                                        @include("cms::contents.input_types.$view", array('setting'=>$field, 'applicationItem'=>$application))
                                     </li>
                                 @endforeach
                             @endif
