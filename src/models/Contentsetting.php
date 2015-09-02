@@ -2,11 +2,10 @@
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contentsetting extends Eloquent {
-    protected $fillable = array('content_id', 'name', 'value', 'field_type');
-
-    protected $table = 'content_settings';
-
     use SoftDeletes;
+
+    protected $fillable = array('content_id', 'name', 'value', 'field_type');
+    protected $table = 'content_settings';
     protected $dates = ['deleted_at'];
 
     const DEFAULT_UPLOAD_JSON = '{
@@ -17,13 +16,12 @@ class Contentsetting extends Eloquent {
         "show_preview": true,
         "tooltip": "",
         "max_number": 1,
-        "s3_enabled" : 1
+        "s3_enabled" : 1,
+        "can_tag" : 1
     }';
 
     const DEFAULT_DROPDOWN_JSON = '{
         "values": {
-          "": "Please Select",
-          "customise": "You need to cusomise the values from field_parameters"
         },
         "max_number":1,
         "tooltip": ""
@@ -54,8 +52,6 @@ class Contentsetting extends Eloquent {
     }';
     const DEFAULT_RADIO_JSON = '{
         "values": {
-          "yes": "1",
-          "no": "0"
         },
         "tooltip": ""
     }';
@@ -103,30 +99,15 @@ class Contentsetting extends Eloquent {
     public static function getDefaultParams($setting){
         //todo: there must be a nicer way than this..
         //dd($setting->field_type);
-        if($setting->field_type == 'upload'){
-            $params = self::DEFAULT_UPLOAD_JSON;
-        }
-        else if($setting->field_type == 'dropdown'){
-            $params = self::DEFAULT_DROPDOWN_JSON;
-        }
-        else if($setting->field_type == 'checkbox'){
-            $params = self::DEFAULT_CHECKBOX_JSON;
-        }
-        else if($setting->field_type == 'datepicker'){
-            $params = self::DEFAULT_DATEPICKER_JSON;
-        }
-        else if($setting->field_type == 'tinymce'){
-            $params = self::DEFAULT_TINYMCE_JSON;
-        }
-        else if($setting->field_type == 'relationship'){
-            $params = self::DEFAULT_RELATIONSHIP_JSON;
-        }
-        else if($setting->field_type == 'radio'){
-            $params = self::DEFAULT_RADIO_JSON;
-        }
-        else{
+
+        $field_type = 'DEFAULT_'.strtoupper ($setting).'_JSON';
+        $params = @self::$field_type;
+
+        //default
+        if(!$params){
             $params = self::DEFAULT_TEXT_JSON;
         }
+
         return($params);
     }
 }
