@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateTemplateTable extends Migration {
+class LanguageAdditions extends Migration {
 
     /**
      * Run the migrations.
