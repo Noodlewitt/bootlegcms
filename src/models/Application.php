@@ -49,6 +49,7 @@ class Application extends Baum\Node{
     }
 
     public static function getApplication($domain='', $folder = ''){
+
         return(unserialize($GLOBALS['application']));
     }
 }
