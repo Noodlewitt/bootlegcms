@@ -100,8 +100,8 @@ class Contentsetting extends Eloquent {
         //todo: there must be a nicer way than this..
         //dd($setting->field_type);
 
-        $field_type = 'DEFAULT_'.strtoupper ($setting).'_JSON';
-        $params = @self::$field_type;
+        $field_type = 'DEFAULT_'.strtoupper ($setting->field_type).'_JSON';
+        $params = @constant(self.'::'.$field_type);
 
         //default
         if(!$params){
