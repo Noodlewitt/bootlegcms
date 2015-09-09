@@ -10,9 +10,10 @@ class CmsSetup implements Middleware {
      * @param  Closure $next    [description]
      * @return [type]           [description]
      */
+
     public function handle($request, Closure $next){
         //try and pick app from session, if visiting cms
-        if($request->is(config('bootlegcms.cms_route').'*')){
+        if(($request->is(rtrim(config('bootlegcms.cms_route'),'/')) || $request->is(config('bootlegcms.cms_route').'*')) && !$request->is(config('bootlegcms.cms_route').'login')){
             $cms_app = \Session::get('cms_app');
             if($cms_app){
                 $application = \Application::with('setting','languages','plugins')->find($cms_app);
