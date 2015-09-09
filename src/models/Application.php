@@ -1,6 +1,9 @@
 <?php
 use Illuminate\Database\Eloquent\SoftDeletes;
-class Application extends Baum\Node{
+use Baum\Node;
+
+class Application extends Node
+{
 
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -15,60 +18,66 @@ class Application extends Baum\Node{
     protected $depthColumn = 'depth';
     protected $parentColumn = 'parent_id';
 
-    protected $_settings = NULL; //holds settings for this application item so we don't have to contantly query it.
-    
+    protected $_settings = null; //holds settings for this application item so we don't have to contantly query it.
+
     public static $rules = array(
-		'name' => 'required|unique:applications',
+        'name' => 'required|unique:applications',
         'domain' => 'required',
-		//'parent_id' => 'required'
+        //'parent_id' => 'required'
     );
-    
-    public function creator(){
+
+    public function creator()
+    {
         return($this->belongsTo('Bootleg\Cms\User', 'user_id'));
     }
 
-    public function url(){
+    public function url()
+    {
         return($this->hasMany('ApplicationUrl'));
     }
-    
-    public function setting(){
+
+    public function setting()
+    {
         return($this->hasMany('Applicationsetting'));
     }
-    
-    public function languages(){
+
+    public function languages()
+    {
         return($this->hasMany('ApplicationLanguage'));
     }
 
-    public function plugins(){
+    public function plugins()
+    {
         return($this->belongsToMany('Plugin'));
     }
-    
-    public function permission(){
+
+    public function permission()
+    {
         return $this->morphMany('Permission', 'controller');
     }
-    
-    public static function getApplication($domain='', $folder = ''){        
+    public static function getApplication($domain = '', $folder = '')
+    {
         return(unserialize($GLOBALS['application']));
     }
 
         /*
      * returns a single setting given the name;
      */
-    public function getSetting($getSetting){
-        $settings = $this->setting->filter(function($model) use(&$getSetting){
+    public function getSetting($getSetting)
+    {
+        $settings = $this->setting->filter(function ($model) use (&$getSetting) {
             return $model->name === $getSetting;
-            
+
         });
-        if($settings->count() == 0){
+        if ($settings->count() == 0) {
             return null;
         }
-        if($settings->count() > 1){
+        if ($settings->count() > 1) {
             $return = array();
-            foreach($settings as $setting){
+            foreach ($settings as $setting) {
                 $return[] = $setting->value;
             }
-        }
-        else{
+        } else {
             $return = $settings->first()->value;
         }
         return($return);

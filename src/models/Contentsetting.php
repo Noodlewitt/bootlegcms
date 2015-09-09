@@ -47,8 +47,6 @@ class Contentsetting extends Eloquent {
 
     const DEFAULT_CHECKBOX_JSON = '{
         "values": {
-          "checked": "1",
-          "unchecked": "0"
         },
         "tooltip": ""
     }';

@@ -1,11 +1,11 @@
-<?php namespace Bootleg\Cms; 
+<?php namespace Bootleg\Cms;
 
 class ApplicationController extends CmsController {
 
     public function __construct() {
         parent::__construct();
     }
-    
+
     public function anyIndex(){
         $applications = $this->application->descendantsAndSelf()->paginate(15);
         return $this->render('application.index', compact('applications')) ;
@@ -39,9 +39,9 @@ class ApplicationController extends CmsController {
         $application = \Application::findOrFail($id);
         return $this->render('application.view', ['application' => $application]) ;
     }
-    
+
     public function postStore(){
-        
+
         $input = \Input::all();
         if($input['parent_id']){
             $parentApplication = \Application::find($input['parent_id']);
@@ -60,14 +60,14 @@ class ApplicationController extends CmsController {
             $newApp->user_id = \Auth::user()->id;
             //$newApp->parent_id = $parentApplication->id;
             $newApp->cms_package = $parentApplication->cms_package;
-            
 
-            
+
+
             $parentApplication->children()->save($newApp);
 
             //TODO: Fix baum here - not saving correctly
             \Application::rebuild();
-            
+
             //we need to do the urls..
             $domains = explode(',', $input['domain']);
             $appUrls = [];
@@ -88,33 +88,33 @@ class ApplicationController extends CmsController {
             return redirect()->action('\Bootleg\Cms\ApplicationController@anyIndex')->with(['success'=>'Application Succesfully Created']);
         }
         \Request::flash();
-        return redirect()->back()->withErrors($validation->errors());        
+        return redirect()->back()->withErrors($validation->errors());
     }
-    
+
     public function anySettings(){
 
         //$application = Application::getApplication();
         //dd($this->application->cms_package);
         $app_settings = $this->application->setting()->get();
         $application_settings = $app_settings->groupBy('section');
-        
+
         $plugins = $this->application->plugins()->first();
-        
+
         return $this->render('application.settings', compact('cont', 'application', 'application_settings', 'plugins')) ;
     }
-    
+
     /**
      * Sets language of back end
      **/
     public function anySetlang(){
-        
+
     }
-    
+
     public function anyUpdate(){
-        $input = array_except(\Input::all(), '_method');        
+        $input = array_except(\Input::all(), '_method');
         $validation = \Validator::make($input, \Application::$rules);
         if ($validation->passes()){
-            
+
 
             $this->application->update($input);
             //dd($input);
@@ -144,7 +144,7 @@ class ApplicationController extends CmsController {
                         else{
                             //if it's not found (even in trashed) then we need to make a new field.
                             //if it's contentdefault, we need to create it too since it doesn't exist!
-                            
+
                             //otherwise this field exists.. we can overwrite it' settings.
                             $applicationSetting->name = $name;
                             $applicationSetting->value = $setting;
@@ -160,8 +160,17 @@ class ApplicationController extends CmsController {
             }
             return redirect()->action('\Bootleg\Cms\ApplicationController@anySettings')->with('success', 'Settings Updated');
         }
-    
+
     }
 
+    public function getSwitch($id){
+        $application = \Application::find($id);
+        if($application){
+            \Session::put('cms_app', $id);
+            return redirect()->back()->with('message', 'Application switched');
+        } else {
+            return redirect()->back()->with('message', 'An error occured when switching app');
+        }
+    }
 
 }
