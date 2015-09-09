@@ -40,6 +40,8 @@ class CmsServiceProvider extends ServiceProvider {
         $router->middleware('permissions', 'Bootleg\Cms\Middleware\Permissions');
         $router->middleware('cms.setup', 'Bootleg\Cms\Middleware\CmsSetup');
 
+        if(Config::get('bootlegcms.cms_timezone')) Config::set('app.timezone', Config::get('bootlegcms.cms_timezone'));
+
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
 
