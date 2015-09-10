@@ -43,6 +43,9 @@
     </div>
     <script type="text/javascript">
         $(function () {
+            
+            $('[data-toggle="tooltip"]').tooltip();
+
             $('.form-wrap').on('click','.js-generate-slug', function(e){
                 e.preventDefault();
 

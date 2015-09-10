@@ -55,6 +55,23 @@
             $(document).on('hidden.bs.modal', function (e) {
                 $(e.target).removeData('bs.modal');
             });
+
+            $('body').on('click', "a.js-main-content", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $.get($(this).attr('href'), function(data){
+                    $('.main-content').html(data);
+                });
+            });
+
+            $('body').on('click', "input.js-main-content, button.js-main-content", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $form = $(this).closest('form');
+                $.post($form.attr('action'), $form.serialize(), function(data){
+                    $('.main-content').html(data);
+                });
+            });
         });
         </script>
         <?php

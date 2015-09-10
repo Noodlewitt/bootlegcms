@@ -600,32 +600,7 @@ class ContentwrapperController extends CMSController
                     //TODO: should this be shifted to some sort of plugin?
                     
                     if (@$this->application->getSetting('Enable s3')) {
-
-
-                        //$uploadFolder
-                        //file and folder need to be concated and checked.
-                        if (@$this->application->getSetting('s3 Folder')) {
-                            $pth = trim(@$this->application->getSetting('s3 Folder'), '/\ ').'/'.$fileName;
-                        } else {
-                            $pth = $fileName;
-                        }
-
-                        $s3 = \AWS::get('s3');
-                        $s3->putObject(array(
-                            'Bucket'     => @$this->application->getSetting('s3 Bucket'),
-                            'Key'        => $pth,
-                            'SourceFile' => $destinationPath.$fileName,
-                            'ACL'=>'public-read' //todo: check this would be standard - would we ever need to have something else in here?
-                        ));
-                        if (@$this->application->getSetting('s3 Cloudfront Url')) {
-                            $cloudUrl = trim($this->application->getSetting('s3 Cloudfront Url'), " /");
-                            $finalUrl = "//$cloudUrl/$pth";
-                        } else {
-                            $finalUrl = "//".@$this->application->getSetting('s3 Bucket')."/$pth";
-                        }
-
-
-                        //todo: remove old file in /uploads?
+                        $finalUrl = S3::upload($fileName, $destinationPath.$uploadFolder.$fileId.'.'.$extension);
                     }
 
                     //and we need to build the json response.
@@ -642,7 +617,7 @@ class ContentwrapperController extends CMSController
                     echo('val fail');
                     exit();
                 }
-
+                
                 \Event::fire('upload.complete', array($finalUrl));
             }
             return response()->json($return);

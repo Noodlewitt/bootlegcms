@@ -1,4 +1,5 @@
 <?php
+
 if(@$content){
 
     $settingAfterEvent = \Event::fire('content.tags.draw', array('content'=>$content, 'setting'=>$setting));    
@@ -20,6 +21,7 @@ if(!@$params->simple){
 foreach($setting as $key=>$field){
     $tagsArr = explode(@$params->delimiter?$params->delimiter:',', $field->value);
 }
+//dd($tagsArr);
 ?>
 {!! Form::label("setting[".$setting[0]->orig_name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
 @if($params->max_number  && $params->max_number > 1)
@@ -55,9 +57,14 @@ foreach($setting as $key=>$field){
 @else
 <div class='text {{$niceName}} {{$unique}}' >   
     @foreach($setting as $field)
-        <select name="setting[{{$field->name}}][{{get_class($field)}}][{{$field->id}}][]" class="{{$options['class']}}" multiple="" tabindex="-1" aria-hidden="true">
+        <select id="{{$niceName}}{{$unique}}" name="setting[{{$field->name}}][{{get_class($field)}}][{{$field->id}}][]" class="{{$options['class']}}" multiple="" tabindex="-1" aria-hidden="true">
             @foreach($tagsArr as $tag)
-                <option selected="selected">{{$tag}}</option>
+                @if($tag)
+                    <option selected="selected">{{$tag}}</option>
+                @endif
+            @endforeach
+            @foreach($values as $standardValue)
+                <option>{{$standardValue}}</option>
             @endforeach
         </select>
     @endforeach
@@ -67,10 +74,8 @@ foreach($setting as $key=>$field){
 
 <script type="text/javascript">
 $(function () {
-    $('.{{$unique}} select').select2(
-        {
-            tags:true,
-            placeholder:"{{@$params->placeholder}}"
-        });
+    $('.{{$unique}} select').select2({
+        tags:true
+    });
 });
 </script>

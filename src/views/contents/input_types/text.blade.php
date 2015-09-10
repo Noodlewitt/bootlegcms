@@ -10,15 +10,20 @@ if(@$content){
 
 $params = \Contentsetting::parseParams($setting[0]);
 $niceName = preg_replace('/\s+/', '', $setting[0]->name);
+$options = array('class'=>'form-control');
+if(@$params->tooltip->text){
+    $options['data-toggle'] = "tooltip";
+    $options['data-placement'] = @$params->tooltip->postion?$params->tooltip->postion:"left";
+    $options['title'] = $params->tooltip->text;
+}
 ?>
-
 {!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
 @if($params->max_number  && $params->max_number > 1)
     <div class='text-fields'>
         @foreach($setting as $field)
         <div class='input-group text {{$niceName}}' >   
 
-            {!! Form::text("setting[".$field->orig_name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control')) !!}
+            {!! Form::text("setting[".$field->orig_name."][".get_class($field)."][".$field->id."]", $field->value, $options) !!}
             <span class="input-group-btn">
                 <button class="del-row btn btn-danger" type="button"><span class='glyphicon glyphicon-remove'></span></button>
             </span>
@@ -43,7 +48,7 @@ $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 <div class='text {{$niceName}}' >   
     @foreach($setting as $field)
     
-    {!! Form::text("setting[".$field->orig_name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control')) !!}
+    {!! Form::text("setting[".$field->orig_name."][".get_class($field)."][".$field->id."]", $field->value, $options) !!}
     @endforeach
 </div>
 @endif

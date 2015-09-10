@@ -29,6 +29,7 @@ gulp.task('uglify', function() {
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/collapse.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/transition.js',
+        'public/components/bootstrap-sass/assets/javascripts/bootstrap/tooltip.js',
         'public/components/jstree/dist/jstree.js',
         'public/components/blueimp-tmpl/js/tmpl.js',
         'public/components/blueimp-load-image/js/load-image.all.min.js',

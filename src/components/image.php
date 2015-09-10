@@ -12,25 +12,17 @@ class Img{
     }
 
     public static function resize($source_path, $desired_x=300, $desired_y=150, $mode = 'crop', $upload = true){
-        //TODO: resize with GD library.
+    //    echo("creating size: $desired_x x $desired_y");
+    //    flush();
+        $fileString = file_get_contents('http:'.$source_path, 'r');
 
-        list($source_width, $source_height, $source_type) = getimagesize($source_path);
+        $source_path_parts = pathinfo($source_path);
 
-        //create object depending on image type
-        switch ($source_type) {
-            case IMAGETYPE_GIF:
-                $source_gdim = imagecreatefromgif($source_path);
-                break;
-            case IMAGETYPE_JPEG:
-                $source_gdim = imagecreatefromjpeg($source_path);
-                break;
-            case IMAGETYPE_PNG:
-                $source_gdim = imagecreatefrompng($source_path);
-                break;
-        }
+        $source_gdim = imagecreatefromstring($fileString);
+        list($source_width, $source_height, $source_type, $attr) = getimagesizefromstring($fileString);
 
         $source_aspect_ratio = $source_width / $source_height;
-        $desired_aspect_ratio = $x / $desired_y;
+        $desired_aspect_ratio = $desired_x / $desired_y;
 
         if ($source_aspect_ratio > $desired_aspect_ratio) {
             /*
@@ -68,78 +60,34 @@ class Img{
             $x0, $y0,
             $desired_x, $desired_y
         );
+        
+        $application = \Application::getApplication();
+        $uploadFolder = trim(@$application->getSetting('Upload Folder'), '/\ ');
 
-        $application = Application::getApplication();
         if($upload){
+            
+            $finalFile = $source_path_parts['filename']."_".$desired_x."_".$desired_y.'.'.$source_path_parts['extension'];
 
-            //we gotta push this file locally first regardless of if we need it or not
-            //since there's no method to get the image data out directly without
-            //outputting to browser..
+            //this leaves us with something like this 55ee4c5e032e5_300_150.jpg
+            
+            $finalPath = storage_path()."/uploads/".$uploadFolder.$finalFile;
 
-            try {
-                $destinationPath    = storage_path()."/uploads/";
-                $sourcePathInfo = pathinfo(Img::get($source_path, $desired_x, $desired_y, $mode));
-                $newBaseName = $sourcePathInfo['basename'];
-
-                switch ($source_type) {
-                    case IMAGETYPE_GIF:
-                        $loc = imagegif($source_path, $destinationPath.'/'.$newBaseName);
-                        break;
-                    case IMAGETYPE_JPEG:
-                        $loc = imagejpeg($source_path, $destinationPath.'/'.$newBaseName);
-                        break;
-                    case IMAGETYPE_PNG:
-                        $loc = imagepng($source_path, $destinationPath.'/'.$newBaseName);
-                        break;
-                }
-                $finalUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$newBaseName";
-            } catch(Exception $e) {
-                dd($e->getMessage());
-                //TODO: proper error handling should really take place here..
-                //in the mean time we'll make do with a dd.
+            switch ($source_type) {
+            case IMAGETYPE_GIF:
+                imagegif($desired_gdim, $finalPath);
+                break;
+            case IMAGETYPE_JPEG:
+                imagejpeg($desired_gdim, $finalPath);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($desired_gdim, $finalPath);
+                break;
             }
-            //at this point we should have created the smaller image, and moved it
-            //into the storage folder. The local uri should be set correctly into
-            //$loc, and the finalUrl should also be correct.
-
-            if(@$application->getSetting('Enable s3')){
-                //we need to upload this into the s3
-                //$uploadFolder
-                //file and folder need to be concated and checked.
-                if(@$application->getSetting('s3 Folder')){
-                    $pth = trim(@$application->getSetting('s3 Folder'),'/\ ').'/'.$fileName;
-                }
-                else{
-                    $pth = $fileName;
-                }
-
-                switch ($source_type) {
-                    case IMAGETYPE_GIF:
-                        $source_gdim = imagecreatefromgif($source_path);
-                        break;
-                    case IMAGETYPE_JPEG:
-                        $source_gdim = imagecreatefromjpeg($source_path);
-                        break;
-                    case IMAGETYPE_PNG:
-                        $source_gdim = imagecreatefrompng($source_path);
-                        break;
-                }
-                
-                $s3 = AWS::get('s3');
-                $s3->putObject(array(
-                    'Bucket'     => @$application->getSetting('s3 Bucket'),
-                    'Key'        => $pth,
-                    'SourceFile' => $loc,
-                    'ACL'=>'public-read' //todo: check this would be standard - would we ever need to have something else in here?
-                ));
-                if(@$application->getSetting('s3 Cloudfront Url')){
-                    $cloudUrl = trim($application->getSetting('s3 Cloudfront Url'), " /");
-                    $finalUrl = "//$cloudUrl/$pth";
-                }
-                else{
-                    $finalUrl = "//".@$application->getSetting('s3 Bucket')."/$pth";
-                }
-            }
+        //    echo("uploading size: $desired_x x $desired_y");
+        //    flush();
+            S3::upload($finalFile, $finalPath);
+        //    echo("done");
+        //    flush();
         }
     }
 }

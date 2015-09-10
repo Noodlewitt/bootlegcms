@@ -14,7 +14,10 @@ class Contentsetting extends Eloquent {
           "mimes":"gif,jpeg,bmp,png",
           "size":"5120"
         },
-        "tooltip": "",
+        "tooltip": {
+            "text":"",
+            "postion":"top"
+        },
         "max_number": 1
     }';
     
@@ -24,7 +27,10 @@ class Contentsetting extends Eloquent {
           "customise": "You need to cusomise the values from field_parameters"
         },
         "max_number":1,
-        "tooltip": ""
+        "tooltip": {
+            "text":"",
+            "postion":"top"
+        }
     }';
 
     const DEFAULT_DATEPICKER_JSON = '{
@@ -33,7 +39,10 @@ class Contentsetting extends Eloquent {
             "data-date-today-button": "true"
         },
         "max_number":1,
-        "tooltip": ""
+        "tooltip": {
+            "text":"",
+            "postion":"top"
+        }
     }';
 
     const DEFAULT_CHECKBOX_JSON = '{
@@ -41,12 +50,18 @@ class Contentsetting extends Eloquent {
           "checked": "1",
           "unchecked": "0"
         },
-        "tooltip": ""
+        "tooltip": {
+            "text":"",
+            "postion":"top"
+        }
     }';
     
     const DEFAULT_TEXT_JSON = '{
-        "tooltip":"",
-        "max_number":1
+        "max_number":1,
+        "tooltip": {
+            "text":"",
+            "postion":"top"
+        }
     }';
 
     const DEFAULT_TAGS_JSON = '{
@@ -55,7 +70,10 @@ class Contentsetting extends Eloquent {
           "customise": "If you want more default tags"
         },
         "max_number":1,
-        "tooltip": ""
+        "tooltip": {
+            "text":"",
+            "postion":"top"
+        }
     }';
 
     const DEFAULT_TINYMCE_JSON = '{

@@ -2,7 +2,7 @@
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends \Baum\Node{ //Eloquent {status
-    protected $fillable = array('name', 'identifier', 'position', 'package', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug');
+    protected $fillable = array('name', 'identifier', 'position', 'package', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug','edit_action');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -170,7 +170,7 @@ class Content extends \Baum\Node{ //Eloquent {status
             $parentTemplate = Template::find($parent->template_id);
 
             
-            if($parentTemplate->id){
+            if(@$parentTemplate->id){
                 //since we occasionally want to process a looped back tree (which makes the whole tree 
                 //invalid, we can't use baum's built in functions to get the first child.
                 if($parentTemplate->loopback){
@@ -189,7 +189,6 @@ class Content extends \Baum\Node{ //Eloquent {status
         $template = Template::find($input['template_id']);
 		
 		//dd($template->name);
-        //TODO: replace with something like this: dd($this->default_fields()->first()->id);
         //$contentDefaultFields = Contentdefaultfield::where('content_type_id', '=', $this->content_type_id)->get();
         
         //plug in the fields we wanted..
