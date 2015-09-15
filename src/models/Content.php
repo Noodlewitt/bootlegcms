@@ -105,6 +105,11 @@ class Content extends \Baum\Node{ //Eloquent {status
     {
         return $this->hasMany('Contentsetting');
     }
+
+    public function settinglanguage()
+    {
+        return $this->hasMany('ContentsettingLanguage');
+    }
     
 //    public function contenttype(){
 //    	return $this->belongsTo('Contenttype');

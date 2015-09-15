@@ -28,7 +28,7 @@ $selectedTagsArr = array_flip($selectedTagsArr);    //and we want to flip this s
 @if($params->max_number  && $params->max_number > 1)
     <div class='text-fields'>
         @foreach($setting as $field)
-            <select name="setting[{{$field->name}}][{{get_class($field)}}][{{$field->id}}][]" class="{{$options['class']}}" {{@$params->multiple?'multiple="multiple"':""}}  >
+            <select name="setting[{{$field->name}}][{{get_class($field)}}][{{$field->id}}]" class="{{$options['class']}}" {{@$params->multiple?'multiple="multiple"':""}}  >
                 @foreach($values as $key=>$value)
                     @if(isset($selectedTagsArr[$key]))
                     <option selected value="{{$key=="_empty_"?"":$key}}" >{{$value}}</option>
@@ -56,7 +56,7 @@ $selectedTagsArr = array_flip($selectedTagsArr);    //and we want to flip this s
 @else
 <div class='text {{$niceName}} {{$unique}}' >   
     @foreach($setting as $field)
-        <select name="setting[{{$field->name}}][{{get_class($field)}}][{{$field->id}}][]" style="width:100%" class="{{$options['class']}}" {{@$params->multiple?'multiple="multiple"':""}}  >
+        <select name="setting[{{$field->name}}][{{get_class($field)}}][{{$field->id}}]" style="width:100%" class="{{$options['class']}}" {{@$params->multiple?'multiple="multiple"':""}}  >
             @foreach($values as $key=>$value)
                 @if(isset($selectedTagsArr[$key]))
                 <option selected value="{{$key=="_empty_"?"":$key}}" >{{$value}}</option>
@@ -69,7 +69,7 @@ $selectedTagsArr = array_flip($selectedTagsArr);    //and we want to flip this s
 </div>
 @endif
 
-
+@if(@$params->simple)
 <script type="text/javascript">
 $(function () {
     $('.{{$unique}} select.select2').select2({
@@ -86,3 +86,4 @@ $(function () {
     });
 });
 </script>
+@endif

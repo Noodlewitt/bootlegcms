@@ -217,6 +217,7 @@ class ContentwrapperController extends CMSController
         }
         if ($id !== false) {
             $input = array_except(\Input::all(), '_method');
+            
             $validation = \Validator::make($input, $this->content->rules);
             if ($validation->passes()) {
                 //we need to update the settings too:
@@ -387,7 +388,14 @@ class ContentwrapperController extends CMSController
 
                                     $contentSettingLanguage->save();
                                 } else {
-                                    $contentSetting->save();
+
+                                    if($contentSetting->value == ''){
+                                        $contentSetting->forceDelete();
+                                    }
+                                    else{
+                                        $contentSetting->save();    
+                                    }
+                                    
                                 }
                                     
                                 //$contentSetting->restore();     //TODO: do we always want to restore the deleted field here?

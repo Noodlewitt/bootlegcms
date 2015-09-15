@@ -5,7 +5,8 @@ class Contentsetting extends Eloquent {
     protected $fillable = array('content_id', 'name', 'value', 'field_type');
 
     protected $table = 'content_settings';
-    
+    protected $language = '';
+    protected $orig_value = '';
     use SoftDeletes;
     protected $dates = ['deleted_at'];
     
@@ -138,12 +139,14 @@ class Contentsetting extends Eloquent {
     }
 
     public function getValueAttribute($value){
+
         $this->language = $this->languages(\App::getLocale())->first();
         $this->orig_value = $value;
         return @$this->language->value?$this->language->value:$value;
     }
 
     public function getNameAttribute($name){
+
         $this->language = $this->languages(\App::getLocale())->first();
         $this->orig_name = $name;
         return @$this->language->name?$this->language->name:$name;
