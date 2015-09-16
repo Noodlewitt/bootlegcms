@@ -4,9 +4,9 @@ class Img{
     //A bunch of tools for resizing and interacting with images.
 
     //returns url of resized image
-    public function get($url, $x, $y, $mode='crop'){
+    public static function get($url, $x, $y, $mode='crop'){
         $url = pathinfo($url);
-        $filename = '/'.$url['filename']."_".$mode."_".$x."_".$y.$url['extension'];
+        $filename = '/'.$url['filename']."_".$mode."_".$x."_".$y.'.'.$url['extension'];
         $finalUrl = $url['dirname'].$filename;
         return($finalUrl);
     }
@@ -66,7 +66,7 @@ class Img{
 
         if($upload){
             
-            $finalFile = $source_path_parts['filename']."_".$desired_x."_".$desired_y.'.'.$source_path_parts['extension'];
+            $finalFile = $source_path_parts['filename']."_".$mode."_".$desired_x."_".$desired_y.'.'.$source_path_parts['extension'];
 
             //this leaves us with something like this 55ee4c5e032e5_300_150.jpg
             
