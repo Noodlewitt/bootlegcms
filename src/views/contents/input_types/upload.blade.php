@@ -264,7 +264,7 @@ $files = json_encode($files);
                     setTimeout(function(){
                         //and add in the image preview
                         $input = $('input.upload-value', $container{{$niceName}});
-                        $input.val($('span.preview img', $container{{$niceName}}).attr('src'));
+                        //$input.val($('span.preview img', $container{{$niceName}}).attr('src'));
                         window.parent.inline_image = $input.val();
                     }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {
