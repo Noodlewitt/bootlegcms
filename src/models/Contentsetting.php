@@ -14,6 +14,7 @@ class Contentsetting extends Eloquent {
           "mimes":"gif,jpeg,bmp,png",
           "size":"5120"
         },
+        "taggable": false,
         "show_preview": true,
         "tooltip": "",
         "max_number": 1,

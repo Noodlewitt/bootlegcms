@@ -167,10 +167,12 @@ $files = json_encode($files);
                         <span class="size">{%=o.formatFileSize(file.size)%}</span>
                     </td>
                     <td class='vertical-middle text-right'>
+                        @if($params->taggable)
                         <button class="btn btn-info image-tag" data-imageid="{%=file.id%}" type="button">
                             <i class="glyphicon glyphicon-tag"></i>
                             <span>Tag</span>
                         </button>
+                        @endif
                         {% if (file.deleteUrl) { %}
                             <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                                 <i class="glyphicon glyphicon-trash"></i>
