@@ -8,7 +8,8 @@ if(@$content){
     }
 }
 $field_name = @$setting->name;
-$field_value = (@$setting->value?$setting->value:$setting->value);
 ?>
-{{ Form::label("setting[$field_name]", ucfirst("$field_name:")) }}
-{{ $field_value }}
+<div class='form-group'>
+    {{ Form::label("setting[$field_name]", ucfirst("$field_name:")) }}
+    <div class=''> {{ $setting->value }}</div>
+</div>

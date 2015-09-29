@@ -17,7 +17,7 @@ class Content extends \Baum\Node{ //Eloquent {status
     
     protected $orderColumn = 'position'; //Baum sorting and ordering modifier
 
-    //protected $scoped = array('application_id');
+    protected $scoped = array('application_id');
     
     protected $_settings = NULL; //holds settings for this content item so we don't have to contantly query it.    
     
@@ -184,6 +184,7 @@ class Content extends \Baum\Node{ //Eloquent {status
                 else{
                     $parentTemplateChild = @$parentTemplate->getImmediateDescendants()->first();  
                 }                
+
                 $input['template_id'] = @$parentTemplateChild->id;    
             }
             if(!@$input['template_id']){
@@ -205,7 +206,6 @@ class Content extends \Baum\Node{ //Eloquent {status
         if(!@$input['package'])$input['package'] = @$template->package;
 
         if(!@$input['edit_view'])$input['edit_view'] = @$template->edit_view;
-        if(!@$input['edit_package'])$input['edit_package'] = @$template->edit_package;
         if(!@$input['edit_action'])$input['edit_action'] = @$template->edit_action;
 
         //work out the slug if not manually set
@@ -223,11 +223,6 @@ class Content extends \Baum\Node{ //Eloquent {status
             $input['application_id'] = $application->id;
         }
 		
-		//set language
-		
-		if(!@$input['language']){
-            $input['language'] = App::getLocale();
-        }
         
 		
         
@@ -249,18 +244,6 @@ class Content extends \Baum\Node{ //Eloquent {status
             }
         }
 
-
-     
-        if(!@$input['edit_package']){
-            //set it as parent one..
-            $input['edit_package'] = @$parent->edit_package;
-            
-            //still nothing - we have to set it to default.
-            if(!$input['edit_package']){
-                //last ditch attempt to put something sensible in here
-                $input['edit_package'] = Content::PACKAGE;
-            }
-        }
 
         if(!@$input['edit_view']){
             //set it as parent one..
@@ -314,32 +297,7 @@ class Content extends \Baum\Node{ //Eloquent {status
     }
     
     
-    
-    /*TODO: figure out this better.*/
-    public function getTree($parent_id = null, $recurse = false){
-        //TODO: look at this.
-        if($parent_id){
-            $contentTree = Content::fromApplication()->language()->where('parent_id', '=', $parent_id)->immediateDescendants();
-        }
-        else{
-            $contentTree = $this->immediateDescendants();
-        }
-        
-        $obj = new stdClass;
-        $data = array();
-        foreach($contentTree as $content){
-            $data[] = '{
-                "text": "'.$content->name.'",
-                "state": {
-                  "opened": false,
-                  "selected": false
-                },
-                "li_attr":{},
-                "a_attr":{}
-            },';
-        }
-        $data[count($data)] = rtrim($data[count($data)], ',');
-    }
+
     
     /*
      * returns a single setting given the name;
@@ -371,9 +329,6 @@ class Content extends \Baum\Node{ //Eloquent {status
         if(!$content->edit_view){
             $content->edit_view = 'contents.edit';
         }
-        if(!$content->edit_package){
-            $content->edit_package = 'cms';
-        }
         return($content);
     }
 
@@ -395,7 +350,6 @@ class Content extends \Baum\Node{ //Eloquent {status
         $newContent->position = $themeContent->position;
         $newContent->edit_view = $themeContent->edit_view;
         $newContent->edit_action = $themeContent->edit_action;
-        $newContent->edit_package = $themeContent->edit_package;
         $newContent->status = $themeContent->status;
         
         
@@ -418,6 +372,20 @@ class Content extends \Baum\Node{ //Eloquent {status
         }
     }
 
+
+    public function getHideInTreeAttribute($value){
+        if($value){
+            if(config('bootlegcms.cms_debug') == true){
+                return(false);
+               //if we are in debug mode - alwys return false - since we want to see what' happening.
+            }
+            else{
+                return($value);    
+            }    
+        }
+        
+        return($value);
+    }
 
     public function getNameAttribute($value){
         //dd(Application::getApplication()->languages);

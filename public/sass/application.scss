@@ -25,6 +25,9 @@ body {
     padding-top: 50px;
 }
 
+.nice-hidden{
+    display:none;
+}
 
 /*fix for bootstrap bug. fix is apparently coming soon for this.*/
 .container-fluid {
@@ -140,6 +143,7 @@ body {
     bottom: 0;
     position: fixed;
     height: 60px;
+    z-index: 5;
     padding: $gutter-half;
     background: $well-bg;
     border-top: 1px solid $gray-lighter;
@@ -208,6 +212,30 @@ form.main-form{
         }
     } 
 } 
+
+.popover-content{
+    .form-group{
+        min-width: 250px;
+    }
+}
+
+
+//for use with popover dropdowns.
+.select2-container{
+    z-index: 5000; 
+}
+
+.child{
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);    
+    padding: 15px;
+    .page-header{
+        display:none;
+    }
+}
+
+.table-search{
+    margin-top: 20px;
+}
 
 .dash-item{
 

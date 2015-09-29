@@ -12,7 +12,8 @@
         "illuminate/support": "5.0.*",
         "baum/baum": "~1.1",
         "laravelcollective/html": "~5.0",
-        "aws/aws-sdk-php-laravel": "~2.0"
+        "aws/aws-sdk-php-laravel": "~2.0",
+        "tom-lingham/searchy" : "2.*"
     },
     "autoload": {
         "classmap": [

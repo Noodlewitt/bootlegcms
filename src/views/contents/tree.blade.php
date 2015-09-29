@@ -38,14 +38,23 @@
                             if($node.children.length > 0){
                                 //this item has sub items - TODO: we need to ask if we can delete:
                             }
-                            $.post( "{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyDestroy") }}" ,{
-                                id: $node.id,
-                                '_token':'{!!csrf_token()!!}'
-                            }).done(function(data){
-                                //successfully deleted.
-                                tree.delete_node($node);
-                            }).fail(function(){
-                                $node.refresh();
+                            swal({
+                                title: "Are you sure?",
+                                type: "warning",
+                                text: "Are you sure you want to delete?",
+                                showCancelButton: true,
+                                confirmButtonText: "Yes, delete it!"
+                            },
+                            function(){   
+                                $.post( "{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyDestroy") }}" ,{
+                                    id: $node.id,
+                                    '_token':'{!!csrf_token()!!}'
+                                }).done(function(data){
+                                    //successfully deleted.
+                                    tree.delete_node($node);
+                                }).fail(function(){
+                                    $node.refresh();
+                                });
                             });
                         }
                     },
@@ -77,14 +86,13 @@
         if(isNaN(data.node.id)){
             //create new content item.
             var parentnode = data.instance.get_node(data.node.parent);         
-            $.post( "{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyStore", array('json'=>true)) }}" , {
+            $.post( "{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyTreeStore") }}" , {
                 name:data.text,
                 parent_id:parentnode.id,
                 '_token':'{!!csrf_token()!!}'
             }).done(function(d){
-                console.log(d);
-                console.log(parentnode);
                 data.node.a_attr.href=d.a_attr.href;
+                data.node.a_attr.class += d.a_attr.class;
                 data.instance.load_node(parentnode);
                 //data.instance.refresh_node(data.node);
 

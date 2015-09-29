@@ -1,4 +1,6 @@
-
+    <?php
+    $settings = $settings->groupBy('section');
+    ?>
     <div class='overlay'></div>
     <div class="page-header row">
         <!-- Page header, center on small screens -->
@@ -6,40 +8,37 @@
     </div>
     @include('cms::layouts.flash_messages')
     <ul class="nav nav-tabs">
-
-        <?php $i = 0; $advanced = false; $contentSection = false?>
-            <li class='active'><a href="#tab-Content" data-toggle="tab" data-target='.edit-Content-tab'>Content</a></li>
+        <li class='active'><a href="#tab-Content" data-toggle="tab" data-target='.edit-Content-tab'>Content</a></li>
+        <li><a href="#tab-advanced" data-toggle="tab" data-target='.edit-advanced-tab'>Advanced</a></li>
+        <li><a href="#tab-permission" data-toggle="tab" data-target='.edit-permission-tab'>Permisssions</a></li>
         @foreach($settings as $key=>$section)
-            @if($key != 'Content')
+            @if($key != 'Content' && $key != 'Advanced' && $key != 'Permissions')
                 <li><a href="#tab-{{$key}}" data-toggle="tab" data-target='.edit-{{$key}}-tab'>{{$key}}</a></li>
             @endif
         @endforeach
-            <li><a href="#tab-advanced" data-toggle="tab" data-target='.edit-advanced-tab'>Advanced</a></li>
-            <li><a href="#tab-permission" data-toggle="tab" data-target='.edit-permission-tab'>Permisssions</a></li>
-
-            @if(count($application->languages) > 1)
-                <li class='js-language-select'>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Languages:{{\App::getLocale()}} <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            @foreach($application->languages as $language)
-
+        @if(count($application->languages) > 1 && config('bootlegcms.cms_languages'))
+            <li class='js-language-select'>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Languages:{{\App::getLocale()}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        @foreach($application->languages as $language)
                             <li>
                                 <a class='align-right js-add-panel js-add-panel-{{$language->code}}' data-lang-code="{{$language->code}}" href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$language->code}}{{'/'. $content_mode .'/'.'edit-tabs'.'/'.$content->id}}"><span class='glyphicon glyphicon-plus'></span></a>
                                 <a class='main ' href="{{Applicationurl::getBaseUrl().config('bootlegcms.cms_route')}}{{$language->code}}{{'/'. $content_mode .'/'.'edit'.'/'.$content->id}}">{{$language->name}}</a>
                             </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </li>
+        @endif
+    </ul>          
 
-                            @endforeach
 
-                        </ul>
-                    </div>
-                </li>
-            @endif
     </ul>
     <div class='form-wrap row'>
-    @include('cms::contents.edit-tabs')
+        @include('cms::contents.edit-tabs')
     </div>
     <script type="text/javascript">
         $(function () {

@@ -41,6 +41,5 @@
   },
   "_source": "git://github.com/soundasleep/bootstrap-datetimepicker-sass.git",
   "_target": "~3.0.3",
-  "_originalSource": "soundasleep-bootstrap-datetimepicker-sass",
-  "_direct": true
+  "_originalSource": "soundasleep-bootstrap-datetimepicker-sass"
 }

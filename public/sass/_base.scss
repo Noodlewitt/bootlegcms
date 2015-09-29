@@ -3,20 +3,14 @@ $icon-font-path: '../components/bootstrap-sass/assets/fonts/bootstrap/';
 
 
 @import '../components/fontawesome/scss/font-awesome.scss';
-
-//JS Tree css
-@import '../components/jstree/dist/themes/default/style.css'; 
-
-//fileupload from blueimp
-@import '../components/blueimp-file-upload/css/jquery.fileupload.css'; 
  
-//tag input form.
+//plugins for various input types and other bits..
+@import '../components/bootstrap-sweetalert/lib/sweet-alert.css'; 
+@import '../components/jstree/dist/themes/default/style.css'; 
+@import '../components/blueimp-file-upload/css/jquery.fileupload.css'; 
 @import '../components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css';
-
-@import '../components/soundasleep-bootstrap-datetimepicker-sass/src/sass/bootstrap-datetimepicker.scss';
-
+@import '../components/eonasdan-bootstrap-datetimepicker/src/sass/bootstrap-datetimepicker-build.scss';
 @import '../components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css';
-
 @import '../components/select2/src/scss/core.scss';
 
 //@import '../components/select2-bootstrap-css/select2-bootstrap.css';

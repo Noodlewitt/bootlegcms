@@ -31,14 +31,13 @@ class ContentwrapperController extends CMSController
      * @return Response
      */
     public function anyIndex()
-    {     
-
+    {
         $this->content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
         $content = $this->content;
         $allPermissions = \Permission::getControllerPermission($this->content->id, \Route::currentRouteAction());
         $settings = \Contentsetting::collectSettings($content);
-        $content = \Content::setDefaults($content);
-        
+       // $content = \Content::setDefaults($content);
+
         return $this->render('layouts.tree', compact('content', 'content_defaults', 'settings', 'allPermissions'));
     }
 
@@ -52,15 +51,20 @@ class ContentwrapperController extends CMSController
     {
         $content = new \Content;
         $content->parent_id = $parent_id;
-
-
-        if ($content) {
-            $tree = $content->getDescendantsAndSelf(config('bootlegcms.cms_tree_descendents'));
+        $parent = \Content::findOrFail($parent_id);
+        $input = $content->loadDefaultValues(array('parent_id'=>$parent_id));
+        foreach($input as $key=>$put){
+            $content->$key = $put;
         }
+        $allPermissions = array();
+        $settings = \Contentsetting::collectSettings($content);
 
-        $content_settings = $this->content->setting()->get();
-
-        return $this->render('contents.create', compact('content', 'content_settings', 'tree'));
+        //$content_settings = $this->content->setting()->get();
+        if (\Request::ajax()) {
+            return $this->render($content->edit_view,  compact('content', 'settings', 'allPermissions'));
+        } else {
+            return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
+        }
     }
 
 
@@ -69,7 +73,41 @@ class ContentwrapperController extends CMSController
      *
      * @return Response
      */
-    public function anyStore($json = false)
+    public function anyStore()
+    {
+        $input = Input::all();
+        $validation = Validator::make($input, $this->content->rules);
+
+        if (!isset($input['parent_id']) || $input['parent_id'] == '#') {
+            //we ar not allowed to create a new root node like this.. so set it to the current root.
+            //unset($input['parent_id']); //test
+            $input['parent_id'] = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
+        }
+        if ($validation->passes()) {
+            Event::fire('content.create', array($this->content));
+            Event::fire('content.update', array($this->content));
+            $content = $this->content->superSave($input);
+            Event::fire('content.created', array($this->content));
+            Event::fire('content.updated', array($this->content));
+          //  dd($tree);
+
+            return \Redirect::action(@$content->edit_action?$content->edit_action:'\Bootleg\Cms\ContentsController@anyEdit', $content->id);
+
+        }
+
+        return \Redirect::action('ContentsController@anyCreate')
+            ->withInput()
+            ->withErrors($validation)
+            ->with('message', 'There were validation errors.');
+    }
+
+
+    /**
+     * Tree create page..
+     *
+     * @return Response
+     */
+    public function anyTreeStore()
     {
         $input = Input::all();
         $validation = Validator::make($input, $this->content->rules);
@@ -124,43 +162,6 @@ class ContentwrapperController extends CMSController
 
 
     /**
-     * Constructs the edit form for rendering.
-     * @return [type] [description]
-     */
-    public function getSettings(){
-        if (!empty($content->template_setting)) {
-            //TODO: There has to be a cleaner way of doing this.
-            $all_settings = new \Illuminate\Database\Eloquent\Collection;
-
-            foreach ($content->template_setting as $template_setting) {
-                $fl = $content->setting->filter(function ($setting) use ($template_setting) {
-                    return($template_setting->name===$setting->name);
-                });
-                if (($fl->count())) {
-                    foreach ($fl as $f) {
-                        //if it's fount int content_settings and template_settings, use
-                        $all_settings->push($f);
-                    }
-                } else {
-                    $all_settings->push($template_setting);
-                }
-            }
-
-            foreach ($content->setting as $setting) {
-                $fl = $content->template_setting->filter(function ($template_setting) use ($setting) {
-                    return($setting->name===$template_setting->name);
-                });
-                if (($fl->count() == 0)) {
-                    $all_settings->push($setting);
-                }
-            }
-        }
-
-        $settings = $all_settings->groupBy('section');
-    }
-
-
-    /**
      * render just the form tabs
      *
      * @param  int  $id
@@ -170,8 +171,8 @@ class ContentwrapperController extends CMSController
     {
         $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
         $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
-        $settings = \Contentsetting::collectSettings($content);
-        $content = \Content::setDefaults($content);
+        $settings = \Contentsetting::collectSettings($content)->groupBy('section');
+      //  $content = \Content::setDefaults($content);
 
         if (\Request::ajax()) {
             return $this->render($content->edit_view.'-tabs',  compact('content', 'settings', 'allPermissions'));
@@ -193,13 +194,50 @@ class ContentwrapperController extends CMSController
         $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
         $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
         $settings = \Contentsetting::collectSettings($content);
-        $content = \Content::setDefaults($content);
+        $children = $content->children()->with(array('setting', 'template_setting'))->paginate();
+        $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
+
+        foreach($children as $child){
+            $childrenSettings[$child->id] = \Contentsetting::collectSettings($child);
+        }
 
         if (\Request::ajax()) {
-            return $this->render($content->edit_view,  compact('content', 'settings', 'allPermissions'));
+            return $this->render($content->edit_view,  compact('content','childrenSettings',  'settings', 'allPermissions'));
         } else {
             $tree = $content->getDescendants(config('bootlegcms.cms_tree_descendents'));
-            return $this->render('layouts.tree',  compact('content', 'settings', 'allPermissions'));
+            return $this->render('layouts.tree',  compact('content', 'childrenSettings', 'settings', 'allPermissions'));
+        }
+    }
+
+    /**
+     * search for content items given parent_id
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function getSearch($id){
+        //config('bootlegcms.cms_pagination')
+        
+        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
+        $children = \Searchy::driver('fuzzy')
+            ->content('name')
+            ->query($_GET['search'])
+            ->getQuery()
+            ->where('parent_id',$id)
+            ->get();
+
+        $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
+
+        foreach($children as $child){
+            $childrenSettings[$child->id] = \Contentsetting::collectSettings($child);
+        }
+
+        $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
+        $settings = \Contentsetting::collectSettings($content);
+
+        if (\Request::ajax()) {
+            return $this->render($content->edit_view,  compact('content', 'children', 'childrenSettings', 'settings', 'children', 'allPermissions'));
+        } else {
+            return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
         }
     }
 
@@ -217,11 +255,13 @@ class ContentwrapperController extends CMSController
         }
         if ($id !== false) {
             $input = array_except(\Input::all(), '_method');
-            
+
             $validation = \Validator::make($input, $this->content->rules);
             if ($validation->passes()) {
+
                 //we need to update the settings too:
-                $content = $this->content->find($id);
+                $content = $this->content->findOrFail($id);
+
                 //TODO: care with Template settings.
                 \Event::fire('content.edit', array($content));
                 \Event::fire('content.update', array($content));
@@ -229,7 +269,7 @@ class ContentwrapperController extends CMSController
                 if (@$input['parent_id'] == '#') {
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
-                
+
                 $oldPosition = $content->position;
 
                 //we need to update the language content item..
@@ -258,8 +298,8 @@ class ContentwrapperController extends CMSController
                     } else {
                         $contentLang->update($input);
                     }
-                    
-                    //remove the fields we should ignore, since we don't want to update the real content 
+
+                    //remove the fields we should ignore, since we don't want to update the real content
                     //item with the languaged one..
                     unset($input['name']);
                     unset($input['slug']);
@@ -268,8 +308,8 @@ class ContentwrapperController extends CMSController
 
                 //now we can save what we have
                 $content->update($input);
-                
-                
+
+
                 //position needs looking at too..
                 if (isset($input['position']) && $oldPosition != $input['position']) {
                     $siblings = $content->getSiblingsAndSelf();
@@ -304,7 +344,7 @@ class ContentwrapperController extends CMSController
                     foreach ($input['setting'] as $name => $settingGroup) {
                         foreach ($settingGroup as $type => $setGrp) {
                             foreach ($setGrp as $key => $setting) {
-                                
+
                                 if(is_array($setting)){
                                     //we have an array of stuff in this field - maybe for a tag field or something.
                                     $setting = implode(',', $setting);
@@ -317,7 +357,7 @@ class ContentwrapperController extends CMSController
                                         ->where('id', '=', $key)->first();
                                 } else {
                                     if ($type != 'Templatesetting') {
-                                        
+
                                         //dd($name . $content->id . $key);
                                         $contentSetting = \Contentsetting::withTrashed()
                                             ->where('name', '=', $name)
@@ -329,7 +369,7 @@ class ContentwrapperController extends CMSController
 
 
                                 //if it's not found (even in trashed) then we need to make a new field.
-                                //if it's template, we need to create the contentsetting too it too since 
+                                //if it's template, we need to create the contentsetting too it too since
                                 //it doesn't exist!
                                 if (($type == 'Templatesetting' || is_null($contentSetting)) && $this->content_mode != 'template') {
                                     //TODO: Do we want protection in there so there has to be a
@@ -344,7 +384,7 @@ class ContentwrapperController extends CMSController
                                                                 ->where('template_id', '=', $content->template_id)
                                                                 ->first();
                                     }
-                                    
+
                                     $contentSetting = new \Contentsetting();
                                     $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
                                     $contentSetting->value = $setting;
@@ -359,7 +399,7 @@ class ContentwrapperController extends CMSController
                                     $contentSetting->content_id = $content->id;
                                     $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
                                 }
-                                
+
                                 //if we are in a language, we need to save the language version not the item itself..
                                 if (\App::getLocale() != $this->application->default_locale) {
                                     $contentSettingLanguage = $contentSetting->languages(\App::getLocale())->first();
@@ -379,8 +419,8 @@ class ContentwrapperController extends CMSController
 
                                     $contentSettingLanguage->name = $contentSetting->name;
                                     $contentSettingLanguage->value = $setting;
-                                    
-                                    
+
+
                                     $contentSettingLanguage->field_parameters = $contentSetting->field_parameters;
                                     $contentSettingLanguage->field_type = $contentSetting->field_type;
                                     $contentSettingLanguage->section = $contentSetting->section;
@@ -393,17 +433,17 @@ class ContentwrapperController extends CMSController
                                         $contentSetting->forceDelete();
                                     }
                                     else{
-                                        $contentSetting->save();    
+                                        $contentSetting->save();
                                     }
-                                    
+
                                 }
-                                    
+
                                 //$contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
                             }
                         }
                     }
                 }
-                
+
                 //TODO: care with Template settings.
                 \Event::fire('content.edited', array($content));
                 \Event::fire('content.updated', array($content));
@@ -449,8 +489,7 @@ class ContentwrapperController extends CMSController
         }
     }
 
-        //requests imediate descendents for given node
-    //TODO: recursive.
+    //requests descendents for given node
     public function anyTree()
     {
         $id = \Input::all();
@@ -464,62 +503,122 @@ class ContentwrapperController extends CMSController
             $id = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
         if(config('bootlegcms.cms_tree_descendents')){
-            $tree = $this->content->where('id', '=', $id)->first()->getDescendants(config('bootlegcms.cms_tree_descendents'))->toHierarchy();    
+            $tree = $this->content->where('id', '=', $id)->first()->getDescendants(config('bootlegcms.cms_tree_descendents'))->toHierarchy();
         }
         else{
             $tree = $this->content->where('id', '=', $id)->first()->getDescendants()->toHierarchy();
         }
         if (count($tree)) {
             foreach ($tree as $t) {
-                $treeOut[] = $this->renderTree($t);
+                if($this->renderTree($t)){
+                    $treeOut[] = $this->renderTree($t);
+                }
             }
             return response()->json($treeOut);
         } else {
             return response()->json();
         }
     }
-    
+
     /**
      * Renders a tree from a given node.. for use in jstree.
      * @param  [type]  $tree  [description]
      * @param  integer $depth current depth - used to see where to put children nodes.
      * @return [type]         [description]
      */
-    public function renderTree($tree, $depth = 0)
-    {
-        $depth ++;
-        $branch = new \stdClass();
-        $branch->id = $tree->id;
-        $branch->text = $tree->name;
-        $branch->a_attr = new \stdClass();
+    public function renderTree($tree, $depth = 0) {
+        if(!$tree->hide_in_tree){
+            $depth ++;
+            $branch = new \stdClass();
+            $branch->id = $tree->id;
 
-        if ($tree->edit_action) {
-            $branch->a_attr->href = action($tree->edit_action, array($tree->id));
-        } else {
-            if ($this->content_mode == 'contents') {
-                $branch->a_attr->href = action('\Bootleg\Cms\ContentsController@anyEdit', array($tree->id));
+
+            $branch->text = $tree->name;
+
+            $branch->a_attr = new \stdClass();
+            if($tree->hide_in_tree === false && config('bootlegcms.cms_debug')){
+                $branch->a_attr->class = 'text-danger';
+            }
+            else{
+                $branch->a_attr->class = '';
+            }
+
+
+            if ($tree->edit_action) {
+                $branch->a_attr->href = action($tree->edit_action, array($tree->id));
             } else {
-                $branch->a_attr->href = action('\Bootleg\Cms\TemplateController@anyEdit', array($tree->id));
+                if ($this->content_mode == 'contents') {
+                    $branch->a_attr->href = action('\Bootleg\Cms\ContentsController@anyEdit', array($tree->id));
+                } else {
+                    $branch->a_attr->href = action('\Bootleg\Cms\TemplateController@anyEdit', array($tree->id));
+                }
             }
+
+            $branch->children = array();
+            //$branch->children = ($tree->rgt - $tree->lft > 1);
+           // dd($tree->hide_children);
+            if (count($tree->children)) {
+                foreach ($tree->children as $child) {
+                    if(!$child->hide_in_tree){
+                        $c = $this->renderTree($child, $depth);
+
+                        $branch->children[] = $c;
+                    }
+                    else{
+                        $branch->children = false;
+                    }
+
+                }
+            } else {
+                if ($depth <= config('bootlegcms.cms_tree_descendents')) {
+                    //we don't know if there's anymore children.. so assume there is
+                    $branch->children = true;
+                }
+            }
+            return($branch);
+        }
+        return false;
+    }
+
+    public function getTable($id){
+        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
+        $children = $content->children()->with(array('setting', 'template_setting'))->paginate();
+        $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
+
+        foreach($children as $child){
+            $childrenSettings[$child->id] = \Contentsetting::collectSettings($child);
         }
 
-        $branch->children = array();
-        //$branch->children = ($tree->rgt - $tree->lft > 1);
-        if (count($tree->children)) {
-            foreach ($tree->children as $child) {
-                $c = $this->renderTree($child, $depth);
+        $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
+        $settings = \Contentsetting::collectSettings($content);
 
-                $branch->children[] = $c;
-            }
+        if (\Request::ajax()) {
+            return $this->render($content->edit_view,  compact('content', 'children', 'childrenSettings', 'settings', 'children', 'allPermissions'));
         } else {
-            if ($depth <= config('bootlegcms.cms_tree_descendents')) {
-                //we don't know if there's anymore children.. so assume there is
-                $branch->children = true;
-            }
+            return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
         }
-        
+    }
 
-        return($branch);
+    /**
+     * Renders an individual setting field.
+     * @param  [type] $id   the id of the setting.
+     * @param  [type] $type type of setting - template or content setting
+     * @param  [type] $content_id the id of the content item
+     * @return [type]       [description]
+     */
+    public function getRenderSetting($id, $content_id, $type='Contentsetting'){
+        $setting = $type::findOrFail($id);
+        // if($type == 'Contentsetting'){
+        //     $setting = $type::where('name',$contentSetting->name)->where('content_id', $contentSetting->content_id)->get();    
+        // }
+        // else{
+        //     $setting = $type::where('name',$contentSetting->name)->where('template_id', $contentSetting->template_id)->get();       
+        // }
+        // dd($contentSetting->name, $type, $contentSetting->id);
+        //$settingGroup[] = $contentSetting;
+        $content = $this->content->findOrFail($content_id);
+        return $this->render('contents.input_types.'.$setting->field_type, array('setting'=>$setting, 'content'=>$content));
+
     }
 
     /*delete uploaded file(s)*/
@@ -536,10 +635,10 @@ class ContentwrapperController extends CMSController
         } else {
             return(true);
         }
-
-
-        return response()->json($return);
     }
+
+
+
 
     public function anyInlineUpload()
     {
@@ -561,11 +660,11 @@ class ContentwrapperController extends CMSController
     {
         $setting = $type::find($id);
         if(!$setting && $type == "Contentsetting"){
-            //if there's no setting and the field type is 
-            //content - we can assume this is coming from 
-            //a template instead - we can safely change 
+            //if there's no setting and the field type is
+            //content - we can assume this is coming from
+            //a template instead - we can safely change
             //this to template and continue
-            
+
             $setting = \Templatesetting::find($id);
         }
 
@@ -603,10 +702,10 @@ class ContentwrapperController extends CMSController
                     }
 
                     $finalUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName";
-                    
+
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
-                    
+
                     if (@$this->application->getSetting('Enable s3')) {
                         $finalUrl = S3::upload($fileName, $destinationPath.$uploadFolder.$fileId.'.'.$extension);
                     }
@@ -625,7 +724,7 @@ class ContentwrapperController extends CMSController
                     echo('val fail');
                     exit();
                 }
-                
+
                 \Event::fire('upload.complete', array($finalUrl));
             }
             return response()->json($return);

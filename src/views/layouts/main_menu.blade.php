@@ -6,21 +6,25 @@
                 <span class="mm-text">{{trans('cms::messages.menu.dashboard')}}</span>
             </a>
         </li>
-        @if(Permission::getPermission('Bootleg\Cms\ContentsController@anyIndex','')->result)
-        <li class="{{Request::is(config('bootlegcms.cms_route').'content/*')?'active':''}}">
-            <a href="{{action('\Bootleg\Cms\ContentsController@anyIndex', array())}}">
-                <i class="menu-icon glyphicon glyphicon-list-alt"></i>
-                <span class="mm-text">{{trans('cms::messages.menu.content')}}</span>
-            </a>
-        </li>
+        @if(config('bootlegcms.cms_content_menu'))
+            @if(Permission::getPermission('Bootleg\Cms\ContentsController@anyIndex','')->result)
+            <li class="{{Request::is(config('bootlegcms.cms_route').'content/*')?'active':''}}">
+                <a href="{{action('\Bootleg\Cms\ContentsController@anyIndex', array())}}">
+                    <i class="menu-icon glyphicon glyphicon-list-alt"></i>
+                    <span class="mm-text">{{trans('cms::messages.menu.content')}}</span>
+                </a>
+            </li>
+            @endif
         @endif
-        @if(Permission::getPermission('Bootleg\Cms\UsersController@anyIndex','')->result)
-        <li class="{{Request::is(config('bootlegcms.cms_route').'users/*')?'active':''}}">
-            <a href="{{action('\Bootleg\Cms\UsersController@anyIndex', array())}}">
-                <i class="menu-icon glyphicon glyphicon-user"></i>
-                <span class="mm-text">{{trans('cms::messages.menu.users')}}</span>
-            </a>
-        </li>
+        @if(config('bootlegcms.cms_users_menu'))
+            @if(Permission::getPermission('Bootleg\Cms\UsersController@anyIndex','')->result)
+            <li class="{{Request::is(config('bootlegcms.cms_route').'users/*')?'active':''}}">
+                <a href="{{action('\Bootleg\Cms\UsersController@anyIndex', array())}}">
+                    <i class="menu-icon glyphicon glyphicon-user"></i>
+                    <span class="mm-text">{{trans('cms::messages.menu.users')}}</span>
+                </a>
+            </li>
+            @endif
         @endif
         <?php
             $menuItems = Event::fire('menu.links', array());

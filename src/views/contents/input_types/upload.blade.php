@@ -6,36 +6,46 @@ if(@$content){
         $setting = $settingAfterEvent;
     }
 }
+$params = Contentsetting::parseParams($setting);
+$niceName = preg_replace('/\s+/', '_', $setting->name);
 
-
-$params = Contentsetting::parseParams($setting[0]);
-$niceName = preg_replace('/\s+/', '_', $setting[0]->orig_name);
 $files = array();
-foreach($setting as $field){
-    if(@$field->orig_name){
+    if(@$setting->name){
         
-        $url = $field->value;
+        $url = $setting->value;
 
         $fileName = pathinfo($url,PATHINFO_FILENAME);
         $fileObj = new stdClass();
-        $fileObj->orig_name = $fileName;
+        $fileObj->name = $fileName;
         $fileObj->thumbnailUrl = "$url"; //todo
         $fileObj->url = "$url";
-        $fileObj->deleteUrl = action('\Bootleg\Cms\ContentsController@deleteUpload', array('id'=>$field->id)); //todo
+        $fileObj->deleteUrl = action('\Bootleg\Cms\ContentsController@deleteUpload', array('id'=>$setting->id)); //todo
         $fileObj->deleteType = "DELETE";
-        $fileObj->id = $field->id;
+        $fileObj->id = $setting->id;
+        $fileObj->content_type = get_class($setting);
 
         $files[] = $fileObj;
         //TODO: handle multiple files here?
     }
-}
+
 $files = json_encode($files);   
 $unique = uniqid();
+
+//what type of setting item is this?
+if($content_mode == 'template'){
+    $contentItemType = 'Templatesetting';
+}
+if($content_mode == 'application'){
+    $contentItemType = 'Applicationsetting';
+}
+if($content_mode == 'contents'){
+    $contentItemType = 'Contentsetting';
+}
 ?>
-<div class="wrap">
+<div class='form-group'>
     <div class='upload {{$niceName}}-{{$unique}}' >   
-        @if($setting[0]->orig_name !="_inline")
-        {!! Form::label("setting[".$setting[0]->orig_name."][".$setting[0]->id."]", ucfirst($setting[0]->orig_name.":")) !!}
+        @if($setting->name !="_inline")
+        {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
         @endif
         
 
@@ -45,7 +55,7 @@ $unique = uniqid();
             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
             <div class="row fileupload-buttonbar">
                 <div class="col-sm-12
-                @if($setting[0]->orig_name == "_inline")
+                @if($setting->name == "_inline")
                     text-center
                 @endif
                 ">
@@ -53,16 +63,16 @@ $unique = uniqid();
                     <!-- The fileinput-button span is used to style the file input field as button -->
                         
                         @if($params->max_number == 1)
-                            <span class="btn btn-success fileinput-button">
+                            <span class="btn btn-small btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 <span>Choose file...</span>
-                                <input type="file" name="{{$setting[0]->orig_name}}[]" multiple>
+                                <input type="file" name="{{$setting->name}}[]" multiple>
                             </span>
                         @else
-                            <span class="btn btn-success fileinput-button">
+                            <span class="btn btn-small btn-success fileinput-button">
                                 <i class="glyphicon glyphicon-plus"></i>
                                 <span>Add file...</span>
-                                <input type="file" name="{{$setting[0]->orig_name}}[]" multiple>
+                                <input type="file" name="{{$setting->name}}[]" multiple>
                             </span>
                         @endif
                         {{--
@@ -71,12 +81,12 @@ $unique = uniqid();
                             <span>Start upload</span>
                         </button>--}}
 
-                        <button type="button" class="btn btn-danger delete">
+                        <button type="button" class="btn btn-small btn-danger delete">
                             <i class="glyphicon glyphicon-trash"></i>
                             <span>Delete</span>
                         </button>
                     </div>
-                    @if($setting[0]->orig_name !="_inline")
+                    @if($setting->name !="_inline")
                         <input type="checkbox" class="toggle">
                     @endif
                     <!-- The global file processing state -->
@@ -111,14 +121,14 @@ $unique = uniqid();
                     </td>
                     <td class='vertical-middle'>
                         {% if (!i && !o.options.autoUpload) { %}
-                            <button class="btn btn-primary start" disabled>
+                            <button class="btn btn-small btn-primary start" disabled>
                                 <i class="glyphicon glyphicon-upload"></i>
                                 <span>Start</span>
                             </button>
                         {% } %}
-                        @if($setting[0]->orig_name !="_inline")
+                        @if($setting->name !="_inline")
                         {% if (!i) { %}
-                            <button class="btn btn-warning cancel">
+                            <button class="btn btn-small btn-warning cancel">
                                 <i class="glyphicon glyphicon-ban-circle"></i>
                                 <span>Cancel</span>
                             </button>
@@ -136,7 +146,7 @@ $unique = uniqid();
                     <td class="vertical-middle preview-wrap">
                         <span class="preview">
                             {% if (file.thumbnailUrl) { %}
-                                <input value="{%=file.url%}" class="upload-value" type="hidden" name="setting[{{$setting[0]->orig_name}}][{{get_class($field)}}][{%=file.id%}]"/>
+                                <input value="{%=file.url%}" class="upload-value form-control" type="hidden" name="setting[{{$setting->name}}][{%=file.content_type%}][{%=file.id%}]"/>
                                 <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.url%}" data-gallery><img src="{%=file.thumbnailUrl%}" alt="preview" class="img-thumbnail"></a>
                             {% } %}
                         </span>
@@ -158,13 +168,13 @@ $unique = uniqid();
                     </td>
                     <td class='vertical-middle'>
                         {% if (file.deleteUrl) { %}
-                            <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                            <button class="btn btn-small btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                                 <i class="glyphicon glyphicon-trash"></i>
                                 <span>Delete</span>
                             </button>
                             <input type="checkbox" name="delete" value="1" class="toggle">
                         {% } else { %}
-                            <button class="btn btn-warning cancel">
+                            <button class="btn btn-small btn-warning cancel">
                                 <i class="glyphicon glyphicon-ban-circle"></i>
                                 <span>Cancel</span>
                             </button>
@@ -180,19 +190,15 @@ $unique = uniqid();
             $(function() {
 
                 var $container = $('div.upload.{{$niceName}}-{{$unique}}');
-                var $form = $container.closest('div.wrap');
+                var $form = $container.closest('div.form-group');
                 // Initialize the jQuery File Upload widget:
                 $form.fileupload({
                     // Uncomment the following to send cross-domain cookies:
                     //xhrFields: {withCredentials: true},
-                    @if(@$applicationItem)
-                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>'Applicationsetting'))}}}",
-                    @elseif(@$contentItem)
-                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>'Contentsetting'))}}}",
-                    @elseif(@$templateItem)
-                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting[0]->id, 'type'=>'Templatesetting'))}}}",
+                    @if($contentItemType)
+                        url: "{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting->id, 'type'=>$contentItemType))}}",
                     @else(@$contentItem)
-                        url: "{{{action('\Bootleg\Cms\ContentsController@postUpload')}}}",
+                        url: "{{action('\Bootleg\Cms\ContentsController@postUpload')}}",
                     @endif
                     maxNumberOfFiles:{{$params->max_number or '1'}},
                     @if(isset($params->max_number) && $params->max_number>1)
@@ -202,7 +208,7 @@ $unique = uniqid();
                     @endif
                     limitConcurrentUploads:3,
                     formData:{
-                        type: '{{get_class($setting[0])}}',
+                        type: '{{get_class($setting)}}',
                         '_token': "{{csrf_token()}}"
                     },
                     autoUpload: true,

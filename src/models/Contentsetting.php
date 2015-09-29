@@ -36,7 +36,7 @@ class Contentsetting extends Eloquent {
 
     const DEFAULT_DATEPICKER_JSON = '{
         "options":{
-            "data-date-format": "dd/mm/yyyy",
+            "data-date-format": "DD/MM/YYYY",
             "data-date-today-button": "true"
         },
         "max_number":1,
@@ -92,6 +92,10 @@ class Contentsetting extends Eloquent {
         }
         return($langs);
     }
+
+    public function templatesetting(){
+        return $this->belongsTo('Templatesetting', 'templatesetting_id');
+    }
     
     
     
@@ -139,50 +143,54 @@ class Contentsetting extends Eloquent {
     }
 
     public function getValueAttribute($value){
-
-        $this->language = $this->languages(\App::getLocale())->first();
+        //if we cant find a value we want a template value.
+        if(config('bootlegcms.cms_languages')){
+            $this->language = $this->languages(\App::getLocale())->first();
+        }        
         $this->orig_value = $value;
         return @$this->language->value?$this->language->value:$value;
     }
 
     public function getNameAttribute($name){
-
-        $this->language = $this->languages(\App::getLocale())->first();
+        if(config('bootlegcms.cms_languages')){
+            $this->language = $this->languages(\App::getLocale())->first();
+        }
         $this->orig_name = $name;
         return @$this->language->name?$this->language->name:$name;
     }
 
-
+    /**
+     * Given a content item, return the settings related OR the template settings related.
+     * @param  [type] $content content model
+     * @return [type] Collection collection of settings or template settings.
+     */
     public static function collectSettings($content){
+
+        $all_settings = new \Illuminate\Database\Eloquent\Collection;
+
         if (!empty($content->template_setting)) {
-            //TODO: There has to be a cleaner way of doing this.
-            $all_settings = new \Illuminate\Database\Eloquent\Collection;
-
             foreach ($content->template_setting as $template_setting) {
-                $fl = $content->setting->filter(function ($setting) use ($template_setting) {
-                    return($template_setting->name===$setting->name);
-                });
-                if (($fl->count())) {
-                    foreach ($fl as $f) {
-                        //if it's fount int content_settings and template_settings, use
-                        $all_settings->push($f);
-                    }
-                } else {
-                    $all_settings->push($template_setting);
-                }
+                $all_settings->push($template_setting);
             }
-
-            foreach ($content->setting as $setting) {
-                $fl = $content->template_setting->filter(function ($template_setting) use ($setting) {
-                    return($setting->name===$template_setting->name);
-                });
-                if (($fl->count() == 0)) {
-                    $all_settings->push($setting);
-                }
+        }
+        else{
+            //we need to grab the template setting..
+            $templateSettings = \Templatesetting::where('template_id', $content->template_id)->get();
+            foreach ($templateSettings as $template_setting) {
+                $all_settings->push($template_setting);
             }
         }
 
-        $settings = $all_settings->groupBy('section');
-        return $settings;
+        $all_settings->keyBy('name');
+
+        if (!empty($content->setting)) {
+            foreach ($content->setting as $setting) {
+                $all_settings->push($setting);
+            }
+        }
+        $all_settings = $all_settings->keyBy('name');
+        //dd($all_settings['banner social links position']);
+        //$settings = $all_settings->groupBy('section');
+        return $all_settings;
     }
 }

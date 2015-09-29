@@ -13,7 +13,6 @@ class S3{
         $application = \Application::getApplication();
         if (@$application->getSetting('Enable s3')) {
 
-            
             if (@$application->getSetting('s3 Folder')) {
                 $pth = trim(@$application->getSetting('s3 Folder'), '/\ ').'/'.$fileName;
             } else {
