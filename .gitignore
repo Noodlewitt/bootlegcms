@@ -3,4 +3,5 @@
 /.sass-cache
 composer.phar
 composer.lock
+sublime-gulp.log
 .DS_Store
