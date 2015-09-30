@@ -10,9 +10,9 @@
         @endforeach
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
         @section('main-head')
-            <title>BootlegCMS: {{@$application->name}}</title>
+            <title>{{ config('bootlegcms.cms_title', 'BootlegCMS') }}: {{@$application->name}}</title>
         @show
         <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/js/script.min.js"></script>
         <link rel="stylesheet" href="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/css/application.css" />
@@ -26,8 +26,8 @@
     </head>
 
     <body class="">
-        
-        
+
+
         <div class="container">
             @section('main-content')
 
