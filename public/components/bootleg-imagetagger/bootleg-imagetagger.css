@@ -25,6 +25,7 @@
     display:inline-block;
     position:relative;
     overflow:hidden;
+    text-align:center;
 }
 .taggable_image_inner > img{
     width:100%;
