@@ -2,9 +2,13 @@
 
 class ApplicationController extends CmsController
 {
+
+    public $content_mode = 'application';
+    
     public function __construct()
     {
         parent::__construct();
+        view()->share('content_mode', $this->content_mode);
     }
     
     public function anyIndex()

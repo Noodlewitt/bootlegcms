@@ -30,9 +30,13 @@ class ContentwrapperController extends CMSController
      *
      * @return Response
      */
-    public function anyIndex()
-    {
-        $this->content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
+    public function anyTree($id = NULL){
+        if(!$id){
+            $content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
+        }
+        else{
+            $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);    
+        }
         $content = $this->content;
         $allPermissions = \Permission::getControllerPermission($this->content->id, \Route::currentRouteAction());
         $settings = \Contentsetting::collectSettings($content);
@@ -58,10 +62,9 @@ class ContentwrapperController extends CMSController
         }
         $allPermissions = array();
         $settings = \Contentsetting::collectSettings($content);
-
         //$content_settings = $this->content->setting()->get();
         if (\Request::ajax()) {
-            return $this->render($content->edit_view,  compact('content', 'settings', 'allPermissions'));
+            return $this->render('contents.edit',  compact('content', 'settings', 'allPermissions'));
         } else {
             return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
         }
@@ -218,26 +221,42 @@ class ContentwrapperController extends CMSController
         //config('bootlegcms.cms_pagination')
         
         $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
-        $children = \Searchy::driver('fuzzy')
+
+        /*$children = \Searchy::driver('fuzzy')
             ->content('name')
-            ->query($_GET['search'])
+            ->query(\Input::get('search'))
             ->getQuery()
             ->where('parent_id',$id)
+            ->with('setting')
             ->get();
+            SELECT * FROM content
+LEFT JOIN content_settings on content.id = content_settings.content_id
+WHERE parent_id = 1 
+AND content_settings.value LIKE '%2002%'
+*/
+        $children = \Content::with('setting','template_setting')
+            ->where('parent_id',$id)
+            ->where('name','LIKE','%'.\Input::get('search').'%')
+            ->paginate();
+
+/*
+        $allContent = \Content::where('parent_id',$id)->whereHas('setting',function($q){
+            $q->where('value','LIKE', \Input::get('search'));
+        })->paginate();
+*/
 
         $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
 
         foreach($children as $child){
+            //dd($child->id,\Contentsetting::collectSettings($child));
             $childrenSettings[$child->id] = \Contentsetting::collectSettings($child);
         }
-
-        $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
         $settings = \Contentsetting::collectSettings($content);
-
+        $search = true;
         if (\Request::ajax()) {
-            return $this->render($content->edit_view,  compact('content', 'children', 'childrenSettings', 'settings', 'children', 'allPermissions'));
+            return $this->render($content->edit_view,  compact('search', 'content', 'settings', 'children', 'childrenSettings'));
         } else {
-            return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
+            return $this->render('layouts.large',  compact('search', 'content', 'settings', 'children', 'childrenSettings'));
         }
     }
 
@@ -485,12 +504,12 @@ class ContentwrapperController extends CMSController
         $this->content->find($id)->delete();
 
         if (!\Request::ajax()) {
-            return redirect()->action('ContentsController@anyIndex');
+            return redirect()->action('ContentsController@anyTree');
         }
     }
 
     //requests descendents for given node
-    public function anyTree()
+    public function anyTreeJson()
     {
         $id = \Input::all();
         if (@$id['id'] == '#') {
@@ -580,8 +599,32 @@ class ContentwrapperController extends CMSController
         return false;
     }
 
-    public function getTable($id){
-        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
+    public function anyTableCreate($parent_id=null) {
+        $content = new \Content;
+        $content->parent_id = $parent_id;
+        $parent = \Content::findOrFail($parent_id);
+        $input = $content->loadDefaultValues(array('parent_id'=>$parent_id));
+        foreach($input as $key=>$put){
+            $content->$key = $put;
+        }
+        $allPermissions = array();
+        $settings = \Contentsetting::collectSettings($content);
+        //$content_settings = $this->content->setting()->get();
+        if (\Request::ajax()) {
+            return $this->render('contents.table.table-create',  compact('content', 'settings', 'allPermissions'));
+        } else {
+            return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
+        }
+    }
+
+    public function getTable($id = NULL){
+        if(!$id){
+            $content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
+        }
+        else{
+            $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);    
+        }
+        
         $children = $content->children()->with(array('setting', 'template_setting'))->paginate();
         $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
 

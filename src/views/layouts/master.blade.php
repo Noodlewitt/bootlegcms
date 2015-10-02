@@ -46,7 +46,7 @@
         <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-
+arse
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
@@ -55,6 +55,8 @@
             $(document).on('hidden.bs.modal', function (e) {
                 $(e.target).removeData('bs.modal');
             });
+            
+            $('[data-toggle="tooltip"]').tooltip()
 
             $('body').on('click', "a.js-main-content", function(e) {
                 e.preventDefault();

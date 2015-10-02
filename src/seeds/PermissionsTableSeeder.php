@@ -152,7 +152,7 @@ class PermissionsTableSeeder extends Seeder {
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
                 'x'=>'1',
-                'controller_type'=>'Bootleg\\Cms\\ContentsController@anyIndex',
+                'controller_type'=>'Bootleg\\Cms\\ContentsController@anyTree',
                 'updated_at'=>date("Y-m-d H:i:s"),
                 'created_at'=>date("Y-m-d H:i:s"),
                 'comment'=>''
@@ -176,7 +176,7 @@ class PermissionsTableSeeder extends Seeder {
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
                 'x'=>'1',
-                'controller_type'=>'Bootleg\\Cms\\ContentsController@anyTree',
+                'controller_type'=>'Bootleg\\Cms\\ContentsController@anyTreeJson',
                 'updated_at'=>date("Y-m-d H:i:s"),
                 'created_at'=>date("Y-m-d H:i:s"),
                 'comment'=>''
@@ -308,7 +308,7 @@ class PermissionsTableSeeder extends Seeder {
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
                 'x'=>'1',
-                'controller_type'=>'Bootleg\\Cms\\TemplateController@anyIndex',
+                'controller_type'=>'Bootleg\\Cms\\TemplateController@anyTree',
                 'updated_at'=>date("Y-m-d H:i:s"),
                 'created_at'=>date("Y-m-d H:i:s"),
                 'comment'=>''
@@ -332,7 +332,7 @@ class PermissionsTableSeeder extends Seeder {
                 'requestor_type'=>'role',
                 'controller_id'=>'*', 
                 'x'=>'1',
-                'controller_type'=>'Bootleg\\Cms\\TemplateController@anyTree',
+                'controller_type'=>'Bootleg\\Cms\\TemplateController@anyTreeJson',
                 'updated_at'=>date("Y-m-d H:i:s"),
                 'created_at'=>date("Y-m-d H:i:s"),
                 'comment'=>''

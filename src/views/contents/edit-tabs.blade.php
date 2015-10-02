@@ -19,7 +19,16 @@ if(!isset($settings['Content']) || !$settings['Content']){
         {!! Form::model($content, array('method' => 'POST', 'files'=>true, 'data-lang-code'=>\App::getLocale(),  'class'=>'main-form tab-content col-sm-12 tab-language tab-language-'.\App::getLocale(), 'action' => array('\Bootleg\Cms\ContentsController@anyStore', @$content->id))) !!}
     @endif
 @endif
-    <input type='text' value='{{@$content->parent_id}}' name='parent_id' />
+    @if(config('bootlegcms.cms_debug'))
+        <div class="form-group">
+            {!! Form::label('id', 'ID:') !!}
+            {!! Form::text('id', null, array('class'=>'form-control')) !!}
+        </div>
+        <div class="form-group">
+            {!! Form::label('parent_id', 'Parent ID:') !!}
+            {!! Form::text('parent_id', null, array('class'=>'form-control')) !!}
+        </div>
+    @endif
     <h4>{{App::getLocale()}} 
         @if(\App::getLocale() != $application->default_locale)
             <button type="button" class="close js-close-language-tab" aria-label="Close"><span aria-hidden="true">&times;</span></button>

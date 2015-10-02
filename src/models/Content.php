@@ -208,6 +208,12 @@ class Content extends \Baum\Node{ //Eloquent {status
         if(!@$input['edit_view'])$input['edit_view'] = @$template->edit_view;
         if(!@$input['edit_action'])$input['edit_action'] = @$template->edit_action;
 
+        if(!@$input['hide_slug'])$input['hide_slug'] = @$template->hide_slug;
+        if(!@$input['hide_name'])$input['hide_name'] = @$template->hide_name;
+        if(!@$input['hide_published'])$input['hide_published'] = @$template->hide_published;
+        if(!@$input['hide_id'])$input['hide_id'] = @$template->hide_id;
+        if(!@$input['protect'])$input['protect'] = @$template->protect;
+
         //work out the slug if not manually set
         if(!@$input['slug']){
             $input['slug'] = Content::createSlug($input, $parent);

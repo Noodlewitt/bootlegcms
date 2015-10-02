@@ -14,7 +14,7 @@
             "check_callback" : true,
             "data":{
                 "url": function(node){
-                    return  '{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyTree") }}';
+                    return  '{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyTreeJson") }}';
                 }, 
                 "data":function(node){
                     return {"id":node.id}
@@ -40,7 +40,7 @@
                             }
                             swal({
                                 title: "Are you sure?",
-                                type: "warning",
+                                type: "error",
                                 text: "Are you sure you want to delete?",
                                 showCancelButton: true,
                                 confirmButtonText: "Yes, delete it!"

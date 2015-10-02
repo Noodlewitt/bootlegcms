@@ -85,6 +85,15 @@ body {
 /*
  * Main content
  */
+.modal-close{
+    display:none;
+}
+.modal-content{
+    .modal-close{
+        display:block;
+    }    
+}
+
 
 .overlay{
     position: absolute;

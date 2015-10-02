@@ -174,6 +174,7 @@ class Contentsetting extends Eloquent {
             }
         }
         else{
+
             //we need to grab the template setting..
             $templateSettings = \Templatesetting::where('template_id', $content->template_id)->get();
             foreach ($templateSettings as $template_setting) {
@@ -181,13 +182,14 @@ class Contentsetting extends Eloquent {
             }
         }
 
-        $all_settings->keyBy('name');
+        $all_settings = $all_settings->keyBy('name');
 
         if (!empty($content->setting)) {
             foreach ($content->setting as $setting) {
                 $all_settings->push($setting);
             }
         }
+        
         $all_settings = $all_settings->keyBy('name');
         //dd($all_settings['banner social links position']);
         //$settings = $all_settings->groupBy('section');

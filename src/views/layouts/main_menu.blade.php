@@ -7,9 +7,9 @@
             </a>
         </li>
         @if(config('bootlegcms.cms_content_menu'))
-            @if(Permission::getPermission('Bootleg\Cms\ContentsController@anyIndex','')->result)
+            @if(Permission::getPermission('Bootleg\Cms\ContentsController@anyTree','')->result)
             <li class="{{Request::is(config('bootlegcms.cms_route').'content/*')?'active':''}}">
-                <a href="{{action('\Bootleg\Cms\ContentsController@anyIndex', array())}}">
+                <a href="{{action('\Bootleg\Cms\ContentsController@anyTree', array())}}">
                     <i class="menu-icon glyphicon glyphicon-list-alt"></i>
                     <span class="mm-text">{{trans('cms::messages.menu.content')}}</span>
                 </a>
@@ -30,14 +30,14 @@
             $menuItems = Event::fire('menu.links', array());
         ?>
         @foreach($menuItems as $menuItem)
-        @if(Permission::getPermission($menuItem['location'],'')->result)
-        <li class="{{Request::is(config('bootlegcms.cms_route').$menuItem['activePattern'])?'active':''}}">
-            <a href="{{action($menuItem['location'])}}">
-                <i class="menu-icon glyphicon {{$menuItem['icon']}}"></i>
-                <span class="mm-text">{{$menuItem['title']}}</span>
-            </a>
-        </li>
-        @endif
+            @if(Permission::getPermission($menuItem['location'],'')->result)
+            <li class="{{Request::is(config('bootlegcms.cms_route').$menuItem['activePattern'])?'active':''}}">
+                <a href="{{action($menuItem['location'])}}">
+                    <i class="menu-icon glyphicon {{$menuItem['icon']}}"></i>
+                    <span class="mm-text">{{$menuItem['title']}}</span>
+                </a>
+            </li>
+            @endif
         @endforeach
         @if(Permission::getPermission('\Bootleg\Cms\ApplicationController@anySettings','')->result)
         <li class="{{Request::is(config('bootlegcms.cms_route').'application/settings*')?'active':''}}">
