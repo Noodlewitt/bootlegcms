@@ -3,16 +3,37 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends \Baum\Node{ //Eloquent {status
     use \Bootleg\Cms\Models\Traits\HasSettingModelTrait;
-    protected $fillable = array('name', 'identifier', 'position', 'parent_id', 'package', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug');
+    use SoftDeletes;
 
-    protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
+    protected $fillable = [
+        'name',
+        'identifier',
+        'position',
+        'parent_id',
+        'package',
+        'set_parent_id',
+        'user_id',
+        'deleted_at',
+        'template_id',
+        'view',
+        'application_id',
+        'status',
+        'slug'
+    ];
+
+    protected $guarded = [
+        'id',
+        'parent_id',
+        'lft',
+        'rgt',
+        'depth'
+    ];
 
     public $table = 'content';
 
     public $policy, $signature;
 
     //use SoftDeletingTrait;
-    use SoftDeletes;
 
     protected $dates = ['deleted_at'];
 
@@ -93,6 +114,17 @@ class Content extends \Baum\Node{ //Eloquent {status
         return($qu);
     }
 
+    public function scopeSortBySetting($query, $setting_name, $direction)
+    {
+        $settings_table = $this->setting()->getTable();
+        $subquery->select($settings_table.'.content_id', $settings_table.'.value')
+                ->from($settings_table)
+                ->where($settings_table.'.name', $setting_name);
+
+        $this->orderColumn = $settings_table.'.value';
+
+        return $query->join(\DB::raw('('.$subquery.') '.$settings_table), $this->getTable().'.id', '=', $settings_table.'.content_id');
+    }
 
     public function setting()
     {
