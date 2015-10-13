@@ -46,17 +46,22 @@
         <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-arse
+
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
         <script>
+        function endsWith(str, suffix) {
+            return str.indexOf(suffix, str.length - suffix.length) !== -1;
+        }
         $(function() {
             $(document).on('hidden.bs.modal', function (e) {
                 $(e.target).removeData('bs.modal');
             });
             
-            $('[data-toggle="tooltip"]').tooltip()
+            $('body').tooltip({
+                selector: '[data-toggle="tooltip"]'
+            });
 
             $('body').on('click', "a.js-main-content", function(e) {
                 e.preventDefault();

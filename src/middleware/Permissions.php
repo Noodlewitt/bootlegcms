@@ -14,6 +14,7 @@ class Permissions {
     public function handle($request, Closure $next){
         
         $controller_id = str_replace('/index','',action("\\".\Route::currentRouteAction()));
+        
         $controller_id = (str_replace($controller_id,'',\URL::current()));
         $controller_id = trim($controller_id, '/');
 

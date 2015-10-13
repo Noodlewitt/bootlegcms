@@ -222,28 +222,18 @@ class ContentwrapperController extends CMSController
         
         $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
 
-        /*$children = \Searchy::driver('fuzzy')
-            ->content('name')
-            ->query(\Input::get('search'))
-            ->getQuery()
+        $search = \Input::get('search');
+        $settings = \Contentsetting::where(function($q) use ($search){
+                return $q->orWhere('value','LIKE',"%$search%")
+                         ->orWhere('value', '=' ,'SOUNDEX("$search")');
+            })
+            ->lists('content_id');
+
+        $children = \Content::with(array('setting', 'template_setting'))
+            ->whereIn('id',$settings)
             ->where('parent_id',$id)
-            ->with('setting')
-            ->get();
-            SELECT * FROM content
-LEFT JOIN content_settings on content.id = content_settings.content_id
-WHERE parent_id = 1 
-AND content_settings.value LIKE '%2002%'
-*/
-        $children = \Content::with('setting','template_setting')
-            ->where('parent_id',$id)
-            ->where('name','LIKE','%'.\Input::get('search').'%')
             ->paginate();
 
-/*
-        $allContent = \Content::where('parent_id',$id)->whereHas('setting',function($q){
-            $q->where('value','LIKE', \Input::get('search'));
-        })->paginate();
-*/
 
         $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
 
@@ -613,11 +603,12 @@ AND content_settings.value LIKE '%2002%'
         if (\Request::ajax()) {
             return $this->render('contents.table.table-create',  compact('content', 'settings', 'allPermissions'));
         } else {
-            return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
+            return $this->render('contents.table.table-create',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
         }
     }
 
     public function getTable($id = NULL){
+        \Content::sortBySetting('date')->get();
         if(!$id){
             $content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
         }
@@ -625,7 +616,21 @@ AND content_settings.value LIKE '%2002%'
             $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);    
         }
         
-        $children = $content->children()->with(array('setting', 'template_setting'))->paginate();
+        //try remove from baum.
+        $children = \Content::with(array('template_setting', 'setting'))->where('parent_id',$content->id);
+
+        if(\Input::get('sort')){
+            if(strtolower(\Input::get('direction')) == 'asc'){
+                $children = $children->sortBySetting(\Input::get('sort'), 'ASC');
+            }
+            else{
+                $children = $children->sortBySetting(\Input::get('sort'), 'DESC');    
+            }
+        }
+
+        //$children = $content->children()->sortBySetting(\Input::get('sort'))->with(array('setting', 'template_setting'));
+
+        $children = $children->paginate();
         $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
 
         foreach($children as $child){
@@ -636,7 +641,7 @@ AND content_settings.value LIKE '%2002%'
         $settings = \Contentsetting::collectSettings($content);
 
         if (\Request::ajax()) {
-            return $this->render($content->edit_view,  compact('content', 'children', 'childrenSettings', 'settings', 'children', 'allPermissions'));
+            return $this->render('contents.table.index',  compact('content', 'children', 'childrenSettings', 'settings', 'children', 'allPermissions'));
         } else {
             return $this->render('layouts.large',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
         }

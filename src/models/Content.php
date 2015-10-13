@@ -99,7 +99,36 @@ class Content extends \Baum\Node{ //Eloquent {status
         $qu = $query->where('status', '=', Content::LIVE_STATUS);
         return($qu);
     }
+    
+    public function setOrderColumn($order){
+        $this->orderColumn = $order;
+    }
 
+    public function scopeSortBySetting($query, $setting_name, $direction = 'DESC'){
+        $settings_table = $this->setting()->getModel()->getTable();
+        $subquery = "(select $settings_table.content_id, $settings_table.value from $settings_table where name='$setting_name' ORDER BY value $direction) AS j";
+        $this->orderColumn = $settings_table.'.value';
+        return $query->join(\DB::raw($subquery), $this->getTable().'.id', '=', 'j.content_id');
+    }
+    
+    /**
+     * Searches by settings
+     * @param  [type] $query     $query object (handled by laravel)
+     * @param  [type] $parent_id id of parent to search in
+     * @param  [type] $search    search string
+     * @return [type]            $query object.
+     */
+    public function scopeSearchBySetting($query, $parent_id, $search){
+       /* $settings_table $subquery = "(select content_id from $settings_table where value LIKE '$search' ) AS s";= $this->setting()->getModel()->getTable();
+        
+
+        $query->whereIn('id', $subquery)
+        
+
+        $this->orderColumn = $settings_table.'.value';
+        return $query->join(\DB::raw($subquery), $this->getTable().'.id', '=', 'j.content_id');
+        */
+    }
         
     public function setting()
     {

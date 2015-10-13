@@ -80,14 +80,14 @@ if (!\App::runningInConsole()){
 
         Route::group(array('prefix'=>config('bootlegcms.cms_route')), function () use ($urlLocale) {
 
-            Route::group(array('prefix'=>$urlLocale), function () {
+            Route::group(array('prefix'=>$urlLocale), function () { //LOCALE
 
                 Route::any('/', array('uses'=>'Bootleg\Cms\UsersController@anyDashboard'));
-
+                
                 Route::controller('contents', 'Bootleg\Cms\ContentsController');
 
                 Route::controller('template', 'Bootleg\Cms\TemplateController');
-
+          
                 Route::controller('application', 'Bootleg\Cms\ApplicationController');
 
                 Route::controller('users', 'Bootleg\Cms\UsersController');

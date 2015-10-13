@@ -27,7 +27,7 @@ if(@$childrenSettings){
         text-align: center;
     }
     .table-actions{
-        width:230px;
+        width:152px;
     }
     
 </style>
@@ -56,6 +56,7 @@ if(@$childrenSettings){
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
+                    <th>
                     @if(!$children[0]->hide_id)
                     <th>#</th>
                     @endif
@@ -67,7 +68,15 @@ if(@$childrenSettings){
                     @endif
                     @if(@$firstChildSettings)
                         @foreach($firstChildSettings as $settingName=>$setting)
-                            <th>{{$settingName}}</th>
+                            @if(\Input::get('sort') == $settingName)
+                                @if(\Input::get('direction') == 'asc')
+                                    <th><a href='?sort={{$settingName}}&amp;direction=desc'><span class='glyphicon glyphicon-chevron-up'></span> {{$settingName}}</th>
+                                @else
+                                    <th><a href='?sort={{$settingName}}&amp;direction=asc'><span class='glyphicon glyphicon-chevron-down'></span> {{$settingName}}</th>
+                                @endif
+                            @else
+                                <th><a href='?sort={{$settingName}}&amp;direction=desc'>{{$settingName}}</th>
+                            @endif
                         @endforeach
                     @endif
                     <th>actions</th>
@@ -77,6 +86,7 @@ if(@$childrenSettings){
                 @if(@$children)
                     @foreach($children as $child)
                         <tr>
+                            <th>{{$child->template->name}}</th>
                             @if(!$children[0]->hide_id && !$child->hide_id)
                             <td>{{$child->id}}</td>
                             @endif
@@ -93,9 +103,11 @@ if(@$childrenSettings){
                                         <div class='setting'>
                                             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>" />
                                             @if($setting->field_type == 'upload')
-                                                @if(\Bootleg\Cms\Utils::endsWith($setting->value, 'png') || \Bootleg\Cms\Utils::endsWith($setting->value, 'jpg') || \Bootleg\Cms\Utils::endsWith($setting->value, 'gif'))
+                                                @if(pathinfo($setting->value, PATHINFO_EXTENSION) ==  'png') || pathinfo($setting->value, PATHINFO_EXTENSION) ==  'jpg' || pathinfo($setting->value, PATHINFO_EXTENSION) ==  'gif')))
                                                     <div class='value {{$setting->field_type}} image'> 
-                                                        <img src='{{$setting->value}}'  width='100'/>
+                                                        <a href="{{$setting->value}}" target="_blank" class="thumbnail">
+                                                            <img src='{{$setting->value}}'  width='100'/>
+                                                        </a>
                                                     </div>
                                                 @else
                                                     <div class='value {{$setting->field_type}}'>    
@@ -130,10 +142,9 @@ if(@$childrenSettings){
                                 <div class="btn-group" role="group" aria-label="get children">
                                     <button title='expand' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-primary btn-sm js-show-children' data-toggle="button"><span class='glyphicon glyphicon-chevron-down'></span></button>
                                     <a title='open' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-info btn-sm '><span class='glyphicon glyphicon-th-list'></span></a>
-                                    <a title='edit' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm '><span class='glyphicon glyphicon-pencil'></span></a>
+                                    <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm '><span class='glyphicon glyphicon-pencil'></span></a>
                                     <a title='delete' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@anyDestroy', array($child->id))}}' class='btn btn-danger btn-sm js-delete-item'><span class='glyphicon glyphicon-remove'></span></a>
                                 </div>
-                                
                             </td>
                         </tr>
                     @endforeach
@@ -156,17 +167,11 @@ if(@$childrenSettings){
         {!!$children->appends(Input::get())->render()!!}
     @endif
     <script type="text/javascript">
-
-        function endsWith(str, suffix) {
-            console.log(str);
-            console.log(suffix);
-            return str.indexOf(suffix, str.length - suffix.length) !== -1;
-        }
-
         $(function () {
-            $('[data-toggle="popover"]').popover()
-            if(typeof(jsDeleteClick) === 'undefined'){
-                jsDeleteClick = true;
+            $('[data-toggle="popover"]').popover();
+
+            if(typeof(tableEvents) === 'undefined'){
+                tableEvents = true;
                 $('.main-content').on('click', '.js-delete-item', function(e){
                     $me=$(this);
                     e.preventDefault();
@@ -187,10 +192,7 @@ if(@$childrenSettings){
                         });
                     });
                 });
-            }
-            
-            if(typeof(jsEditClick) === 'undefined'){
-                jsEditClick = true;
+
                 //Edit pencil button
                 $('.main-content').on('click', '.js-edit-click', function(e){
                     e.preventDefault();
@@ -219,11 +221,7 @@ if(@$childrenSettings){
                         $('form .setting .value', $td).html(formValue);
                     });
                 });
-            }
 
-            
-
-            if(typeof(jsShowChildrenReg) === 'undefined'){
                 jsShowChildrenReg = true;
                 $('.main-content').on('click', '.js-show-children', function(e){
                     e.preventDefault();

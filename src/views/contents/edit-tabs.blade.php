@@ -44,7 +44,6 @@ if(!isset($settings['Content']) || !$settings['Content']){
                         {!! Form::text('name', null, array('class'=>'form-control js-content-name')) !!}
                     </li>
                     <li class="form-group">
-                        <label>Status:</label>
                         <div class="radio">
                             <label>
                                 {!! Form::radio('status','0','') !!}
@@ -58,6 +57,18 @@ if(!isset($settings['Content']) || !$settings['Content']){
                             </label>
                         </div>
                     </li>
+
+                    <li class="form-group">
+                        {!! Form::label('template_id', 'Template:') !!}
+                        <?php
+                        $tpl = $content->template->getSiblingsAndSelf();
+                        foreach($tpl as $tmplt){
+                            $templates[$tmplt->id] = $tmplt->name;
+                        }
+                        ?>
+                        {!! Form::select('template_id', $templates, $content->template_id, array('class'=>'form-control js-content-template')) !!}
+                    </li>
+
                 @endif
 
                 @if($section !== false)
