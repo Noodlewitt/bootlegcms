@@ -56,7 +56,9 @@ class ContentwrapperController extends CMSController
         $content = new \Content;
         $content->parent_id = $parent_id;
         $parent = \Content::findOrFail($parent_id);
-        $input = $content->loadDefaultValues(array('parent_id'=>$parent_id));
+        $content->template_id = \Input::get('template_id');
+        $input = $content->loadDefaultValues(array('parent_id'=>$parent_id, 'template_id'=>\Input::get('template_id')));
+
         foreach($input as $key=>$put){
             $content->$key = $put;
         }
@@ -194,9 +196,18 @@ class ContentwrapperController extends CMSController
      */
     public function anyEdit($id = false)
     {
-        $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
+        $content = $this->content->findOrFail($id);
+
+        //if they have manually set template_id we want to pretend that is the template id for a while.
+        if(\Input::get('template_id')){
+            $content->template_id = \Input::get('template_id');
+        }
+        $content = $content->load('template_setting', 'setting');
+    
+        
         $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
         $settings = \Contentsetting::collectSettings($content);
+
         $children = $content->children()->with(array('setting', 'template_setting'))->paginate();
         $childrenSettings = new \Illuminate\Database\Eloquent\Collection;
 
@@ -601,9 +612,9 @@ class ContentwrapperController extends CMSController
         $settings = \Contentsetting::collectSettings($content);
         //$content_settings = $this->content->setting()->get();
         if (\Request::ajax()) {
-            return $this->render('contents.table.table-create',  compact('content', 'settings', 'allPermissions'));
+            return $this->render('contents.edit',  compact('content', 'settings', 'allPermissions'));
         } else {
-            return $this->render('contents.table.table-create',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
+            return $this->render('contents.edit',  compact('content', 'children', 'childrenSettings', 'settings', 'allPermissions', 'children'));
         }
     }
 

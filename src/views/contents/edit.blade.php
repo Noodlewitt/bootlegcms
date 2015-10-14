@@ -44,6 +44,24 @@
     <script type="text/javascript">
         $(function () {
             
+            
+            $('.js-content-template').on('change', function(e){
+                e.preventDefault();
+                //we need to set the template_id to whatever they select
+                //alert('a'+$(this).val());
+                @if($content->id)
+                    $.get('/cms/contents/edit/{{$content->id}}', {'template_id':$(this).val()}, function(data){
+                        $('#popup .modal-content').html(data);
+                    });
+                @else
+                    $.get('/cms/contents/create/{{$content->parent_id}}', {'template_id':$(this).val()}, function(data){
+                        $('#popup .modal-content').html(data);
+                    });
+                @endif
+                
+                //$('#popup .modal-content').load('/cms/contents/edit/2216');
+            });
+
             $('[data-toggle="tooltip"]').tooltip();
 
             $('.form-wrap').on('click','.js-generate-slug', function(e){

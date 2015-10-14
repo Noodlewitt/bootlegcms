@@ -25,9 +25,10 @@ if(@$childrenSettings){
     .setting-cell{
         position: relative;
         text-align: center;
+        min-width:155px;
     }
     .table-actions{
-        width:152px;
+        width:155px;
     }
     
 </style>
@@ -54,39 +55,50 @@ if(@$childrenSettings){
     @include('cms::layouts.flash_messages')
     @if(isset($children[0]) && $children[0])
         <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>
-                    @if(!$children[0]->hide_id)
-                    <th>#</th>
-                    @endif
-                    @if(!$children[0]->hide_name)
-                    <th>name</th>
-                    @endif
-                    @if(!$children[0]->hide_slug)
-                    <th>slug</th>
-                    @endif
-                    @if(@$firstChildSettings)
-                        @foreach($firstChildSettings as $settingName=>$setting)
-                            @if(\Input::get('sort') == $settingName)
-                                @if(\Input::get('direction') == 'asc')
-                                    <th><a href='?sort={{$settingName}}&amp;direction=desc'><span class='glyphicon glyphicon-chevron-up'></span> {{$settingName}}</th>
+            @if(@$content->hide_templates)
+                <thead>
+                    <tr>
+                        <th>
+                        @if(!$children[0]->hide_id)
+                        <th>#</th>
+                        @endif
+                        @if(!$children[0]->hide_name)
+                        <th>name</th>
+                        @endif
+                        @if(!$children[0]->hide_slug)
+                        <th>slug</th>
+                        @endif
+                        @if(@$firstChildSettings)
+                            @foreach($firstChildSettings as $settingName=>$setting)
+                                @if(\Input::get('sort') == $settingName)
+                                    @if(\Input::get('direction') == 'asc')
+                                        <th><a href='?sort={{$settingName}}&amp;direction=desc'><span class='glyphicon glyphicon-chevron-up'></span> {{$settingName}}</th>
+                                    @else
+                                        <th><a href='?sort={{$settingName}}&amp;direction=asc'><span class='glyphicon glyphicon-chevron-down'></span> {{$settingName}}</th>
+                                    @endif
                                 @else
-                                    <th><a href='?sort={{$settingName}}&amp;direction=asc'><span class='glyphicon glyphicon-chevron-down'></span> {{$settingName}}</th>
+                                    <th><a href='?sort={{$settingName}}&amp;direction=desc'>{{$settingName}}</th>
                                 @endif
-                            @else
-                                <th><a href='?sort={{$settingName}}&amp;direction=desc'>{{$settingName}}</th>
-                            @endif
-                        @endforeach
-                    @endif
-                    <th>actions</th>
-                </tr>
-            </thead>
+                            @endforeach
+                        @endif
+                    </tr>
+                </thead>
+            @endif
             <tbody>
                 @if(@$children)
                     @foreach($children as $child)
                         <tr>
-                            <th>{{$child->template->name}}</th>
+                            @if(!@$content->hide_templates)
+                                <th>{{$child->template->name}}
+                                    <div class="btn-group table-actions" role="group" aria-label="get children">
+                                        <button title='expand' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-primary btn-sm js-show-children' data-toggle="button"><span class='glyphicon glyphicon-chevron-down'></span></button>
+                                        <a title='open' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-info btn-sm '><span class='glyphicon glyphicon-th-list'></span></a>
+                                        <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm '><span class='glyphicon glyphicon-pencil'></span></a>
+                                        <a title='delete' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@anyDestroy', array($child->id))}}' class='btn btn-danger btn-sm js-delete-item'><span class='glyphicon glyphicon-remove'></span></a>
+                                    </div>
+                                </th>
+                            @endif
+                            
                             @if(!$children[0]->hide_id && !$child->hide_id)
                             <td>{{$child->id}}</td>
                             @endif
@@ -102,6 +114,7 @@ if(@$childrenSettings){
                                     <form action='{{action('\Bootleg\Cms\ContentsController@anyUpdate', array($child->id))}}' method='POST'>
                                         <div class='setting'>
                                             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>" />
+                                            <strong>{{$setting->name}}</strong>
                                             @if($setting->field_type == 'upload')
                                                 @if(pathinfo($setting->value, PATHINFO_EXTENSION) ==  'png') || pathinfo($setting->value, PATHINFO_EXTENSION) ==  'jpg' || pathinfo($setting->value, PATHINFO_EXTENSION) ==  'gif')))
                                                     <div class='value {{$setting->field_type}} image'> 
@@ -138,14 +151,16 @@ if(@$childrenSettings){
                                     </td>
                                 @endfor
                                 */ ?>
-                            <td class='table-actions'>
-                                <div class="btn-group" role="group" aria-label="get children">
-                                    <button title='expand' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-primary btn-sm js-show-children' data-toggle="button"><span class='glyphicon glyphicon-chevron-down'></span></button>
-                                    <a title='open' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-info btn-sm '><span class='glyphicon glyphicon-th-list'></span></a>
-                                    <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm '><span class='glyphicon glyphicon-pencil'></span></a>
-                                    <a title='delete' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@anyDestroy', array($child->id))}}' class='btn btn-danger btn-sm js-delete-item'><span class='glyphicon glyphicon-remove'></span></a>
-                                </div>
-                            </td>
+                            @if($content->hide_templates)
+                                <td class='table-actions'>
+                                    <div class="btn-group" role="group" aria-label="get children">
+                                        <button title='expand' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-primary btn-sm js-show-children' data-toggle="button"><span class='glyphicon glyphicon-chevron-down'></span></button>
+                                        <a title='open' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-info btn-sm '><span class='glyphicon glyphicon-th-list'></span></a>
+                                        <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm '><span class='glyphicon glyphicon-pencil'></span></a>
+                                        <a title='delete' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@anyDestroy', array($child->id))}}' class='btn btn-danger btn-sm js-delete-item'><span class='glyphicon glyphicon-remove'></span></a>
+                                    </div>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 @endif
@@ -155,7 +170,7 @@ if(@$childrenSettings){
                     <td colspan="99999">
                         @if(!$content->hide_create)
                         <div class="btn-group" role="group" aria-label="get children">
-                            <a href="{{action('\Bootleg\Cms\ContentsController@anyTableCreate', array($content->id))}}" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#popup"><span class="glyphicon glyphicon-plus"></span> Create Content</a>
+                            <a href="{{action('\Bootleg\Cms\ContentsController@anyCreate', array($content->id))}}" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#popup"><span class="glyphicon glyphicon-plus"></span> Create Content</a>
                         </div>
                         @endif
                     </td>
