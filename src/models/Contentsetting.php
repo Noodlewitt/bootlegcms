@@ -97,6 +97,9 @@ class Contentsetting extends Eloquent {
         return $this->belongsTo('Templatesetting', 'templatesetting_id');
     }
     
+    public function content(){
+        return $this->belongsTo('Content');
+    }
     
     
     /*
