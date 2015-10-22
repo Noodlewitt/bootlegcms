@@ -1,6 +1,8 @@
 <?php namespace Bootleg\Cms;
 
+use Config;
 use Illuminate\Support\ServiceProvider;
+use Zofe\Rapyd\RapydServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider {
 
@@ -35,7 +37,7 @@ class CmsServiceProvider extends ServiceProvider {
 	    //publish the config
 	    $this->publishes([__DIR__.'/../../config/bootlegcms.php' => config_path('bootlegcms.php')]); //config
 
-        if(\Config::get('bootlegcms.cms_timezone')) \Config::set('app.timezone', \Config::get('bootlegcms.cms_timezone'));
+        if(Config::get('bootlegcms.cms_timezone')) Config::set('app.timezone', Config::get('bootlegcms.cms_timezone'));
 	    //Load views
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
@@ -52,6 +54,10 @@ class CmsServiceProvider extends ServiceProvider {
             'Illuminate\Contracts\Debug\ExceptionHandler',
             'Bootleg\Cms\ExceptionHandler'
         );
+
+        $this->app->register(RapydServiceProvider::class);
+
+
     }
     /**
      * Get the services provided by the provider.
