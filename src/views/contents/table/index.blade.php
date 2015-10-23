@@ -114,20 +114,20 @@ if(@$childrenSettings){
                                     <form action='{{action('\Bootleg\Cms\ContentsController@anyUpdate', array($child->id))}}' method='POST'>
                                         <div class='setting'>
                                             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>" />
-                                            <strong>{{$setting->name}}</strong>
+                                            
                                             @if($setting->field_type == 'upload')
-                                                @if(pathinfo($setting->value, PATHINFO_EXTENSION) ==  'png') || pathinfo($setting->value, PATHINFO_EXTENSION) ==  'jpg' || pathinfo($setting->value, PATHINFO_EXTENSION) ==  'gif')))
-                                                    <div class='value {{$setting->field_type}} image'> 
-                                                        <a href="{{$setting->value}}" target="_blank" class="thumbnail">
+                                                @if(strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'png' || strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'jpg' || strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'gif')
+                                                        <a href="{{$setting->value}}" target="_blank">
                                                             <img src='{{$setting->value}}'  width='100'/>
                                                         </a>
-                                                    </div>
                                                 @else
+                                                    <strong>{{$setting->name}}</strong>
                                                     <div class='value {{$setting->field_type}}'>    
                                                     {{$setting->value}}
                                                     </div>
                                                 @endif
                                             @else
+                                                <strong>{{$setting->name}}</strong>
                                                 <div class='value {{$setting->field_type}}'>    
                                                     {{@$setting->value}}
                                                 </div>

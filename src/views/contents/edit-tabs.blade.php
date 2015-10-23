@@ -75,7 +75,13 @@ if(!isset($settings['Content']) || !$settings['Content']){
                     @foreach($section as $field)
                     {{-- This is where the custom input types are rendered in. --}}
                         <li class="form-group">
-                            @include("cms::contents.input_types.".$field->field_type, array('setting'=>$field, 'contentItem'=>$content))
+
+                            @if(strpos($field->field_type, '::')!== false)
+                                @include($field->field_type, array('setting'=>$field, 'contentItem'=>$content))
+                            @else
+                                @include('cms::contents.input_types.'.$field->field_type, array('setting'=>$field, 'contentItem'=>$content))
+                            @endif
+                            
                         </li>
                     @endforeach
                 @endif

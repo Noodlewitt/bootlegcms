@@ -676,7 +676,14 @@ class ContentwrapperController extends CMSController
         // dd($contentSetting->name, $type, $contentSetting->id);
         //$settingGroup[] = $contentSetting;
         $content = $this->content->findOrFail($content_id);
-        return $this->render('contents.input_types.'.$setting->field_type, array('setting'=>$setting, 'content'=>$content));
+
+        if(strpos($setting->field_type, '::')){
+            return $this->render($setting->field_type, array('setting'=>$setting, 'content'=>$content));
+        }
+        else{
+            return $this->render('contents.input_types.'.$setting->field_type, array('setting'=>$setting, 'content'=>$content));
+        }
+        
 
     }
 

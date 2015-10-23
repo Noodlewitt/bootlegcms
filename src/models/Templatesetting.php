@@ -44,8 +44,6 @@ class Templatesetting extends Eloquent
             "postion":"top"
         }
     }';
-
-    
     
     public function content()
     {

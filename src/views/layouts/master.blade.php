@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <?php
-            $headerItems = Event::fire('html.master.header.start', array());
+            $headerStartItems = Event::fire('html.master.header.start', array());
         ?>
-        @foreach($headerItems as $headerItem)
-            {!!$headerItem!!}
+        @foreach($headerStartItems as $headerStartItem)
+            {!!$headerStartItem!!}
         @endforeach
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -20,19 +20,19 @@
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
 
         <?php
-            $headerItems = Event::fire('html.master.header.end', array());
+            $headerEndItems = Event::fire('html.master.header.end', array());
         ?>
-        @foreach($headerItems as $headerItem)
-            {!!$headerItem!!}
+        @foreach($headerEndItems as $headerEndItem)
+            {!!$headerEndItem!!}
         @endforeach
     </head>
 
     <body class="">
         <?php
-            $headerItems = Event::fire('html.body.start', array());
+            $startItems = Event::fire('html.body.start', array());
         ?>
-        @foreach($headerItems as $headerItem)
-            {{$headerItem}}
+        @foreach($startItems as $startItem)
+            {{$startItem}}
         @endforeach
         @include('cms::layouts.nav')
         <div class="container-fluid">

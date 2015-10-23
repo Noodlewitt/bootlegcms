@@ -55,7 +55,7 @@
                             <?php
                             $view = @$field[0]->field_type?$field[0]->field_type:'text';
                             ?>
-                            @include("cms::contents.input_types.$view", array('setting'=>$field, 'contentItem'=>$content))
+                            @include($view, array('setting'=>$field, 'contentItem'=>$content))
                         </li>
                     @endforeach
                 @endif
