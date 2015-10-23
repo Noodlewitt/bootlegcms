@@ -7,7 +7,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">BootlegCMS</a>
+        <a class="navbar-brand" href="#">{{ config('bootlegcms.cms_title', 'BootlegCMS') }}</a>
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
@@ -17,11 +17,11 @@
             @if(count($applications) > 1 || Permission::getPermission('\Bootleg\Cms\ApplicationController@anyCreate','')->result)
 
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ config('bootlegcms.cms_application_title') }} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     @foreach($applications as $app)
                         @if(@$app->url[0])
-                        <li><a href="{{$app->url[0]->protocol or 'http://'}}{{$app->url[0]->domain}}{{$app->url[0]->folder}}{{config('bootlegcms.cms_route')}}">{{$app->name}}</a></li>
+                        <li><a href="{{ action('\Bootleg\Cms\ApplicationController@getSwitch', [$app->id]) }}">{{$app->name}}</a></li>
                         @endif
                     @endforeach
                     @if(Permission::getPermission('\Bootleg\Cms\ApplicationController@anyCreate','')->result)
