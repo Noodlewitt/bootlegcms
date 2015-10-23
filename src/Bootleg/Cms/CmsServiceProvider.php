@@ -3,6 +3,7 @@
 use Config;
 use Illuminate\Support\ServiceProvider;
 use Zofe\Rapyd\RapydServiceProvider;
+use Illuminate\Routing\Router;
 
 class CmsServiceProvider extends ServiceProvider {
 
@@ -23,7 +24,7 @@ class CmsServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function boot()
+	public function boot(Router $router)
 	{
 		//publishes the assets
 	    $this->publishes([__DIR__.'/../../../public' => public_path('vendor/bootleg/cms')], 'public');
@@ -41,6 +42,10 @@ class CmsServiceProvider extends ServiceProvider {
 	    //Load views
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
+
+        //load middleware, helpers, views, routes
+        $router->middleware('permissions', 'Bootleg\Cms\Middleware\Permissions');
+        $router->middleware('cms.setup', 'Bootleg\Cms\Middleware\CmsSetup');
 
 		//register the command...
 		$this->commands('Bootleg\Cms\Publish');
