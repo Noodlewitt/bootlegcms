@@ -1,6 +1,7 @@
 <?php namespace Bootleg\Cms;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\Router;
 
 class CmsServiceProvider extends ServiceProvider {
 
@@ -21,7 +22,7 @@ class CmsServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function boot()
+	public function boot(Router $router)
 	{
 		//publishes the assets
 	    $this->publishes([__DIR__.'/../../../public' => public_path('vendor/bootleg/cms')], 'public');
@@ -35,7 +36,10 @@ class CmsServiceProvider extends ServiceProvider {
 	    //publish the config
 	    $this->publishes([__DIR__.'/../../config/bootlegcms.php' => config_path('bootlegcms.php')]); //config
 
-	    //Load views
+        //load middleware, helpers, views, routes
+        $router->middleware('permissions', 'Bootleg\Cms\Middleware\Permissions');
+        $router->middleware('cms.setup', 'Bootleg\Cms\Middleware\CmsSetup');
+
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
 
