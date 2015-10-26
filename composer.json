@@ -9,12 +9,10 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.0.*",
         "baum/baum": "~1.1",
         "laravelcollective/html": "~5.0",
         "aws/aws-sdk-php-laravel": "2.0.1",
-	    "filp/whoops": "^1.1",
-        "zofe/rapyd": "2.0.*"
+	    "filp/whoops": "^1.1"
     },
     "autoload": {
         "classmap": [
