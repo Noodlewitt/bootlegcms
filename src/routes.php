@@ -26,8 +26,8 @@ Route::group(['middleware' => 'cms.setup'], function () {
             App::abort(404, "No Application found at url"); //chuck 404 - we can't find the app
         }
     } else {
-        $application = '';
-        $applicationurl = '';
+        $applicationurl = \ApplicationUrl::first();
+        $application = $applicationurl->application;
     }
 
     $GLOBALS['applicationurl'] = serialize($applicationurl);

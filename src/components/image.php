@@ -1,6 +1,8 @@
 <?php
 
-class Img{
+class Img
+{
+
     //A bunch of tools for resizing and interacting with images.
 
     //returns url of resized image
@@ -124,7 +126,7 @@ class Img{
                         $source_gdim = imagecreatefrompng($source_path);
                         break;
                 }
-                
+
                 $s3 = AWS::get('s3');
                 $s3->putObject(array(
                     'Bucket'     => @$application->getSetting('s3 Bucket'),
