@@ -45,8 +45,10 @@ $options = array_merge($options, $options2);
 <script type="text/javascript">
 $(function () {
     $('.{{$niceName}}').datetimepicker({
-        'format':'YYYY-MM-DD H:mm:SS',
-        'useCurrent':true
+        format: '{{ $params->options->format }}',
+        viewMode: '{{ $params->options->view_mode }}',
+        pickTime: {{ $params->options->pick_time }},
+        useCurrent:true
     });
 });
 </script>

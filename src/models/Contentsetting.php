@@ -37,8 +37,9 @@ class Contentsetting extends Eloquent {
 
     const DEFAULT_DATEPICKER_JSON = '{
         "options":{
-            "data-date-format": "dd/mm/yyyy",
-            "data-date-today-button": "true"
+            "format": "YYYY/MM/DD H:mm:SS",
+            "view_mode": "days",
+            "pick_time": "true"
         },
         "max_number":1,
         "tooltip": ""
