@@ -687,17 +687,18 @@ class ContentwrapperController extends CMSController
 
     }
 
-    /*delete uploaded file(s)*/
-    public function deleteUpload($id = '')
+    //upload plugin won't allow us to use deleteUpload since we can't send a csrf token :(
+    public function getDeleteUpload($id = '')
     {
         if ($id) {
-            $content_setting = Contentsetting::findOrFail($id);
-            //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
-            $delete = new stdClass();
+            $content_setting = \Contentsetting::findOrFail($id);
+            $content_setting->delete(); 
+            $delete = new \stdClass();
             $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
 
             $delete->{$fileName} = true;
             $return->files[] = $delete;
+            return response()->json($return);
         } else {
             return(true);
         }
@@ -724,7 +725,7 @@ class ContentwrapperController extends CMSController
      */
     public function postUpload($id,  $type = "Custom")
     {
-        $setting = $type::find($id);
+        $setting = $type::withTrashed()->find($id);
         if(!$setting && $type == "Contentsetting"){
             //if there's no setting and the field type is
             //content - we can assume this is coming from
@@ -733,7 +734,7 @@ class ContentwrapperController extends CMSController
 
             $setting = \Templatesetting::find($id);
         }
-
+        
         $params = \Contentsetting::parseParams($setting);
 
         $input = array_except(\Input::all(), '_method');
@@ -781,8 +782,8 @@ class ContentwrapperController extends CMSController
                     $fileObj->name = $originalName;
                     $fileObj->id = $id;
                     $fileObj->thumbnailUrl = $finalUrl; //todo
-                    $fileObj->deleteUrl = "//".$_SERVER['SERVER_NAME']."/uploads/$fileName"; //todo
-                    $fileObj->deleteType = "DELETE";
+                    $fileObj->deleteUrl = action('\Bootleg\Cms\ContentsController@getDeleteUpload', array($fileName)); //"//".$_SERVER['SERVER_NAME']."/cms/deleteuploads/$fileName"; //todo
+                    $fileObj->deleteType = "GET";
 
                     $return->files[] = $fileObj;
                 } else {

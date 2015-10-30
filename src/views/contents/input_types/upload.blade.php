@@ -19,8 +19,8 @@ $files = array();
         $fileObj->name = $fileName;
         $fileObj->thumbnailUrl = "$url"; //todo
         $fileObj->url = "$url";
-        $fileObj->deleteUrl = action('\Bootleg\Cms\ContentsController@deleteUpload', array('id'=>$setting->id)); //todo
-        $fileObj->deleteType = "DELETE";
+        $fileObj->deleteUrl = action('\Bootleg\Cms\ContentsController@getDeleteUpload', array('id'=>$setting->id)); //todo
+        $fileObj->deleteType = "GET";
         $fileObj->id = $setting->id;
         $fileObj->content_type = get_class($setting);
 
@@ -168,7 +168,7 @@ if($content_mode == 'contents'){
                     </td>
                     <td class='vertical-middle'>
                         {% if (file.deleteUrl) { %}
-                            <button class="btn btn-small btn-danger delete" data-type="{%=file.deleteType%}" data-url="" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                            <button class="btn btn-small btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}" {% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                                 <i class="glyphicon glyphicon-trash"></i>
                                 <span>Delete</span>
                             </button>
@@ -236,6 +236,7 @@ if($content_mode == 'contents'){
                     }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {     
                     //on deleted, we remove the input file
+                    console.log(data);
                     var $input = $('input.upload-value', $(data.context).closest('tr')).val('');
                     $input.clone().appendTo( $container);
                     
