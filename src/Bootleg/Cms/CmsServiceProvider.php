@@ -1,5 +1,6 @@
 <?php namespace Bootleg\Cms;
 
+use Config;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider {
@@ -45,7 +46,7 @@ class CmsServiceProvider extends ServiceProvider {
 
     public function register()
     {
-		if(Config::get('bootlegcms.custom_errors') == true){
+		if(config('bootlegcms.custom_errors') == true){
 			$this->app->singleton(
 					'Illuminate\Contracts\Debug\ExceptionHandler',
 					'Bootleg\Cms\ExceptionHandler'
