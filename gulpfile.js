@@ -23,6 +23,7 @@ gulp.task('uglify', function() {
     gulp.src([
         'public/components/jquery/jquery.js',
         'public/components/jquery-ui/ui/jquery-ui.js',
+        'public/components/bootstrap-sass/assets/javascripts/bootstrap/button.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/modal.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/tab.js',

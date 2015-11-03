@@ -257,7 +257,28 @@ if(@$childrenSettings){
                     
                 });
             }
+            
+            $('body').off('click', '.js-content-update', function(e){});
+            $('body').off('click', '.js-content-cancel', function(e){});
+            $('body').on('click', '.js-content-update', function(e){
+                e.preventDefault();
+                var $btn = $(this).button('loading');
+                $form = $(this).closest('form');
+                $.post($form.attr('action'), $form.serialize(), function(data){
+                    $btn.button('reset')
+                    $('#popup').modal('hide');
+                    //boop.
+                //    tree.jstree("refresh");
 
+                    swal('content created!');
+                });
+            });
+
+            $('body').on('click', '.js-content-cancel', function(e){
+                e.preventDefault();
+                $('#popup').modal('hide');
+            });
+            
             /*if(typeof(jsChildrenSearch) === 'undefined'){
                 jsChildrenSearch = true;
                 $('.main-content').on('click', '.js-children-search', function(e){

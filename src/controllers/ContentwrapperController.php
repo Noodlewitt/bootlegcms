@@ -82,7 +82,7 @@ class ContentwrapperController extends CMSController
     {
         $input = Input::all();
         $validation = Validator::make($input, $this->content->rules);
-
+        
         if (!isset($input['parent_id']) || $input['parent_id'] == '#') {
             //we ar not allowed to create a new root node like this.. so set it to the current root.
             //unset($input['parent_id']); //test
@@ -92,6 +92,7 @@ class ContentwrapperController extends CMSController
             Event::fire('content.create', array($this->content));
             Event::fire('content.update', array($this->content));
             $content = $this->content->superSave($input);
+            $content = ContentwrapperController::saveSettings($content, $input);
             Event::fire('content.created', array($this->content));
             Event::fire('content.updated', array($this->content));
           //  dd($tree);
@@ -152,8 +153,8 @@ class ContentwrapperController extends CMSController
     //fixes slugs based off depth
     public function anyFixslug()
     {
-        $Content = Content::where('depth', '=', '5')->get();
-        foreach ($Content as $cont) {
+        $content = Content::where('depth', '=', '5')->get();
+        foreach ($content as $cont) {
             $input = array();
             $input['name'] = $cont->name;
             $parent = Content::find($cont->parent_id);
@@ -358,111 +359,7 @@ class ContentwrapperController extends CMSController
                     }
                 }
 
-                //TODO: take another look at a better way of doing this vv ..also VALIDATION!
-                //add any settings:
-                if (isset($input['setting'])) {
-                    foreach ($input['setting'] as $name => $settingGroup) {
-                        foreach ($settingGroup as $type => $setGrp) {
-                            foreach ($setGrp as $key => $setting) {
-
-                                if(is_array($setting)){
-                                    //we have an array of stuff in this field - maybe for a tag field or something.
-                                    $setting = implode(',', $setting);
-                                }
-
-                                if ($this->content_mode == 'template') {
-                                    $contentSetting = \Templatesetting::withTrashed()
-                                        ->where('name', '=', $name)
-                                        ->where('template_id', '=', $content->id)
-                                        ->where('id', '=', $key)->first();
-                                } else {
-                                    if ($type != 'Templatesetting') {
-
-                                        //dd($name . $content->id . $key);
-                                        $contentSetting = \Contentsetting::withTrashed()
-                                            ->where('name', '=', $name)
-                                            ->where('content_id', '=', $content->id)
-                                            ->where('id', '=', $key)->first();
-
-                                    }
-                                }
-
-
-                                //if it's not found (even in trashed) then we need to make a new field.
-                                //if it's template, we need to create the contentsetting too it too since
-                                //it doesn't exist!
-                                if (($type == 'Templatesetting' || is_null($contentSetting)) && $this->content_mode != 'template') {
-                                    //TODO: Do we want protection in there so there has to be a
-                                    //template setting in her for this?
-
-                                    //if we can't find the field, we need to create it from the default:
-
-                                    $defaultContentSetting = \Templatesetting::find($key);
-
-                                    if (!$defaultContentSetting) {
-                                        $defaultContentSetting = \Templatesetting::where('name', '=', $name)
-                                                                ->where('template_id', '=', $content->template_id)
-                                                                ->first();
-                                    }
-
-                                    $contentSetting = new \Contentsetting();
-                                    $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
-                                    $contentSetting->value = $setting;
-                                    $contentSetting->content_id = $content->id;
-                                    $contentSetting->field_parameters = @$defaultContentSetting->field_parameters;
-                                    $contentSetting->field_type = @$defaultContentSetting->field_type;
-                                    $contentSetting->section = @$defaultContentSetting->section;
-                                } else {
-                                    //otherwise this field exists.. we can overwrite it's settings.
-                                    $contentSetting->name = $name;
-                                    $contentSetting->value = $setting;
-                                    $contentSetting->content_id = $content->id;
-                                    $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
-                                }
-
-                                //if we are in a language, we need to save the language version not the item itself..
-                                if (\App::getLocale() != $this->application->default_locale) {
-                                    $contentSettingLanguage = $contentSetting->languages(\App::getLocale())->first();
-
-                                    if (!$contentSettingLanguage) {
-                                        if ($this->content_mode == 'template') {
-                                            $contentSettingLanguage = new \TemplatesettingLanguage();
-
-                                            $contentSettingLanguage->template_setting_id = $contentSetting->id;
-                                            $contentSettingLanguage->template_id = $content->id;
-                                        } else {
-                                            $contentSettingLanguage = new \ContentsettingLanguage();
-                                            $contentSettingLanguage->content_setting_id = $contentSetting->id;
-                                            $contentSettingLanguage->content_id = $content->id;
-                                        }
-                                    }
-
-                                    $contentSettingLanguage->name = $contentSetting->name;
-                                    $contentSettingLanguage->value = $setting;
-
-
-                                    $contentSettingLanguage->field_parameters = $contentSetting->field_parameters;
-                                    $contentSettingLanguage->field_type = $contentSetting->field_type;
-                                    $contentSettingLanguage->section = $contentSetting->section;
-                                    $contentSettingLanguage->code = \App::getLocale();
-
-                                    $contentSettingLanguage->save();
-                                } else {
-
-                                    if($contentSetting->value == ''){
-                                        $contentSetting->forceDelete();
-                                    }
-                                    else{
-                                        $contentSetting->save();
-                                    }
-
-                                }
-
-                                //$contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
-                            }
-                        }
-                    }
-                }
+                $content = ContentwrapperController::saveSettings($content, $input);
 
                 //TODO: care with Template settings.
                 \Event::fire('content.edited', array($content));
@@ -484,6 +381,121 @@ class ContentwrapperController extends CMSController
             ->withInput()
             ->withErrors($validation)
             ->with('danger', 'There were validation errors.');
+    }
+
+    /**
+     * saves settings based off input array
+     * @return [type] [description]
+     */
+    public function saveSettings($content, $input){
+        //TODO: take another look at a better way of doing this vv ..also VALIDATION!
+        //add any settings:
+        
+        if (isset($input['setting'])) {
+            foreach ($input['setting'] as $name => $settingGroup) {
+                foreach ($settingGroup as $type => $setGrp) {
+                    foreach ($setGrp as $key => $setting) {
+
+                        if(is_array($setting)){
+                            //we have an array of stuff in this field - maybe for a tag field or something.
+                            $setting = implode(',', $setting);
+                        }
+
+                        if ($this->content_mode == 'template') {
+                            $contentSetting = \Templatesetting::withTrashed()
+                                ->where('name', '=', $name)
+                                ->where('template_id', '=', $content->id)
+                                ->where('id', '=', $key)->first();
+                        } else {
+                            if ($type != 'Templatesetting') {
+                                //dd($name . $content->id . $key);
+                                $contentSetting = \Contentsetting::withTrashed()
+                                    ->where('name', '=', $name)
+                                    ->where('content_id', '=', $content->id)
+                                    ->where('id', '=', $key)->first();
+
+                            }
+                        }
+
+
+                        //if it's not found (even in trashed) then we need to make a new field.
+                        //if it's template, we need to create the contentsetting too it too since
+                        //it doesn't exist!
+                        if (($type == 'Templatesetting' || is_null($contentSetting)) && $this->content_mode != 'template') {
+                            //TODO: Do we want protection in there so there has to be a
+                            //template setting in her for this?
+
+                            //if we can't find the field, we need to create it from the default:
+
+                            $defaultContentSetting = \Templatesetting::find($key);
+
+                            if (!$defaultContentSetting) {
+                                $defaultContentSetting = \Templatesetting::where('name', '=', $name)
+                                                        ->where('template_id', '=', $content->template_id)
+                                                        ->first();
+                            }
+
+                            $contentSetting = new \Contentsetting();
+                            $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
+                            $contentSetting->value = $setting;
+                            $contentSetting->content_id = $content->id;
+                            $contentSetting->field_parameters = @$defaultContentSetting->field_parameters;
+                            $contentSetting->field_type = @$defaultContentSetting->field_type;
+                            $contentSetting->section = @$defaultContentSetting->section;
+                        } else {
+                            //otherwise this field exists.. we can overwrite it's settings.
+                            //
+                            $contentSetting->name = $name;
+                            $contentSetting->value = $setting;
+                            $contentSetting->content_id = $content->id;
+                            $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
+
+                        }
+                        //dd($contentSetting->name, $contentSetting->value, $contentSetting->content_id);
+                        //if we are in a language, we need to save the language version not the item itself..
+                        if (\App::getLocale() != $this->application->default_locale) {
+                            $contentSettingLanguage = $contentSetting->languages(\App::getLocale())->first();
+
+                            if (!$contentSettingLanguage) {
+                                if ($this->content_mode == 'template') {
+                                    $contentSettingLanguage = new \TemplatesettingLanguage();
+
+                                    $contentSettingLanguage->template_setting_id = $contentSetting->id;
+                                    $contentSettingLanguage->template_id = $content->id;
+                                } else {
+                                    $contentSettingLanguage = new \ContentsettingLanguage();
+                                    $contentSettingLanguage->content_setting_id = $contentSetting->id;
+                                    $contentSettingLanguage->content_id = $content->id;
+                                }
+                            }
+
+                            $contentSettingLanguage->name = $contentSetting->name;
+                            $contentSettingLanguage->value = $setting;
+
+
+                            $contentSettingLanguage->field_parameters = $contentSetting->field_parameters;
+                            $contentSettingLanguage->field_type = $contentSetting->field_type;
+                            $contentSettingLanguage->section = $contentSetting->section;
+                            $contentSettingLanguage->code = \App::getLocale();
+
+                            $contentSettingLanguage->save();
+                        } else {
+                            
+                            if($contentSetting->value == ''){
+                                $contentSetting->forceDelete();
+                            }
+                            else{
+
+                                $contentSetting->save();
+                            }
+
+                        }
+                        //$contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
+                    }
+                }
+            }
+        }
+        return $content;
     }
 
     /**

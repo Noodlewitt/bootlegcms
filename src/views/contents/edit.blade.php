@@ -76,7 +76,7 @@
         
 
             $('.form-wrap').on('click','.js-content-update', function(e){
-                e.stopPropagation();
+                //e.stopPropagation();
                 e.preventDefault();
                 $form = $(this).closest('form');
                 $.post($form.attr('action'), $form.serialize(), function(data){
