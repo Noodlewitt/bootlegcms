@@ -16,11 +16,9 @@ class CmsServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
+    /**
+     * Bootstrap the application events.
+     */
 	public function boot()
 	{
 		//publishes the assets
@@ -47,10 +45,12 @@ class CmsServiceProvider extends ServiceProvider {
 
     public function register()
     {
-        $this->app->singleton(
-            'Illuminate\Contracts\Debug\ExceptionHandler',
-            'Bootleg\Cms\ExceptionHandler'
-        );
+		if(Config::get('bootlegcms.custom_errors') == true){
+			$this->app->singleton(
+					'Illuminate\Contracts\Debug\ExceptionHandler',
+					'Bootleg\Cms\ExceptionHandler'
+			);
+		}
     }
     /**
      * Get the services provided by the provider.
