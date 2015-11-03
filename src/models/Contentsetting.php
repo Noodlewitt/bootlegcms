@@ -1,4 +1,5 @@
 <?php
+use Bootleg\Cms\Utils;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contentsetting extends Eloquent {
@@ -20,7 +21,6 @@ class Contentsetting extends Eloquent {
         "max_number": 1,
         "s3_enabled" : 1
     }';
-
     const DEFAULT_DROPDOWN_JSON = '{
         "values": {
         },
@@ -44,7 +44,6 @@ class Contentsetting extends Eloquent {
         "max_number":1,
         "tooltip": ""
     }';
-
     const DEFAULT_CHECKBOX_JSON = '{
         "values": {
         },
@@ -85,7 +84,7 @@ class Contentsetting extends Eloquent {
             //NEW CODE: Merges supplied paramaters, and defaults on parameters that were not supplied
             $default_settings = json_decode(self::getDefaultParams($setting), true);
             $provided_settings = json_decode($setting->field_parameters, true);
-            $params = json_encode(\Bootleg\Cms\Utils::array_merge_recursive_distinct($default_settings,$provided_settings));
+            $params = json_encode(Utils::array_merge_recursive_distinct($default_settings,$provided_settings));
         }
         else if(@$setting->default_setting->field_parameters){
             $params = @$setting->default_setting->field_parameters;
@@ -97,32 +96,12 @@ class Contentsetting extends Eloquent {
     }
 
     public static function getDefaultParams($setting){
-        //todo: there must be a nicer way than this..
-        //dd($setting->field_type);
-        if($setting->field_type == 'upload'){
-            $params = self::DEFAULT_UPLOAD_JSON;
+        $setting_identifier = 'DEFAULT_' . strtoupper($setting->field_type) . '_JSON';
+
+        if(defined('static::'.$setting_identifier)){
+            return constant('static::'.$setting_identifier);
         }
-        else if($setting->field_type == 'dropdown'){
-            $params = self::DEFAULT_DROPDOWN_JSON;
-        }
-        else if($setting->field_type == 'checkbox'){
-            $params = self::DEFAULT_CHECKBOX_JSON;
-        }
-        else if($setting->field_type == 'datepicker'){
-            $params = self::DEFAULT_DATEPICKER_JSON;
-        }
-        else if($setting->field_type == 'tinymce'){
-            $params = self::DEFAULT_TINYMCE_JSON;
-        }
-        else if($setting->field_type == 'relationship'){
-            $params = self::DEFAULT_RELATIONSHIP_JSON;
-        }
-        else if($setting->field_type == 'radio'){
-            $params = self::DEFAULT_RADIO_JSON;
-        }
-        else{
-            $params = self::DEFAULT_TEXT_JSON;
-        }
-        return($params);
+
+        return self::DEFAULT_TEXT_JSON;
     }
 }
