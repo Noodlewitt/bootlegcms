@@ -54,6 +54,9 @@ class Content extends \Baum\Node{ //Eloquent {status
 	
 	public function template()
 	{
+        if(!$this->template_id){
+            $this->template_id = 1;
+        }
 		return $this->belongsTo('Template', 'template_id');
 	}
 

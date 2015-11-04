@@ -54,6 +54,10 @@ class Templatesetting extends Eloquent
     {
         return($this->belongsTo('Template'));
     }
+    
+    public function multichildren(){
+        return $this->hasMany('Templatesetting', 'parent_id');
+    }
 
     public function languages($code = NULL){
 

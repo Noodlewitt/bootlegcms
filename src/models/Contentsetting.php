@@ -93,6 +93,10 @@ class Contentsetting extends Eloquent {
         return($langs);
     }
 
+    public function multichildren(){
+        return $this->hasMany('Contentsetting', 'parent_id');
+    }
+
     public function templatesetting(){
         return $this->belongsTo('Templatesetting', 'templatesetting_id');
     }

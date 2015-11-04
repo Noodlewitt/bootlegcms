@@ -32,11 +32,12 @@ class ContentwrapperController extends CMSController
      */
     public function anyTree($id = NULL){
         if(!$id){
-            $content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
+            $this->content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
         }
         else{
-            $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);    
+            $this->content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);    
         }
+
         $content = $this->content;
         $allPermissions = \Permission::getControllerPermission($this->content->id, \Route::currentRouteAction());
         $settings = \Contentsetting::collectSettings($content);
