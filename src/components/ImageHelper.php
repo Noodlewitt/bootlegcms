@@ -2,12 +2,22 @@
 
 namespace Bootleg\Cms\Components;
 
+/**
+ * Class ImageHelper
+ *
+ * @package Bootleg\Cms\Components
+ */
 class ImageHelper
 {
+    /**
+     * @param $source_path: source path of image
+     * @param $amount: compression amount 0-100
+     * @param null $destination_path: replaces image if destination path not specified
+
+     */
     public static function compressImage($source_path, $amount, $destination_path = null)
     {
         if ($destination_path == null) $destination_path = $source_path;
-
         $info = getimagesize($source_path);
 
         if ($info['mime'] == 'image/jpeg') {
@@ -24,6 +34,17 @@ class ImageHelper
     }
 
 
+    /**
+     * @param $source_path: source path of image
+     * @param $settings: array of settings:
+     *          compression: compression amount 0-100. Null to skip compression
+     *          mode: currently only crop available
+     *          copy: if false, resized image will replace source image
+     *          height: desired max output height
+     *          width: desired max output width
+     *
+     * @return string
+     */
     public static function resizeImage($source_path, $settings)
     {
         $defaults = [
