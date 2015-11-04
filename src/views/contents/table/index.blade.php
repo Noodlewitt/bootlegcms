@@ -182,6 +182,8 @@ if(@$childrenSettings){
         {!!$children->appends(Input::get())->render()!!}
     @endif
     <script type="text/javascript">
+        var disableUpdate = true;
+        var disableCancel = true;
         $(function () {
             $('[data-toggle="popover"]').popover();
 
@@ -257,9 +259,10 @@ if(@$childrenSettings){
                     
                 });
             }
-            
-            $('body').off('click', '.js-content-update', function(e){});
-            $('body').off('click', '.js-content-cancel', function(e){});
+
+            $('.form-wrap').off('click', '.js-content-update', function(e){});
+            $('.form-wrap').off('click', '.js-content-cancel', function(e){});
+
             $('body').on('click', '.js-content-update', function(e){
                 e.preventDefault();
                 var $btn = $(this).button('loading');

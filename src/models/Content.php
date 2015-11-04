@@ -2,7 +2,7 @@
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends \Baum\Node{ //Eloquent {status
-    protected $fillable = array('name', 'identifier', 'position', 'package', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug','edit_action');
+    protected $fillable = array('name', 'identifier', 'position', 'package', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug','edit_action','edit_view');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -54,9 +54,6 @@ class Content extends \Baum\Node{ //Eloquent {status
 	
 	public function template()
 	{
-        if(!$this->template_id){
-            $this->template_id = 1;
-        }
 		return $this->belongsTo('Template', 'template_id');
 	}
 

@@ -42,6 +42,7 @@
         @include('cms::contents.edit-tabs')
     </div>
     <script type="text/javascript">
+
         $(function () {
             
             
@@ -74,16 +75,19 @@
                 $('.js-slug', $form).val(str.toLowerCase());
             });
         
-
-            $('.form-wrap').on('click','.js-content-update', function(e){
-                //e.stopPropagation();
-                e.preventDefault();
-                $form = $(this).closest('form');
-                $.post($form.attr('action'), $form.serialize(), function(data){
-                    //boop.
-                //    tree.jstree("refresh");
-                });
-            });
+            if(!disableUpdate){
+                $('.form-wrap').on('click','.js-content-update', function(e){
+                    //e.stopPropagation();
+                    e.preventDefault();
+                    alert('derp.');
+                    $form = $(this).closest('form');
+                    $.post($form.attr('action'), $form.serialize(), function(data){
+                        //boop.
+                    //    tree.jstree("refresh");
+                    });
+                });    
+            }
+            
 
 
             @if(count($application->languages) > 1)
