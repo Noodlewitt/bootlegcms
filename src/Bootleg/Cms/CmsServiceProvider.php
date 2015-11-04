@@ -1,5 +1,6 @@
 <?php namespace Bootleg\Cms;
 
+use Collective\Html\HtmlServiceProvider;
 use Config;
 use Illuminate\Support\ServiceProvider;
 use Zofe\Rapyd\RapydServiceProvider;
@@ -61,8 +62,8 @@ class CmsServiceProvider extends ServiceProvider {
 					'Bootleg\Cms\ExceptionHandler'
 			);
 		}
-
         $this->app->register(RapydServiceProvider::class);
+        $this->app->register(HtmlServiceProvider::class);
 
 
     }
