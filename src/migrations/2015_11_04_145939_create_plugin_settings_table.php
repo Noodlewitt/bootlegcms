@@ -15,14 +15,14 @@ class CreatePluginSettingsTable extends Migration {
 		Schema::create('plugin_settings', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name');
-			$table->text('value', 65535);
-			$table->text('field_type', 65535);
-			$table->text('field_parameters', 65535);
-			$table->integer('plugin_id');
-			$table->integer('application_id');
-			$table->softDeletes();
+			$table->integer('plugin_id')->unsigned()->index('FK_plugin_settings_plugins');
+			$table->integer('application_id')->unsigned()->index('FK_plugin_settings_applications');
+			$table->string('name')->nullable();
+			$table->string('value')->nullable();
+			$table->string('field_type')->nullable();
+			$table->string('field_parameters')->nullable();
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

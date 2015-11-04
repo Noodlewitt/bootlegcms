@@ -15,7 +15,7 @@ class CreateSessionsTable extends Migration {
 		Schema::create('sessions', function(Blueprint $table)
 		{
 			$table->string('id')->unique();
-			$table->text('payload', 65535);
+			$table->text('payload', 16777215);
 			$table->integer('last_activity');
 		});
 	}

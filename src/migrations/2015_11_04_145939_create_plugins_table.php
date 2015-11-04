@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateApplicationUrlsTable extends Migration {
+class CreatePluginsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,13 @@ class CreateApplicationUrlsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('application_urls', function(Blueprint $table)
+		Schema::create('plugins', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('application_id');
-			$table->string('domain');
-			$table->string('folder');
+			$table->string('name')->nullable();
+			$table->string('service_provider')->nullable();
+			$table->string('package')->nullable();
+			$table->string('type', 100)->nullable();
 			$table->timestamps();
 		});
 	}
@@ -30,7 +31,7 @@ class CreateApplicationUrlsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('application_urls');
+		Schema::drop('plugins');
 	}
 
 }

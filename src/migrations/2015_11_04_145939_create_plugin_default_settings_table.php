@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateApplicationSettingsTable extends Migration {
+class CreatePluginDefaultSettingsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,16 +12,16 @@ class CreateApplicationSettingsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('application_settings', function(Blueprint $table)
+		Schema::create('plugin_default_settings', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('application_id');
 			$table->string('name');
-			$table->string('field_type');
-			$table->string('field_parameters');
 			$table->text('value', 65535);
+			$table->text('field_type', 65535);
+			$table->text('field_parameters', 65535);
+			$table->integer('plugin_id')->unsigned()->index('FK_plugin_default_settings_plugins');
 			$table->timestamps();
-			$table->string('section');
+			$table->softDeletes();
 		});
 	}
 
@@ -33,7 +33,7 @@ class CreateApplicationSettingsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('application_settings');
+		Schema::drop('plugin_default_settings');
 	}
 
 }

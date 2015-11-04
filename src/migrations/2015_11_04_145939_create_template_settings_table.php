@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateContentSettingsTable extends Migration {
+class CreateTemplateSettingsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,17 +12,17 @@ class CreateContentSettingsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('content_settings', function(Blueprint $table)
+		Schema::create('template_settings', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('content_id');
+			$table->integer('template_id')->unsigned()->index('FK_template_settings_template');
 			$table->string('name');
 			$table->text('value', 65535);
-			$table->string('field_type')->nullable()->default('');
-			$table->string('field_parameters')->nullable()->default('');
+			$table->string('field_type');
+			$table->string('field_parameters');
+			$table->string('section');
 			$table->timestamps();
 			$table->softDeletes();
-			$table->string('section')->nullable()->default('');
 		});
 	}
 
@@ -34,7 +34,7 @@ class CreateContentSettingsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('content_settings');
+		Schema::drop('template_settings');
 	}
 
 }

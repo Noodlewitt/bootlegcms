@@ -15,8 +15,8 @@ class CreateApplicationPluginTable extends Migration {
 		Schema::create('application_plugin', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('application_id');
-			$table->integer('plugin_id');
+			$table->integer('application_id')->unsigned()->index('FK_application_plugin_applications');
+			$table->integer('plugin_id')->unsigned()->index('FK_application_plugin_plugins');
 			$table->timestamps();
 		});
 	}

@@ -19,10 +19,10 @@ class CreatePermissionsTable extends Migration {
 			$table->string('requestor_type');
 			$table->string('controller_id');
 			$table->string('controller_type');
-			$table->boolean('x');
+			$table->string('x');
 			$table->string('comment');
 			$table->timestamps();
-			$table->string('application_id', 5)->default('');
+			$table->integer('application_id');
 		});
 	}
 

@@ -16,7 +16,7 @@ class CreateApplicationLanguagesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->integer('application_id');
+			$table->integer('application_id')->unsigned()->index('FK_application_languages_applications');
 			$table->string('code');
 		});
 	}
