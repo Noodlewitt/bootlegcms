@@ -92,13 +92,13 @@ class ContentwrapperController extends CMSController
         if ($validation->passes()) {
             Event::fire('content.create', array($this->content));
             Event::fire('content.update', array($this->content));
-            $content = $this->content->superSave($input);
-            $content = ContentwrapperController::saveSettings($content, $input);
+            $this->content = $this->content->superSave($input);
+            $this->content = ContentwrapperController::saveSettings($this->content, $input);
             Event::fire('content.created', array($this->content));
             Event::fire('content.updated', array($this->content));
           //  dd($tree);
 
-            return \Redirect::action(@$content->edit_action?$content->edit_action:'\Bootleg\Cms\ContentsController@anyEdit', $content->id);
+            return \Redirect::action(@$this->content->edit_action?$this->content->edit_action:'\Bootleg\Cms\ContentsController@anyEdit', $this->content->id);
 
         }
 
