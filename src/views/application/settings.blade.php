@@ -10,7 +10,7 @@
             <div class="col-xs-12">
                 <ul class="nav nav-tabs">
                     @foreach($application_settings as $key=>$section)
-                        <li class='{{@!$i?"active":""}}'><a href="#tab-{{$key?$key:"Settings"}}" data-toggle="tab">{{$key?$key:"Settings"}}</a></li>
+                        <li class='{{!@$i?"active":""}}'><a href="#tab-{{$key?$key:"Settings"}}" data-toggle="tab">{{$key?$key:"Settings"}}</a></li>
                         <?php $i=1?>
                     @endforeach
                 </ul>

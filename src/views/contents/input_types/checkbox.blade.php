@@ -12,16 +12,14 @@ if(@$content){
     }
 }
 
-$niceName = preg_replace('/\s+/', '', $setting[0]->name);
-$params = Contentsetting::parseParams($setting[0]);
+$niceName = preg_replace('/\s+/', '', $setting->name);
+$params = Contentsetting::parseParams($setting);
 
 ?>
-@foreach($setting as $field)
-    <div class='checkbox checkbox-block js-{{$niceName}}'>
-        <label>{!! Form::checkbox("checkbox-$niceName", $field->value, $field->value, array('class'=>'js-checkbox')) !!} {{ucfirst($setting[0]->name)}}</label>
-        {!! Form::hidden("setting[".$field->orig_name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'js-hidden')) !!}
-    </div>
-@endforeach
+<div class='checkbox checkbox-block js-{{$niceName}}'>
+    <label>{!! Form::checkbox("checkbox-$niceName", $setting->value, $setting->value, array('class'=>'js-checkbox')) !!} {{ucfirst($setting->name)}}</label>
+    {!! Form::hidden("setting[".$setting->orig_name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'js-hidden')) !!}
+</div>
 <script>
     $('input.js-checkbox', $('.checkbox-block.js-{{$niceName}}')).change(function(e){
         e.preventDefault();
