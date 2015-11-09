@@ -12,13 +12,13 @@ class S3{
     public static function upload($fileName, $location = NULL, $fileString = NULL, $acl = 'public-read'){
         $application = \Application::getApplication();
         if (@$application->getSetting('Enable s3')) {
-
+            
             if (@$application->getSetting('s3 Folder')) {
                 $pth = trim(@$application->getSetting('s3 Folder'), '/\ ').'/'.$fileName;
             } else {
                 $pth = $fileName;
             }
-
+            
             $s3 = \AWS::get('s3');
             if($location){
                 $put = array(

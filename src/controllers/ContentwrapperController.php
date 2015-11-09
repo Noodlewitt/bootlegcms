@@ -785,17 +785,11 @@ class ContentwrapperController extends CMSController
 
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
-                    
+                    //dd($destinationPath.$fileName);
                     if (@$this->application->getSetting('Enable s3')) {
-                        //$finalUrl = S3::upload($destinationPath.$fileName, $destinationPath.$uploadFolder.$fileId.'.'.$extension);
-
-                        $s3 = \AWS::get('s3');
-                        $s3->putObject(array(
-                            'Bucket'     => @$this->application->getSetting('s3 Bucket'),
-                            'Key'        => $destinationPath.$uploadFolder.$fileId.'.'.$extension,
-                            'SourceFile' => $destinationPath.$fileName,
-                        ));
+                        $finalUrl = S3::upload($fileName, $destinationPath.$fileName);
                     }
+                    
                     //and we need to build the json response.
                     $fileObj = new \stdClass();
                     $fileObj->name = $originalName;
