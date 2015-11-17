@@ -510,6 +510,7 @@ class ContentwrapperController extends CMSController
 
     /*delete uploaded file(s)*/
     public function deleteUpload($id = ''){
+        $return = [];
         if($id){
             $content_setting = \Contentsetting::findOrFail($id);
             //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
@@ -544,6 +545,8 @@ class ContentwrapperController extends CMSController
      * pass in a content_setting id to upload to.
      */
     public function postUpload($id){
+
+        $return = [];
 
         $input = array_except(\Input::all(), '_method');
 
