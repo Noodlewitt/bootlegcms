@@ -665,7 +665,7 @@ class ContentwrapperController extends CMSController
                         }
 
                         //strip excess slashes
-                        $upload_path = trim($upload_path,'/\ ');
+                        $upload_path = trim(preg_replace('#/+#','/',$upload_path),'/\ ');
 
                         $aws = \Aws\Common\Aws::factory($a);
                         $s3 = $aws->get('s3');
