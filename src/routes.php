@@ -20,9 +20,9 @@ Route::group(['middleware' => 'cms.setup'], function () {
 
     if(@$_SERVER['HTTP_HOST']){
         $applicationurl = \ApplicationUrl::getApplicationUrl();
-        $application = $applicationurl->application;
+        $application = @$applicationurl->application;
 
-        if (!@$application) {
+        if (!$application) {
             App::abort(404, "No Application found at url"); //chuck 404 - we can't find the app
         }
     } else {
