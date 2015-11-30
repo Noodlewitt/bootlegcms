@@ -59,10 +59,6 @@ class UsersController extends CMSController
             //and we need to update last logged in datetime
             $user = User::find(Auth::user()->id);
 
-            $user->last_loggedin_at = $user->loggedin_at;
-            $user->loggedin_at = date("Y-m-d H:i:s");
-            $user->save();
-
             \Session::flash('success', 'You are now logged in!');
             return redirect()->intended(action('\Bootleg\Cms\UsersController@anyDashboard'));
         }

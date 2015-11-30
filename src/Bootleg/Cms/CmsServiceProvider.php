@@ -1,7 +1,9 @@
 <?php namespace Bootleg\Cms;
 
+use Carbon\Carbon;
 use Collective\Html\HtmlServiceProvider;
 use Config;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Zofe\Rapyd\RapydServiceProvider;
 use Illuminate\Routing\Router;
@@ -43,6 +45,12 @@ class CmsServiceProvider extends ServiceProvider {
 	    //Load views
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
+
+		Event::listen('auth.login', function($user) {
+			$user->loggedin_at = Carbon::now();
+
+			$user->save();
+		});
 
         //load middleware, helpers, views, routes
         $router->middleware('permissions', 'Bootleg\Cms\Middleware\Permissions');

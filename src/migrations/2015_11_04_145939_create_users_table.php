@@ -28,8 +28,7 @@ class CreateUsersTable extends Migration {
 			$table->string('remember_token', 100)->nullable();
 			$table->string('default_language');
 			$table->timestamps();
-			$table->dateTime('loggedin_at')->default('0000-00-00 00:00:00');
-			$table->dateTime('last_loggedin_at')->default('0000-00-00 00:00:00');
+			$table->timestamp('loggedin_at')->default('0000-00-00 00:00:00');
 			$table->softDeletes();
 			$table->unique(['application_id','email'], 'application_id_email');
 		});
