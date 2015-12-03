@@ -67,7 +67,7 @@ class Publish extends \Illuminate\Console\Command {
         }
         //we now need to re asset publish?
         //TODO: do we really want to force this 100% of the time?
-        \Artisan::call('vendor:publish', ['--force'=>1]);
+        \Artisan::call('vendor:publish'); //, ['--force'=>1]); no - we do not
     }
 
     /**
