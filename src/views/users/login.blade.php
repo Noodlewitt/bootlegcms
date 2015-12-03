@@ -3,7 +3,7 @@
 @include('cms::layouts.flash_messages')
 {!! Form::open(array('class'=>'form-signin')) !!}
     <!-- username field -->
-    <h2 class="form-signin-heading text-center">{{$application->name}} <br /> {{ config('bootlegcms.cms_title', 'BootlegCMS') }}</h2>
+    <h2 class="form-signin-heading text-center">{{$application->name}} <br /> {!! config('bootlegcms.cms_title_image') ? '<img class="logo" src="'.config('bootlegcms.cms_title_image').'" />' : config('bootlegcms.cms_title', 'BootlegCMS') !!}</h2>
     {!! Form::label('email', 'Email') !!}
     {!! Form::text('email',null, array('placeholder'=>'Email Address','class'=>'form-control')) !!}
     <!-- password field -->

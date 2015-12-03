@@ -1,4 +1,6 @@
 /vendor
 composer.phar
 composer.lock
+.sass-cache
+node_modules
 .DS_Store

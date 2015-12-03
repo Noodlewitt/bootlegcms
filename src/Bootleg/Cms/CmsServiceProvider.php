@@ -29,22 +29,14 @@ class CmsServiceProvider extends ServiceProvider {
      */
 	public function boot(Router $router)
 	{
-		//publishes the assets
-	    $this->publishes([__DIR__.'/../../../public' => public_path('vendor/bootleg/cms')], 'public');
-
-	    //publish the migrations:
-	    $this->publishes([__DIR__.'/../../migrations/' => base_path('database/migrations')], 'migrations');
-
-	    // TODO: ^^ when we upgrade next - seems this has been fixed:
+		include __DIR__.'/../../routes.php';
+	    $this->publishes([__DIR__.'/../../../public' => public_path('vendor/bootleg/cms')], 'bootleg.cms.public');
+	    $this->publishes([__DIR__.'/../../migrations/' => base_path('database/migrations')], 'bootleg.cms.migrations');
 	    //$this->publishes([__DIR__.'/../../../src//migrations/' => database_path('/migrations')], 'migrations');
-
-	    //publish the config
-	    $this->publishes([__DIR__.'/../../config/bootlegcms.php' => config_path('bootlegcms.php')]); //config
+	    $this->publishes([__DIR__.'/../../config/bootlegcms.php' => config_path('bootlegcms.php')], 'bootleg.cms.config');
+		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');//Load views
 
         if(Config::get('bootlegcms.cms_timezone')) Config::set('app.timezone', Config::get('bootlegcms.cms_timezone'));
-	    //Load views
-		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
-		include __DIR__.'/../../routes.php';
 
 		Event::listen('auth.login', function($user) {
 			$user->loggedin_at = Carbon::now();
@@ -84,5 +76,10 @@ class CmsServiceProvider extends ServiceProvider {
     {
         return ['Illuminate\Contracts\Debug\ExceptionHandler'];
     }
+
+    public static function getPublishGroups()
+	{
+		return static::$publishGroups;
+	}
 
 }

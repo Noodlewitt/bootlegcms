@@ -9781,3 +9781,8 @@ form.main-form ul li div.upload table.uploaded td.preview-wrap span.preview img 
   max-height: 100px;
   max-width: 100px;
 }
+
+.navbar-brand > img {
+  max-height: 40px;
+  margin: -10px 0;
+}

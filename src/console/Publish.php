@@ -1,14 +1,19 @@
 <?php namespace Bootleg\Cms;
 
+use App;
+use Artisan;
 use Illuminate\Console\Command;
+use Illuminate\Support\ServiceProvider;
+use Plugin;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
+
 /**
  * Since we don't want to register the service providers for plugins globally, we cant use
  * the normal vendor:publush command (since it only looks in app for SPs). Using this we can
  * check the db for any plugins and run an seet publish off that.
  */
-class Publish extends \Illuminate\Console\Command {
+class Publish extends Command
+{
 
     /**
      * The console command name.
@@ -42,32 +47,45 @@ class Publish extends \Illuminate\Console\Command {
      */
     public function fire()
     {
-        //echo $this->argument('example');
-        //echo $this->option('example');
         $app_name = $this->option('app_name');
         $app_id = $this->option('app_id');
-        if($app_name){
-            $plugins = \Plugin::whereHas('applications',function($q) use ($app_name){
-                $q->where('name',$app_name);
-            })->get();
+        $plugins = new Plugin;
+
+        if ($app_name || $app_id)
+        {
+            $plugins = $plugins->whereHas('applications', function ($q) use ($app_name, $app_id)
+            {
+                if ($app_name) $q->where('name', $app_name);
+                if ($app_id) $q->where('id', $app_id);
+            });
         }
-        else if($app_id){
-            $plugins = \Plugin::whereHas('applications',function($q) use ($app_id){
-                $q->where('id',$app_id);
-            })->get();
+        $plugins = $plugins->get();
+
+        foreach ($plugins as $plugin)
+        {
+            //Register application service providers
+            app()->register($plugin->service_provider);
+            echo("Registered plugin " . $plugin->name . "\n");
         }
-        else{
-            $plugins = \Plugin::get();
+
+        //publish all assets, without overwriting
+        echo("Publishing files... \n");
+        $this->call('vendor:publish');
+
+        echo("Publishing assets... \n");
+
+        $groups = CmsServiceProvider::getPublishGroups();
+
+        foreach($groups as $tag => $assets)
+        {
+            //force publish all assets with a tag ending in 'public'
+            if(ends_with($tag, 'public')){
+                $this->call('vendor:publish', [
+                    '--tag'      => $tag,
+                    '--force'    => 1,
+                ]);
+            }
         }
-        echo("\n");
-        foreach($plugins as $plugin){
-            //Register appliation service providers
-            \App::register($plugin->service_provider);
-            echo("Publishing for ".$plugin->name."\n");
-        }
-        //we now need to re asset publish?
-        //TODO: do we really want to force this 100% of the time?
-        \Artisan::call('vendor:publish'); //, ['--force'=>1]); no - we do not
     }
 
     /**

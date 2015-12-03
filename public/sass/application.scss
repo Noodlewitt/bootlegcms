@@ -3,7 +3,6 @@ some standard import files - plugins, bootstrap etc..
 */
 @import "base";
 
-
 /*
 CMS SCSS in here
 TODO: figure out a nice way of formatting this correctly.
@@ -13,7 +12,6 @@ TODO: figure out a nice way of formatting this correctly.
 Some globals
 */
 
-
 $gutter-half: $grid-gutter-width/2;
 
 /*
@@ -22,20 +20,17 @@ $gutter-half: $grid-gutter-width/2;
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-    padding-top: 50px;
+  padding-top: 50px;
 }
-
 
 /*fix for bootstrap bug. fix is apparently coming soon for this.*/
 .container-fluid {
-    padding: 0 $gutter-half;
+  padding: 0 $gutter-half;
 }
 
 /*
  * Global add-ons
  */
-
-
 
 /*
  * Sidebar
@@ -43,145 +38,147 @@ body {
 
 /* Hide for mobile, show later */
 .sidebar {
-    display: none;
+  display: none;
 }
 
-
 @media (min-width: 768px) {
-    .sidebar {
-        position: fixed;
-        top: 51px;
-        bottom: 0;
-        left: 0;
-        z-index: 1000;
-        display: block;
-        padding: 20px;
-        overflow-x: hidden;
-        overflow-y: auto;
- /* Scrollable contents if viewport is shorter than content. */
-        background-color: $well-bg;
-        border-right: 1px solid #eee;
-    }
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Scrollable contents if viewport is shorter than content. */
+    background-color: $well-bg;
+    border-right: 1px solid #eee;
+  }
 }
 
 /*
  * Main content
  */
 
-.overlay{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 5;
-    display:none;
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  display: none;
 }
 
 .main {
-    padding: 20px;
+  padding: 20px;
 }
-
 
 .main .page-header {
-    margin-top: 0;
+  margin-top: 0;
 }
 
-.table > tbody > tr > td.vertical-middle{
-    vertical-align:middle;
+.table > tbody > tr > td.vertical-middle {
+  vertical-align: middle;
 }
-
 
 .nav-sidebar {
-    .menu-additional{
-        position: absolute;
-        left: 0;
-        padding: $gutter-half;
-        bottom: 0;
-        right: 0;
-        h2{
-            font-size: 1.5em;
-        }
-    }
-}
-
-.page-header{
-    margin-top: 0;
-}
-
-.treeContainer{
-    overflow:auto;
-    bottom: 60px;
-    .page-header{
-        padding: 0 $gutter-half $gutter-half $gutter-half;
-        margin: 0;
-        margin-left: -$gutter-half;
-        margin-right: -$gutter-half;
-    }
-}
-
-.treeOptions{
-    bottom: 0;
-    position: fixed;
-    height: 60px;
+  .menu-additional {
+    position: absolute;
+    left: 0;
     padding: $gutter-half;
-    background: $well-bg;
-    border-top: 1px solid $gray-lighter;
-    border-right: 1px solid $gray-lighter;
+    bottom: 0;
+    right: 0;
+    h2 {
+      font-size: 1.5em;
+    }
+  }
 }
 
-.vakata-context{
-    z-index:1050;
+.page-header {
+  margin-top: 0;
 }
 
-#jstree-marker{
-    z-index:9999;
+.treeContainer {
+  overflow: auto;
+  bottom: 60px;
+  .page-header {
+    padding: 0 $gutter-half $gutter-half $gutter-half;
+    margin: 0;
+    margin-left: -$gutter-half;
+    margin-right: -$gutter-half;
+  }
+}
+
+.treeOptions {
+  bottom: 0;
+  position: fixed;
+  height: 60px;
+  padding: $gutter-half;
+  background: $well-bg;
+  border-top: 1px solid $gray-lighter;
+  border-right: 1px solid $gray-lighter;
+}
+
+.vakata-context {
+  z-index: 1050;
+}
+
+#jstree-marker {
+  z-index: 9999;
 }
 
 .form-signin {
-    max-width: 330px;
-    padding: $gutter-half;
-    margin: 0 auto;
+  max-width: 330px;
+  padding: $gutter-half;
+  margin: 0 auto;
 }
 
-.nav-tabs{
-    margin-bottom:$gutter-half;
+.nav-tabs {
+  margin-bottom: $gutter-half;
 }
 
+form.main-form {
+  .edit-content-tab {
+    padding: $gutter-half 0 0 0;
+  }
 
-form.main-form{
-    .edit-content-tab{
-        padding:$gutter-half 0 0 0;
-    }
+  ul {
+    list-style: none;
+    padding: 0;
 
-    ul{
-        list-style:none;
-        padding:0;
+    li {
+      div.bootstrap-tagsinput {
+        display: block;
+      }
 
-        li{
-            div.bootstrap-tagsinput{
-                display:block;
+      div.upload {
+
+        table.uploaded {
+          td.preview-wrap {
+            text-align: center;
+
+            span.preview img {
+              max-height: 100px;
+              max-width: 100px;
             }
-
-            div.upload{
-
-                table.uploaded{
-                    td.preview-wrap{
-                        text-align:center;
-
-                        span.preview img{
-                            max-height: 100px;
-                            max-width: 100px;
-                        }
-                    }
-                }
-            }
+          }
         }
+      }
     }
+  }
 }
 
-.dash-item{
+.dash-item {
 
+}
 
+.navbar-brand {
+  > img {
+    max-height: 40px;
+    margin: -10px 0;
+  }
 }
