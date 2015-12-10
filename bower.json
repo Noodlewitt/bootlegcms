@@ -7,15 +7,16 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-      "jquery": "~1.10.2",
-      "jquery-ui": "1.10.4",
-      "bootstrap-sass": "~3",
-      "jstree": "~3",
-      "tinymce-builded": "~4",
-      "blueimp-file-upload": "~9.5",
-      "fontawesome":"~4",
-      "bootstrap-tagsinput":"~0.3",
-      "bootstrap-sass-datepicker":"~1.3",
-      "mjolnic-bootstrap-colorpicker":"~2.0"
+    "jquery": "~1.10.2",
+    "jquery-ui": "1.10.4",
+    "bootstrap-sass": "~3",
+    "jstree": "~3",
+    "tinymce-builded": "~4",
+    "blueimp-file-upload": "~9.5",
+    "fontawesome": "~4",
+    "bootstrap-tagsinput": "~0.3",
+    "bootstrap-sass-datepicker": "~1.3",
+    "mjolnic-bootstrap-colorpicker": "~2.0",
+    "jstree-bootstrap-theme": "~1.0.1"
   }
 }

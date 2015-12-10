@@ -1,0 +1,100 @@
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+html, body {
+  background-color: $grey-lightest;
+  height: 100%;
+  font-size: 100%;
+}
+
+body {
+  padding-top: $navbar-height;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-font-smoothing: antialiased !important;
+  font-smoothing: antialiased !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+
+  .content-area > div {
+    padding: 25px 40px;
+    .page-header {
+      border-color: $grey-light;
+      h1 {
+        font-weight: 700;
+      }
+      i {
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+/*fix for bootstrap bug. fix is apparently coming soon for this.*/
+.container-fluid {
+  padding: 0 $gutter-half;
+}
+
+/*
+ * Main content
+ */
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  display: none;
+}
+
+.main {
+  padding: 20px;
+}
+
+.main .page-header {
+  margin-top: 0;
+}
+
+#colour_swatch {
+  display:none;
+  position:fixed;
+  bottom:0;
+  right:0;
+  width:220px;
+  background-color: rgba(0,0,0,0.5);
+  padding: 10px;
+  font-size: 0;
+  border-radius:5px;
+  > div {
+    display:inline-block;
+    height:50px;
+    width:50px;
+  }
+
+  $colours: (
+          "grey-base"     : $gray-base,
+          "grey-darkest"  : $grey-darkest,
+          "grey-darker"   : $grey-darker,
+          "grey-dark"     : $grey-dark,
+          "grey"          : $grey,
+          "grey-light"    : $grey-light,
+          "grey-lighter"  : $grey-lighter,
+          "grey-lightest" : $grey-lightest,
+          "primary-color" : $primary-color,
+          "brand-primary" : $brand-primary,
+          "brand-success" : $brand-success,
+          "brand-info"    : $brand-info,
+          "brand-warning" : $brand-warning,
+          "brand-danger"  : $brand-danger,
+  );
+
+  @each $colour, $hex in $colours {
+    .#{$colour} {
+      background-color: #{$hex};
+    }
+  }
+}

@@ -8,10 +8,10 @@
     </div>
     <div class="row">
         <?php
-            $dashItems = Event::fire('dashboard.items', array());
+            $dashItems = Event::fire('dashboard.items', []);
         ?>
         @foreach($dashItems as $dashItem)
-          {!!$dashItem!!}
+          {!! $dashItem->render() !!}
         @endforeach
     </div>
 </div>

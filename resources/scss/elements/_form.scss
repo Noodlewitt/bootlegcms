@@ -1,0 +1,36 @@
+.form-signin {
+  max-width: 330px;
+  padding: $gutter-half;
+  margin: 0 auto;
+}
+
+form.main-form {
+  .edit-content-tab {
+    padding: $gutter-half 0 0 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      div.bootstrap-tagsinput {
+        display: block;
+      }
+
+      div.upload {
+
+        table.uploaded {
+          td.preview-wrap {
+            text-align: center;
+
+            span.preview img {
+              max-height: 100px;
+              max-width: 100px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

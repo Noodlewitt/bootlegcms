@@ -1,0 +1,23 @@
+.nav-tabs {
+  background-color: $gray-lightest;
+  border: 1px solid $grey-light;
+  // box-shadow: 0 0px 3px 1px rgba(0,0,0,0.15) inset;
+  border-radius: 5px;
+  padding: 5px;
+  border: 0;
+  li {
+    a, a:focus, a:visited {
+      border: none !important;
+      border-radius: 4px;
+      background-color: $grey-light;
+    }
+    a:hover {
+      background-color: $grey;
+    }
+    &.active a {
+      //background-color: $primary-color !important;
+      background-color: $brand-primary !important;
+      color: #fff !important;
+    }
+  }
+}

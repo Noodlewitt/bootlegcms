@@ -1,0 +1,33 @@
+.login-page {
+  //background-color: $gray-darker;
+  .container {
+    width: 50%;
+  }
+  .login-dialog {
+    box-shadow: 0 1px 3px 0px rgba(0, 0, 0, 0.075);
+    border-radius: 5px;
+    //background-color: $grey-lightest;
+    background-color: #fff;
+    margin: 0 auto;
+    .dialog-header {
+      overflow: hidden;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      background-color: $gray-dark;
+      color: #fff;
+      > div {
+        display: inline-block;
+        vertical-align: middle;
+        > span {
+          padding-left: 10px;
+          font-weight: 700;
+          display: block;
+          line-height: 1;
+        }
+      }
+    }
+    form {
+      padding: 20px;
+    }
+  }
+}

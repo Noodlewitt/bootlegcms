@@ -11,6 +11,11 @@
     $('.tree').jstree({
         "core" : {
           // so that create works
+
+            "themes": {
+                "name": "proton",
+                "responsive": true
+            },
             "check_callback" : true,
             "data":{
                 "url": function(node){
@@ -58,7 +63,7 @@
                 }
             }
         },
-        'plugins':["search", "contextmenu", "dnd", "state", "types"]
+        'plugins':["search", "dnd", "state", "types", "wholerow"] //"contextmenu",
     });
     
 

@@ -25,7 +25,7 @@
         @if(!$advanced)
             <li><a href="#tab-Advanced" data-toggle="tab">Advanced</a></li>
         @endif
-            <li><a href="#tab-Permission" data-toggle="tab">Permisssions</a></li>
+            <li><a href="#tab-Permission" data-toggle="tab">Permissions</a></li>
     </ul>
     @if($content_mode == 'template')
     {!! Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('\Bootleg\Cms\TemplateController@anyUpdate', @$content->id))) !!}
@@ -60,7 +60,7 @@
             }
         }
         ?>
-        <div class="tab-pane {{$i==0?'active in':''}} fade edit-content-tab" id="tab-{{$key}}">
+        <div class="tab-pane {{  $i==0?'active in':'' }} fade edit-content-tab" id="tab-{{$key}}">
             <ul>
                 @if($key == 'Advanced')
 

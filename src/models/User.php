@@ -10,7 +10,10 @@ class User extends \Eloquent implements AuthenticatableContract, CanResetPasswor
 
     use Authenticatable, CanResetPassword;
 
-    protected $fillable = array('id', 'username', 'password', 'email', 'role_id', 'status');
+    protected $fillable = ['id', 'username', 'password', 'email', 'role_id', 'status'];
+
+
+    protected $permissions;
 
     /**
 	 * The database table used by the model.
@@ -97,9 +100,44 @@ class User extends \Eloquent implements AuthenticatableContract, CanResetPasswor
     }
 
     public function applications(){
-        return($this->hasMany('Application', 'user_id'));
+        return $this->hasMany('Application', 'user_id');
     }
 
+    public function getPermissions()
+    {
+        if (!isset($this->permissions))
+        {
+            $this->permissions = \Permission::where(function ($query)
+            {
+                $query->where(function ($query)
+                {
+                    $query->where(function ($query)
+                    {
+                        $query->where('requestor_id', '=', $this->id)
+                            ->orWhere('requestor_id', '=', '*');
+                    })
+                        ->where('requestor_type', '=', 'user');
+                })
+                    ->orWhere(function ($query)
+                    {    //where role
+                        $query->where(function ($query)
+                        {
+                            $query->where('requestor_id', '=', $this->role_id)
+                                ->orWhere('requestor_id', '=', '*');
+                        })
+                            ->where('requestor_type', '=', 'role');
+                    });
+            })
+                ->where(function ($query)
+                {
+                    $app_id = \Application::getApplication()->id;
+                    $query->where('application_id', $app_id)
+                        ->orWhere('application_id', '*');
+                })->get();
+        }
+
+        return $this->permissions;
+    }
     /*
     Mutator for password setting.
     */

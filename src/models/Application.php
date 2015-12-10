@@ -16,7 +16,9 @@ class Application extends Baum\Node{
     protected $depthColumn = 'depth';
     protected $parentColumn = 'parent_id';
 
-    protected $_settings = NULL; //holds settings for this application item so we don't have to contantly query it.
+    const DEFAULT_APPLICATION_ICON = 'http://files.madeinkatana.com.s3.amazonaws.com/images/madeinkatana.png';
+
+    protected $_settings = NULL; //holds settings for this application item so we don't have to constantly query it.
 
     public static $rules = array(
 		'name' => 'required|unique:applications',

@@ -1,11 +1,9 @@
 @extends(view()->exists($cms_package.'::layouts.master') ? $cms_package.'::layouts.master' : 'cms::layouts.master')
 @section('main-content')
     <div class="col-sm-3 col-md-offset-2 col-md-2 text-center treeOptions">
-        @if($content_mode === 'template')
-        <a href="{{URL::action('\Bootleg\Cms\TemplateController@anyCreate')}}" class="btn btn-primary btn-sm create"><span class="glyphicon glyphicon-plus"></span> Create Template</a>
-        @else
-        <a href="{{URL::action('\Bootleg\Cms\ContentsController@anyCreate')}}" class="btn btn-primary btn-sm create"><span class="glyphicon glyphicon-plus"></span> Create Content</a>
-        @endif
+        <a href="{{ $content_mode === 'template' ? action('\Bootleg\Cms\TemplateController@anyCreate') : action('\Bootleg\Cms\ContentsController@anyCreate') }}" class="btn create btn-cms-primary">
+            <i class="glyphicon glyphicon-plus"></i> Create New Item
+        </a>
     </div>
 
     <script>
@@ -13,6 +11,9 @@
             $('.treeOptions .create').click(function(e){
                 e.preventDefault();
                 var tree = $(".tree").jstree(true);
+
+
+
                 var parent = $('.tree').jstree('get_selected');
                 if(parent == ''){
                     parent = '#';

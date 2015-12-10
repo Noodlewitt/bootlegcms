@@ -1,5 +1,9 @@
 <?php namespace Bootleg\Cms;
 
+use Content;
+use Illuminate\Database\Eloquent\Collection;
+use Permission;
+use Route;
 use \Validator;
 use \Input;
 use \Event;
@@ -33,16 +37,14 @@ class ContentwrapperController extends CMSController
      */
     public function anyIndex(){
         //dd('here');
-        $this->content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
+        $content = $this->content->with(['template_setting', 'setting'])->fromApplication()->whereNull('parent_id')->first();
 
-        $content = $this->content;
-
-        $allPermissions = \Permission::getControllerPermission($this->content->id, \Route::currentRouteAction());
+        $allPermissions = Permission::getControllerPermission($content->id, Route::currentRouteAction());
 
         //foreach template setting we want to add a setting for this row..
         if(!empty($content->template_setting)){
             //TODO: There has to be a cleaner way of doing this.
-            $all_settings = new \Illuminate\Database\Eloquent\Collection;
+            $all_settings = new Collection;
 
             foreach($content->template_setting as $template_setting){
 
@@ -72,7 +74,7 @@ class ContentwrapperController extends CMSController
         }
         $settings = $all_settings->groupBy('section');
 
-        $content = \Content::setDefaults($content);
+        $content = Content::setDefaults($content);
 
         return $this->render('layouts.tree', compact('content', 'content_defaults', 'settings', 'allPermissions'));
     }
@@ -84,7 +86,7 @@ class ContentwrapperController extends CMSController
      * @return Response
      */
     public function anyCreate($parent_id=null){
-        $content = new \Content;
+        $content = new Content;
         $content->parent_id = $parent_id;
 
 
@@ -143,17 +145,17 @@ class ContentwrapperController extends CMSController
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '2048M');
         $this->content->rebuild();
-        dd(\Content::isValidNestedSet());
+        dd(Content::isValidNestedSet());
     }
 
     //fixes slugs based off depth
     public function anyFixslug(){
-        $Content = \Content::where('depth','=','5')->get();
+        $Content = Content::where('depth','=','5')->get();
         foreach($Content as $cont){
             $input = array();
             $input['name'] = $cont->name;
-            $parent = \Content::find($cont->parent_id);
-            $slug = \Content::createSlug($input,$parent,true);
+            $parent = Content::find($cont->parent_id);
+            $slug = Content::createSlug($input,$parent,true);
             $cont->slug = $slug;
             var_dump($slug);
             $cont->save();
@@ -176,13 +178,13 @@ class ContentwrapperController extends CMSController
         //dd($content->setting);
         //$permission = Permission::getPermission('content', $content->id, 'w');
         //$allPermissions = Permission::getContentPermissions($id);
-        $allPermissions = \Permission::getControllerPermission($id, \Route::currentRouteAction());
+        $allPermissions = Permission::getControllerPermission($id, Route::currentRouteAction());
 
         //foreach template setting we want to add a setting for this row..
         //dd($content->template_setting);
         if(!empty($content->template_setting)){
             //TODO: There has to be a cleaner way of doing this.
-            $all_settings = new \Illuminate\Database\Eloquent\Collection;
+            $all_settings = new Collection;
 
             foreach($content->template_setting as $template_setting){
 
@@ -215,7 +217,7 @@ class ContentwrapperController extends CMSController
         //dd($content->edit_package);
         //dd($content->edit_service_provider);
         //App::register($content->edit_service_provider); //we need to register any additional sp.. incase we have some weird edit page.
-        $content = \Content::setDefaults($content);
+        $content = Content::setDefaults($content);
 
         //dd($content->edit_package.'::'.$content->edit_view);
         if (\Request::ajax()) {
@@ -533,7 +535,7 @@ class ContentwrapperController extends CMSController
 
     public function anyInlineUpload(){
         //$setting = array();
-        $setting = new \Illuminate\Database\Eloquent\Collection;
+        $setting = new Collection;
         $setting->add(new \Contentsetting());
         $setting[0]->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
         $setting[0]->name = '_inline';
