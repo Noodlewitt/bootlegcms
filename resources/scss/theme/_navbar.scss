@@ -1,0 +1,11 @@
+.nav.navbar-nav > li i {
+  color: $primary-color;
+}
+
+.navbar-user {
+  background-color: $navbar-user-bg;
+  color: $navbar-user-text;
+  i {
+    color: $navbar-user-icon;
+  }
+}

@@ -3,7 +3,9 @@
   padding: $gutter-half;
   margin: 0 auto;
 }
-
+.input-group-addon {
+  border-width: 2px;
+}
 form.main-form {
   .edit-content-tab {
     padding: $gutter-half 0 0 0;

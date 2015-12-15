@@ -26,9 +26,7 @@
 
     <body class="login-page">
         <div class="container">
-            @section('main-content')
-
-            @show
+            @yield('main-content')
         </div>
     </body>
 

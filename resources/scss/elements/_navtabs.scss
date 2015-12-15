@@ -1,7 +1,6 @@
 .nav-tabs {
   background-color: $gray-lightest;
-  border: 1px solid $grey-light;
-  // box-shadow: 0 0px 3px 1px rgba(0,0,0,0.15) inset;
+  border: 1px solid $gray-light;
   border-radius: 5px;
   padding: 5px;
   border: 0;
@@ -9,14 +8,12 @@
     a, a:focus, a:visited {
       border: none !important;
       border-radius: 4px;
-      background-color: $grey-light;
+      background-color: $gray-light;
     }
     a:hover {
-      background-color: $grey;
+      background-color: $gray;
     }
     &.active a {
-      //background-color: $primary-color !important;
-      background-color: $brand-primary !important;
       color: #fff !important;
     }
   }

@@ -5,8 +5,9 @@ basePath = '';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  'test/lib/jquery/dist/jquery.min.js',
-  'test/lib/angular/angular.min.js',
+  'lib/jquery.min.js',
+  'lib/angular.min.js',
+  'lib/angular-mocks.js',
   'src/bootstrap-tagsinput.js',
   'src/bootstrap-tagsinput-angular.js',
 

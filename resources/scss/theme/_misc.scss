@@ -1,0 +1,16 @@
+.text-cms-primary {
+  color: $primary-color !important;
+}
+
+.page-header i {
+  color: $primary-color;
+}
+
+.nav-tabs {
+  li {
+    &.active a {
+      background-color: $brand-primary !important;
+      color: #fff !important;
+    }
+  }
+}

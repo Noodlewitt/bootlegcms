@@ -22,6 +22,11 @@
         <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/cms.min.js"></script>
 
         <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.min.css" />
+        @if($application->getSetting('theme_file'))
+            <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
+        @else
+            <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/theme.min.css" />
+        @endif
         <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/components/bootleg-imagetagger/bootleg-imagetagger.css" />
         <script src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/components/bootleg-imagetagger/bootleg-imagetagger.js" ></script>
         @foreach($html_head_end as $html_head_end_item)
@@ -36,7 +41,7 @@
         @include('cms::layouts.nav')
         <div class="container-fluid">
             <div class="row">
-                @include('cms::layouts.main_menu')
+                @include('cms::layouts.sidebar')
                 <div class="content-area">
                     @yield('main-content')
                 </div>

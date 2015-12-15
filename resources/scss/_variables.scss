@@ -1,10 +1,4 @@
-$grey-darkest: #1F2021;
-$grey-darker: #3B3C3D;
-$grey-dark: #464748;
-$grey: #CECFD0;
-$grey-light: #D6D7D9;
-$grey-lighter: #F2F4F5;
-$grey-lightest: #F6F7F8;
+// BASE COLOURS
 
 $gray-darkest: #1F2021;
 $gray-darker: #3B3C3D;
@@ -14,27 +8,12 @@ $gray-light: #D6D7D9;
 $gray-lighter: #F2F4F5;
 $gray-lightest: #F6F7F8;
 
-$brand-primary: $grey-dark;
-$primary-color: #F6560A;
-$navbar-color: #2B2B2B;
+// MISC VARIABLES
 
 $global-border-radius: 3px;
-
-//bootstrap variable overrides
-
 $grid-gutter-width: 30px;
 $gutter-half: $grid-gutter-width / 2;
 $icon-font-path: '../components/bootstrap-sass/assets/fonts/bootstrap/';
 
-$navbar-height: 70px;
 $web-font-path: "http://fonts.googleapis.com/css?family=Roboto:500italic,600italic,700italic,500,600,700&subset=latin";
 $font-family-sans-serif: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-$input-border: $gray-light;
-
-$btn-default-color: $gray-dark;
-$btn-primary-color: #FFF;
-$btn-success-color: #FFF;
-$btn-info-color: #FFF;
-$btn-warning-color: #FFF;
-$btn-danger-color: #FFF;

@@ -4,13 +4,7 @@
     <!-- username field -->
     <div class="login-dialog">
         <div class="dialog-header">
-            <div class="navbar-logo-image">
-                <img src="/vendor/bootleg/cms/img/cms.png" />
-            </div>
-            <div class="navbar-title">
-                <span>Native Laravel Open-Source</span>
-                <span>Content Management System</span>
-            </div>
+            @include(view()->exists($cms_package.'::partials.logo') ? $cms_package.'::partials.logo' : 'cms::partials.logo')
         </div>
         {!! Form::open(array('class'=>'form-signin')) !!}
             <div class="form-group">

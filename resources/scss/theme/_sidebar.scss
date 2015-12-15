@@ -1,0 +1,29 @@
+.sidebar {
+  background-color: $sidebar-bg;
+  .sidebar-menu-items {
+    a {
+      background-color: $sidebar-link-default-bg;
+      color: $sidebar-link-default-text;
+      i {
+        color: $sidebar-link-default-icon;
+      }
+      &.active, &.active:hover {
+        border-left-width: $sidebar-selected-border-width;
+        border-color: $primary-color;
+        border-style: solid;
+        background-color: $sidebar-link-selected-bg;
+        color: $sidebar-link-selected-text;
+        i {
+          color: $sidebar-link-selected-icon;
+        }
+      }
+      &:hover {
+        color: $sidebar-link-hover-text;
+        background-color: $sidebar-link-hover-bg;
+        i {
+          color: $sidebar-link-hover-icon;
+        }
+      }
+    }
+  }
+}

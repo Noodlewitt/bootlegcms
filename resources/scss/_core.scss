@@ -4,7 +4,7 @@
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 html, body {
-  background-color: $grey-lightest;
+  background-color: $gray-lightest;
   height: 100%;
   font-size: 100%;
 }
@@ -20,12 +20,9 @@ body {
   .content-area > div {
     padding: 25px 40px;
     .page-header {
-      border-color: $grey-light;
+      border-color: $gray-light;
       h1 {
         font-weight: 700;
-      }
-      i {
-        color: $primary-color;
       }
     }
   }
@@ -76,15 +73,15 @@ body {
   }
 
   $colours: (
-          "grey-base"     : $gray-base,
-          "grey-darkest"  : $grey-darkest,
-          "grey-darker"   : $grey-darker,
-          "grey-dark"     : $grey-dark,
-          "grey"          : $grey,
-          "grey-light"    : $grey-light,
-          "grey-lighter"  : $grey-lighter,
-          "grey-lightest" : $grey-lightest,
-          "primary-color" : $primary-color,
+          "gray-base"     : $gray-base,
+          "gray-darkest"  : $gray-darkest,
+          "gray-darker"   : $gray-darker,
+          "gray-dark"     : $gray-dark,
+          "gray"          : $gray,
+          "gray-light"    : $gray-light,
+          "gray-lighter"  : $gray-lighter,
+          "gray-lightest" : $gray-lightest,
+          //"primary-color" : $primary-color,
           "brand-primary" : $brand-primary,
           "brand-success" : $brand-success,
           "brand-info"    : $brand-info,
@@ -96,5 +93,27 @@ body {
     .#{$colour} {
       background-color: #{$hex};
     }
+  }
+}
+
+.cms-logo {
+  img {
+    max-height:$navbar-height - 20px;
+    margin: 10px auto;
+  }
+  .cms-logo-title {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 20px;
+    div {
+      color: $gray-light;
+      line-height: 1;
+    }
+  }
+}
+
+.btn-cms-primary, .btn-cms-primary-inverse {
+  i + span, span + i {
+    padding-left: 5px;
   }
 }

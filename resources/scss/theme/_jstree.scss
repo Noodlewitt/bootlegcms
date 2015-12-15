@@ -1,0 +1,7 @@
+.jstree-node[aria-selected="true"] > .jstree-wholerow {
+  background: $primary-color !important;
+}
+
+.jstree-node[aria-selected="true"] {
+  background-color: $primary-color;
+}

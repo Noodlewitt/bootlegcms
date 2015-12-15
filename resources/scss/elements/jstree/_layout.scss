@@ -30,15 +30,11 @@
 
 
 .jstree-node.jstree-open {
-  background: $grey-lightest !important;
+  background: $gray-lightest !important;
   > ul > li .jstree-wholerow {
-    background: darken($grey-lighter, 4%);
+    background: darken($gray-lighter, 4%);
     &.jstree-wholerow-hovered {
       background: $gray-dark;
     }
   }
-}
-
-.jstree-node[aria-selected="true"] {
-  background-color: $primary-color;
 }

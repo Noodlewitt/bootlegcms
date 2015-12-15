@@ -12,11 +12,28 @@
     overflow-x: hidden;
     overflow-y: auto;
     /* Scrollable contents if viewport is shorter than content. */
-    background-color: $grey-dark;
+    background-color: $gray-dark;
     //border-right: 1px solid #eee;
   }
+  .sidebar-menu-items {
+    overflow-y:auto;
+    a {
+      display:block;
+      padding: 10px 25px;
+      i {
+        padding-right: 5px;
+      }
+      &.active, &.active:hover {
+        padding-left:20px;
+      }
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+  /*
   .sidebar-header {
-    background-color:$grey-darker;
+    background-color:$gray-darker;
     color:#fff;
     padding:0px 10px;
     margin:0;
@@ -41,33 +58,8 @@
       vertical-align:middle;
     }
   }
-  .sidebar-menu-items {
-    overflow-y:auto;
-    a {
-      display:block;
-      padding: 10px 25px;
-      color: $grey-lighter;
-      i {
-        padding-right: 5px;
-      }
-      &.active, &.active:hover {
-        background-color: $grey-darkest;
-        padding-left:20px;
-        border-left: 5px solid $primary-color;
-        i {
-          color: $primary-color;
-        }
-      }
-      &:hover {
-        color:#fff;
-        text-decoration: none;
-        background-color: $grey-darker;
-        i {
-          color: $primary-color;
-        }
-      }
-    }
-  }
+  */
+  /*
   .sidebar-menu-additional {
     position: absolute;
     width:100%;
@@ -78,5 +70,5 @@
     h2 {
       font-size: 1.5em;
     }
-  }
+  }*/
 }

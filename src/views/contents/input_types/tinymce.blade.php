@@ -44,6 +44,7 @@ $field_title = isset($params->field_title) ? $params->field_title : $setting[0]-
             });
             tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
             tinymce.init({
+                skin_url: '/vendor/bootleg/cms/components/tinymce-skin',
                 height:{{$params->height}},
                 selector:'#{{$niceName.$field->id}}',
                 plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
