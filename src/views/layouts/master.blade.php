@@ -18,7 +18,7 @@
             <title>{{ config('bootlegcms.cms_title', 'BootlegCMS') }}: {{@$application->name}}</title>
         @show
 
-        <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/script.min.js"></script>
+        <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/scripts.min.js"></script>
         <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/cms.min.js"></script>
 
         @if($application->getSetting('theme_file'))

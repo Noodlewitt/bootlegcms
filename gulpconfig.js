@@ -68,8 +68,8 @@ module.exports = {
     //list all bower components, separated into arrays of packages to be concatenated
     components: {
         scripts: [ //outputs: scripts.min.js
-            'resources/components/jquery/jquery.js',
-            'resourcesresources/components/jquery-ui/ui/jquery-ui.js',
+            'resources/components/jquery/dist/jquery.js',
+            'resources/components/jquery-ui/ui/jquery-ui.js',
             'resources/components/bootstrap-sass/assets/javascripts/bootstrap.js',
             'resources/components/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
             'resources/components/bootstrap-sass/assets/javascripts/bootstrap/modal.js',
