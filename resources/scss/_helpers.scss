@@ -45,3 +45,31 @@ $colours: (
     vertical-align:middle;
   }
 }
+
+
+.blurred {
+  > .navbar, > .container-fluid{
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -ms-filter: blur(3px);
+    -o-filter: blur(3px);
+    filter: blur(3px);
+  }
+}
+
+.greyed-out {
+  > .navbar, > .container-fluid {
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(100%);
+  }
+  &.blurred {
+    > .navbar, > .container-fluid {
+      -webkit-filter: blur(3px) grayscale(100%);
+      -moz-filter: blur(3px) grayscale(100%);
+      -o-filter: blur(3px) grayscale(100%);
+      filter: blur(3px) grayscale(100%);
+    }
+  }
+}
