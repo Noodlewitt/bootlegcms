@@ -1,0 +1,55 @@
+$cms-primary-color: #FFE52C;
+$cms-secondary-color: #062E3A;
+
+
+$btn-default-color: #707070;
+
+//pharmacy specific
+$sidebar-bg: $cms-primary-color;
+$sidebar-selected-border-width: 0px;
+
+$sidebar-link-default-bg: $cms-primary-color;
+$sidebar-link-default-text: $cms-secondary-color;
+$sidebar-link-default-icon: $cms-secondary-color;
+
+$sidebar-link-selected-bg: #707070;
+$sidebar-link-selected-text: $cms-primary-color;
+$sidebar-link-selected-icon: $cms-primary-color;
+
+$sidebar-link-hover-bg: #7D7D7D;
+$sidebar-link-hover-text: #FFFFFF;
+$sidebar-link-hover-icon: #FFFFFF;
+
+$sidebar-sublink-default-bg: #062E3A;
+$sidebar-sublink-default-text: #FFFFFF;
+$sidebar-sublink-default-icon: #FFFFFF;
+
+$sidebar-sublink-selected-bg: #7D7D7D;
+$sidebar-sublink-selected-text: #FFFFFF;
+$sidebar-sublink-selected-icon: #FFFFFF;
+
+$sidebar-sublink-hover-bg: #7D7D7D;
+$sidebar-sublink-hover-text: #FFFFFF;
+$sidebar-sublink-hover-icon: #FFFFFF;
+
+
+$navbar-default-color:             $cms-secondary-color;
+$navbar-default-bg:                #FFF;
+$navbar-default-border:            transparent;
+
+$navbar-link-default-bg: #FFF;
+$navbar-link-default-text: $cms-secondary-color;
+$navbar-link-default-icon: $cms-primary-color;
+
+$navbar-link-selected-bg: $cms-secondary-color;
+$navbar-link-selected-text: $cms-primary-color;
+$navbar-link-selected-icon: $cms-primary-color;
+
+$navbar-link-hover-bg: $gray-lighter;
+$navbar-link-hover-text: $cms-secondary-color;
+$navbar-link-hover-icon: $cms-primary-color;
+
+$navbar-user-bg: $cms-secondary-color;
+$navbar-user-text: #fff;
+$navbar-user-lougout-text: $cms-primary-color;
+$navbar-user-lougout-icon: $cms-primary-color;

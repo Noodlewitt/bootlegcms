@@ -1,0 +1,83 @@
+.navbar.navbar-default {
+  background-color: $navbar-default-bg;
+  .navbar-header {
+    .navbar-sidebar-collapse {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .cms-logo{
+      height: $navbar-height;
+      &.no-padding {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+  .nav.navbar-nav {
+    //display: table-row;
+    font-weight: 600;
+    > li {
+      //display: table-cell;
+      vertical-align: middle;
+      height: $navbar-height;
+      padding: 0 20px;
+      > a {
+        color: $navbar-link-default-text;
+        background-color: $navbar-link-default-bg;
+        line-height: $navbar-height;
+        display: block;
+        padding-top:0;
+        padding-bottom:0;
+        i {
+          color: $navbar-link-default-icon;
+          padding-left: 5px;
+        }
+        &:hover {
+          text-decoration: none;
+          color: $navbar-link-hover-text;
+          background-color: $navbar-link-hover-bg;
+          i {
+            color: $navbar-link-hover-icon;
+            padding-left: 5px;
+          }
+        }
+        &.open {
+          a, a:hover {
+            color: $navbar-link-selected-text;
+            background-color: $navbar-link-selected-bg;
+            i {
+              color: $navbar-link-selected-icon;
+            }
+          }
+        }
+      }
+      &.navbar-user {
+        background-color: $navbar-user-bg;
+        color: $navbar-user-text;
+        .logout-button {
+          background-color: $navbar-user-bg;
+          color: $navbar-user-lougout-text;
+          i {
+            color: $navbar-user-lougout-icon;
+          }
+        }
+        .navbar-user-avatar {
+          display:inline-block;
+          vertical-align:middle;
+          > img {
+            max-height:50px;
+            margin:10px auto;
+            border-radius:50%;
+          }
+        }
+        .navbar-user-summary {
+          padding:0 20px 0 10px;
+        }
+        .navbar-user-avatar, .navbar-user-summary, .logout-button {
+          display:inline-block;
+          vertical-align:middle;
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 @if($application->getSetting('logo_image'))
     <div class="cms-logo">
         <img src="{{ $application->getSetting('logo_image') }}"/>
+        <span class="force-vertical-center"></span>
     </div>
 @else
     <div class="cms-logo">

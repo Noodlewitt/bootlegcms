@@ -56,50 +56,9 @@ body {
   margin-top: 0;
 }
 
-#colour_swatch {
-  display:none;
-  position:fixed;
-  bottom:0;
-  right:0;
-  width:220px;
-  background-color: rgba(0,0,0,0.5);
-  padding: 10px;
-  font-size: 0;
-  border-radius:5px;
-  > div {
-    display:inline-block;
-    height:50px;
-    width:50px;
-  }
-
-  $colours: (
-          "gray-base"     : $gray-base,
-          "gray-darkest"  : $gray-darkest,
-          "gray-darker"   : $gray-darker,
-          "gray-dark"     : $gray-dark,
-          "gray"          : $gray,
-          "gray-light"    : $gray-light,
-          "gray-lighter"  : $gray-lighter,
-          "gray-lightest" : $gray-lightest,
-          //"primary-color" : $primary-color,
-          "brand-primary" : $brand-primary,
-          "brand-success" : $brand-success,
-          "brand-info"    : $brand-info,
-          "brand-warning" : $brand-warning,
-          "brand-danger"  : $brand-danger,
-  );
-
-  @each $colour, $hex in $colours {
-    .#{$colour} {
-      background-color: #{$hex};
-    }
-  }
-}
-
 .cms-logo {
   img {
     max-height:$navbar-height - 20px;
-    margin: 10px auto;
   }
   .cms-logo-title {
     display: inline-block;
@@ -112,8 +71,30 @@ body {
   }
 }
 
-.btn-cms-primary, .btn-cms-primary-inverse {
-  i + span, span + i {
-    padding-left: 5px;
+.page-header {
+  margin-top: 0;
+  i {
+    color: $primary-color;
+  }
+
+}
+
+.nav-tabs {
+  margin-bottom: $gutter-half;
+  li {
+    &.active a {
+      background-color: $brand-primary !important;
+      color: #fff !important;
+    }
+  }
+}
+
+.blurred {
+  > .navbar, > .container-fluid{
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -ms-filter: blur(3px);
+    -o-filter: blur(3px);
+    filter: blur(3px);
   }
 }

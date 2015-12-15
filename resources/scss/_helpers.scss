@@ -1,15 +1,47 @@
-.btn-wide {
-  width:100%;
-}
-
-.btn,
-.sidebar-menu-items a,
-.nav-tabs a {
-  i, span, & {
-    transition: border-color 200ms linear, background-color 200ms linear;
+#colour_swatch {
+  display:none;
+  position:fixed;
+  bottom:0;
+  right:0;
+  width:220px;
+  background-color: rgba(0,0,0,0.5);
+  padding: 10px;
+  font-size: 0;
+  border-radius:5px;
+  > div {
+    display:inline-block;
+    height:50px;
+    width:50px;
   }
 }
 
-.btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus{
-  outline:0;
+$colours: (
+        "gray-base"     : $gray-base,
+        "gray-darkest"  : $gray-darkest,
+        "gray-darker"   : $gray-darker,
+        "gray-dark"     : $gray-dark,
+        "gray"          : $gray,
+        "gray-light"    : $gray-light,
+        "gray-lighter"  : $gray-lighter,
+        "gray-lightest" : $gray-lightest,
+  //"primary-color" : $primary-color,
+        "brand-primary" : $brand-primary,
+        "brand-success" : $brand-success,
+        "brand-info"    : $brand-info,
+        "brand-warning" : $brand-warning,
+        "brand-danger"  : $brand-danger,
+);
+
+@each $colour, $hex in $colours {
+  .#{$colour} {
+    background-color: #{$hex};
+  }
+}
+
+.force-vertical-center {
+  height:100%;
+  &, & + *{
+    display:inline-block;
+    vertical-align:middle;
+  }
 }

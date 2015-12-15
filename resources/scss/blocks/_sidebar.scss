@@ -1,36 +1,51 @@
-/* Hide for mobile, show later */
 .sidebar {
   display: none;
+  background-color: $sidebar-bg;
+  position: fixed;
+  top: $navbar-height;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 0px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
   @media (min-width: 768px) {
     display: block;
-    position: fixed;
-    top: $navbar-height;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    padding: 0px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    /* Scrollable contents if viewport is shorter than content. */
-    background-color: $gray-dark;
-    //border-right: 1px solid #eee;
   }
   .sidebar-menu-items {
     overflow-y:auto;
     a {
       display:block;
       padding: 10px 25px;
+      background-color: $sidebar-link-default-bg;
+      color: $sidebar-link-default-text;
       i {
         padding-right: 5px;
+        color: $sidebar-link-default-icon;
       }
       &.active, &.active:hover {
+        border-left-width: $sidebar-selected-border-width;
+        border-color: $primary-color;
+        border-left-style: solid;
+        background-color: $sidebar-link-selected-bg;
+        color: $sidebar-link-selected-text;
         padding-left:20px;
+        i {
+          color: $sidebar-link-selected-icon;
+        }
       }
       &:hover {
+        color: $sidebar-link-hover-text;
+        background-color: $sidebar-link-hover-bg;
         text-decoration: none;
+        i {
+          color: $sidebar-link-hover-icon;
+        }
       }
     }
   }
+}
   /*
   .sidebar-header {
     background-color:$gray-darker;
@@ -71,4 +86,3 @@
       font-size: 1.5em;
     }
   }*/
-}
