@@ -49,11 +49,11 @@ $colours: (
 
 .blurred {
   > .navbar, > .container-fluid{
-    -webkit-filter: blur(3px);
-    -moz-filter: blur(3px);
-    -ms-filter: blur(3px);
-    -o-filter: blur(3px);
-    filter: blur(3px);
+    -webkit-filter: blur(1.5px);
+    -moz-filter: blur(1.5px);
+    -ms-filter: blur(1.5px);
+    -o-filter: blur(1.5px);
+    filter: blur(1.5px);
   }
 }
 
@@ -66,10 +66,10 @@ $colours: (
   }
   &.blurred {
     > .navbar, > .container-fluid {
-      -webkit-filter: blur(3px) grayscale(100%);
-      -moz-filter: blur(3px) grayscale(100%);
-      -o-filter: blur(3px) grayscale(100%);
-      filter: blur(3px) grayscale(100%);
+      -webkit-filter: blur(1.5px) grayscale(100%);
+      -moz-filter: blur(1.5px) grayscale(100%);
+      -o-filter: blur(1.5px) grayscale(100%);
+      filter: blur(1.5px) grayscale(100%);
     }
   }
 }

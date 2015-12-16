@@ -19,7 +19,7 @@
     <div class="sidebar-menu-items">
         <a href="{{ action('\Bootleg\Cms\UsersController@anyDashboard') }}" class="{{ Request::is(config('bootlegcms.cms_route') . 'users/dashboard*') ? 'active' : '' }}">
             <i class="menu-icon glyphicon glyphicon-home"></i>
-            <span class="mm-text">Dashboard</span>
+            <span class="mm-text">Home</span>
         </a>
         @if(Permission::getPermission('Bootleg\Cms\ContentsController@anyIndex','')->result)
             <a href="{{ action('\Bootleg\Cms\ContentsController@anyIndex') }}" class="{{ Request::is(config('bootlegcms.cms_route') . 'content*') ? 'active' : '' }}">
