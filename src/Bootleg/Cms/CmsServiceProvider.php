@@ -44,6 +44,9 @@ class CmsServiceProvider extends ServiceProvider
 
         if (Config::get('bootlegcms.cms_timezone')) Config::set('app.timezone', Config::get('bootlegcms.cms_timezone'));
 
+        $cms_package = \Application::getApplication()->cms_package;
+        if(!$cms_package) $cms_package = 'cms';
+
         Event::listen('auth.login', function ($user)
         {
             $user->loggedin_at = Carbon::now();
@@ -54,8 +57,17 @@ class CmsServiceProvider extends ServiceProvider
             if (Auth::user()) $this->loadUserPermissions();
         });
 
-        $cms_package = \Application::getApplication()->cms_package;
-        if(!$cms_package) $cms_package = 'cms';
+        //add in some standard dash items..
+        /*
+        Event::listen('dashboard.items', function() use($cms_package) {
+            $user = User::find(\Auth::user()->id);
+            return view($cms_package.'::users.dash_item', compact('user'))->render();
+        });
+
+        Event::listen('dashboard.items', function() use ($cms_package) {
+            return view($cms_package.'::application.dash_item', ['application'=>\Application::getApplication()])->render();
+        });
+        */
 
         View::composer($cms_package.'::*', function($view) use ($cms_package)
         {
