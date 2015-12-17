@@ -1,5 +1,4 @@
 @import "variables";
-@import "overrides";
 @import "mixins";
 @import "bootstrap/main";
 @import '../components/fontawesome/scss/font-awesome';
@@ -8,6 +7,7 @@
 @import '../components/soundasleep-bootstrap-datetimepicker-sass/src/sass/bootstrap-datetimepicker';
 @import '../components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css';
 @import '../components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css';
+@import '../components/intro.js/introjs.css';
 
 //base layout
 @import "core";
@@ -21,6 +21,7 @@
 //repeatable elements frequenting on individual pages
 @import "elements/buttons";
 @import "elements/form";
+@import "elements/introjs";
 @import "elements/jstree";
 @import "elements/navtabs";
 @import "elements/table";

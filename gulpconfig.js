@@ -93,6 +93,7 @@ module.exports = {
             'resources/components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
             'resources/components/bootstrap-sass-datepicker/js/bootstrap-sass-datepicker.js',
             'resources/components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
+            'resources/components/intro.js/intro.js',
 
         ]
     }

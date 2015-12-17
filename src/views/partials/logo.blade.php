@@ -4,7 +4,7 @@
         <span class="force-vertical-center"></span>
     </div>
 @else
-    <div class="cms-logo">
+    <div class="cms-logo no-padding">
         <img src="/vendor/bootleg/cms/img/cms.png"/>
 
         <div class="cms-logo-title">

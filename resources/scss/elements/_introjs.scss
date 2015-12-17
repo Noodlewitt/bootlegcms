@@ -1,0 +1,31 @@
+.introjs-tooltip {
+  padding: 20px;
+}
+
+.introjs-button {
+  text-shadow: none;
+  font-size: 14px;
+  background: $cms-secondary-color;
+  border-color: darken($cms-secondary-color, 10%);
+  color: #fff;
+  &:focus, &:active {
+    background: $cms-primary-color;
+    border-color: darken($cms-primary-color, 10%);
+    color: $cms-secondary-color;
+  }
+  &:hover {
+    color:#fff;
+  }
+  //&.introjs-prevbutton, &.introjs-skipbutton  {
+  //}
+  //&.introjs-skipbutton {
+  //  opacity.0.75;
+  //}
+  &.introjs-disabled {
+    border: 1px solid #d4d4d4;
+    background-color: #ececec;
+    color: #7a7a7a;
+    cursor:not-allowed;
+    font-style: italic;
+  }
+}

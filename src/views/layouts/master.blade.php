@@ -64,6 +64,7 @@
             {!! $html_body_end_item !!}
         @endforeach
         @include('cms::partials.colour-swatch')
+        @include('cms::partials.annotations')
     </body>
 
 </html>

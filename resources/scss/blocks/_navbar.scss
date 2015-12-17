@@ -1,5 +1,8 @@
 .navbar.navbar-default {
   background-color: $navbar-default-bg;
+  .container-fluid {
+    padding: 0;
+  }
   .navbar-header {
     .navbar-sidebar-collapse {
       padding-left: 0;

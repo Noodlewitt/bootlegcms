@@ -23,6 +23,8 @@ body {
       border-color: $gray-light;
       h1 {
         font-weight: 700;
+        font-size: 24px;
+        margin: 0;
       }
     }
   }
@@ -57,13 +59,17 @@ body {
 }
 
 .cms-logo {
+  padding: 0 20px;
+  &.no-padding {
+    padding: 0;
+  }
   img {
-    max-height:$navbar-height - 20px;
+    max-height:$navbar-height;
   }
   .cms-logo-title {
     display: inline-block;
     vertical-align: middle;
-    padding: 0 20px;
+    padding: 0 10px;
     div {
       color: $gray-light;
       line-height: 1;

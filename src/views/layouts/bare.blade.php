@@ -15,7 +15,11 @@
             <title>{{ config('bootlegcms.cms_title', 'BootlegCMS') }}: {{@$application->name}}</title>
         @show
         <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/js/script.min.js"></script>
-        <link rel="stylesheet" href="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/css/application.min.css" />
+        @if($application->getSetting('theme_file'))
+            <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
+        @else
+            <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.min.css" />
+        @endif
         <?php
             $headerItems = Event::fire('html.master.header.end', array());
         ?>

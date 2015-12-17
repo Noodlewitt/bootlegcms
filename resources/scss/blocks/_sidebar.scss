@@ -21,7 +21,7 @@
       background-color: $sidebar-link-default-bg;
       color: $sidebar-link-default-text;
       i {
-        padding-right: $sidebar-selected-border-width;
+        padding-right: 5px;
         color: $sidebar-link-default-icon;
       }
       &.active, &.active:hover {
