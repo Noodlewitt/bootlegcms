@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         @section('main-head')
-            <title>{{ config('bootlegcms.cms_title', 'BootlegCMS') }}: {{@$application->name}}</title>
+            <title>{{ @$application->name ? $application->name : config('bootlegcms.cms_title', 'BootlegCMS') }}</title>
         @show
         <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/js/script.min.js"></script>
         @if($application->getSetting('theme_file'))

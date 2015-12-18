@@ -5,7 +5,7 @@
         showBullets: false,
         steps: [
             {
-                intro: "Hey there, welcome to the CMS! Click next to follow our guided tour of the CMS, or click skip if you know what you are doing.",
+                intro: "Hey there, welcome to Pharmacy4U! Click Next to start your guided tour, or click Skip to jump straight in!",
                 tooltipClass: "tooltip-wide"
             },
             {

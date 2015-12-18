@@ -6,14 +6,14 @@
         <div class="dialog-header">
             @include(view()->exists($cms_package.'::partials.logo') ? $cms_package.'::partials.logo' : 'cms::partials.logo')
         </div>
-        {!! Form::open(array('class'=>'form-signin')) !!}
+        {!! Form::open(['class'=>'form-signin']) !!}
             <div class="form-group">
                 {!! Form::label('email', 'Email') !!}
-                {!! Form::text('email',null, array('placeholder'=>'Email Address','class'=>'form-control')) !!}
+                {!! Form::text('email',null, ['placeholder'=>'Email Address','class'=>'form-control']) !!}
             </div>
             <div class="form-group">
                 {!! Form::label('password', 'Password') !!}
-                {!! Form::password('password', array('placeholder'=>'Password','class'=>'form-control')) !!}
+                {!! Form::password('password', ['placeholder'=>'Password','class'=>'form-control']) !!}
             </div>
 
             <button class="btn btn-lg btn-cms-primary btn-block"><span>Login</span> <i class="glyphicon glyphicon-log-in"></i></button>
