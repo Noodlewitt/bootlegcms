@@ -111,7 +111,6 @@ if(@$params->tooltip->text){
 
         $('body').on('click','.{{$niceName}}-container button.js-delete-multi', function(e){
             e.preventDefault();
-            alert('del');
             $panel = $(this).closest('.panel');
 
             $('input, textarea', $panel).val('').attr('name', $('input, textarea', $panel).attr('name')+'[deleted]');
