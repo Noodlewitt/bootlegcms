@@ -21,9 +21,9 @@ if(@$params->tooltip->text){
 }
 ?>
 <div class='form-group'>
-    {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
+    {!! Form::label("setting[".$setting->name."][".get_class($setting)."][".$setting->id."]", ucfirst($setting->name.":")) !!}
     <div class='text {{$niceName}}' >
-        {!!Form::select("setting[".$setting->name."][".$setting->id."]", $countries, $setting->value, $options)!!}
+        {!!Form::select("setting[".$setting->name."][".get_class($setting)."][".$setting->id."]", $countries, $setting->value, $options)!!}
     </div>
 </div>
 

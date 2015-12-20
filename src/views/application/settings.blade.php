@@ -10,7 +10,7 @@
             <div class="col-xs-12">
                 <ul class="nav nav-tabs">
                     @foreach($application_settings as $key=>$section)
-                        <li class='{{!@$i?"active":""}}'><a href="#tab-{{$key?$key:"Settings"}}" data-toggle="tab">{{$key?$key:"Settings"}}</a></li>
+                        <li class='{{@!$i?"active":""}}'><a href="#tab-{{$key?$key:"Settings"}}" data-toggle="tab">{{$key?$key:"Settings"}}</a></li>
                         <?php $i=1?>
                     @endforeach
                 </ul>
@@ -25,19 +25,20 @@
                                     {!! Form::label('name', 'Application Name:') !!}
                                     {!! Form::text('name', null, array('class'=>'form-control')) !!}
                                 </li>
+                                <li class="form-group">
+                                    {!! Form::label('domains', 'Application Domain(s):') !!}
+                                    {{-- We have to do this manually --}}
+                                    <select name='' class='form-control tag' multiple>
+                                        @foreach($application->url as $url)
+                                            <option value="{{$url->domain}}" selected>{{$url->domain}}</option>
+                                        @endforeach
+                                    </select>
+                                </li>
                                 <?php
                                     $j=true;
                                 ?>
                             @endif
-                            <li class="form-group">
-                                {!! Form::label('domains', 'Application Domain(s):') !!}
-                                {{-- We have to do this manually --}}
-                                <select name='' class='form-control tag' multiple>
-                                    @foreach($application->url as $url)
-                                        <option value="{{$url->domain}}" selected>{{$url->domain}}</option>
-                                    @endforeach
-                                </select>
-                            </li>
+
 
                             @if($section !== false)
                                 @foreach($section as $field)

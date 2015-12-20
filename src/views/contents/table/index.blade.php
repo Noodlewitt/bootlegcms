@@ -128,8 +128,19 @@ if(@$childrenSettings){
                                                 @endif
                                             @else
                                                 <strong>{{$setting->name}}</strong>
-                                                <div class='value {{$setting->field_type}}'>    
-                                                    {{@$setting->value}}
+                                                <div class='value {{$setting->field_type}}'>
+                                                    <?php
+                                                        if(!is_array($setting->value)){
+                                                            $t = substr($setting->value, 0, 200);
+                                                            if($t != $setting->value){
+                                                                $t = strip_tags($t) . '&hellip;';
+                                                            }
+                                                        }
+                                                        else{
+                                                            $t='arr';
+                                                        }
+                                                    ?>
+                                                    {{$t}}
                                                 </div>
                                             @endif
                                         </div>     
@@ -182,8 +193,6 @@ if(@$childrenSettings){
         {!!$children->appends(Input::get())->render()!!}
     @endif
     <script type="text/javascript">
-        var disableUpdate = true;
-        var disableCancel = true;
         $(function () {
             $('[data-toggle="popover"]').popover();
 
@@ -259,10 +268,9 @@ if(@$childrenSettings){
                     
                 });
             }
-
-            $('.form-wrap').off('click', '.js-content-update', function(e){});
-            $('.form-wrap').off('click', '.js-content-cancel', function(e){});
-
+            
+            $('body').off('click', '.js-content-update', function(e){});
+            $('body').off('click', '.js-content-cancel', function(e){});
             $('body').on('click', '.js-content-update', function(e){
                 e.preventDefault();
                 var $btn = $(this).button('loading');

@@ -2,7 +2,7 @@
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends \Baum\Node{ //Eloquent {status
-    protected $fillable = array('name', 'identifier', 'position', 'package', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug','edit_action','edit_view');
+    protected $fillable = array('name', 'identifier', 'position', 'package', 'parent_id', 'set_parent_id', 'user_id', 'deleted_at', 'template_id', 'view', 'application_id', 'status', 'slug','edit_action');
     
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth');
     
@@ -54,6 +54,9 @@ class Content extends \Baum\Node{ //Eloquent {status
 	
 	public function template()
 	{
+        if(!$this->template_id){
+            $this->template_id = 1;
+        }
 		return $this->belongsTo('Template', 'template_id');
 	}
 
@@ -66,6 +69,19 @@ class Content extends \Baum\Node{ //Eloquent {status
     public function default_fields()
     {
         return $this->belongsTo('Templatesetting', 'template_id');
+    }
+
+    public function scopeLang($q){
+        $res =  $q->get();
+        if(@$res->setting){
+            foreach($res->setting as $settingKey=>$setting){
+                foreach($setting->language as $settingLang=>$lang){
+                    dd($lang->value);
+                }
+            }       
+        }
+        
+        return $res;
     }
 
     public function permission()
@@ -330,8 +346,6 @@ class Content extends \Baum\Node{ //Eloquent {status
         }
         
     }
-    
-    
 
     
     /*
@@ -340,19 +354,31 @@ class Content extends \Baum\Node{ //Eloquent {status
     public function getSetting($getSetting){
         $settings = $this->setting->filter(function($model) use(&$getSetting){
             return $model->name === $getSetting;
-            
         });
+
         if($settings->count() == 0){
             return null;
         }
         if($settings->count() > 1){
+
             $return = array();
             foreach($settings as $setting){
-                $return[] = $setting->value;
+                if($setting->languages->count()){
+                    $return[] = $setting->languages->first()->value;
+                }
+                else{
+                    $return[] = $setting->value;   
+                }
             }
         }
         else{
-            $return = $settings->first()->value;
+            if(isset($settings->first()->languages->first()->value)){
+
+                $return = $settings->first()->languages->first()->value;
+            }
+            else{
+                $return = $settings->first()->value;
+            }
         }
         return($return);
     }
@@ -422,20 +448,31 @@ class Content extends \Baum\Node{ //Eloquent {status
         return($value);
     }
 
-    public function getNameAttribute($value){
+    public function getNameAttribute($name){
         //dd(Application::getApplication()->languages);
         //$this->language()->first();
-        
-        $this->language = $this->languages(\App::getLocale())->first();
-        
-        return @$this->language->name?$this->language->name:$value;
+        //dd($this->languages(\App::getLocale())->first()->id);
+
+        if(!isset($this->orig_name)){
+
+            if(config('bootlegcms.cms_languages')){
+
+                $this->language = $this->languages(\App::getLocale())->first();
+            }
+        }
+        $this->orig_name = $name;
+        return @$this->language->name?$this->language->name:$name;
     }
 
-    public function getSlugAttribute($value){
+    public function getSlugAttribute($slug){
         //dd(Application::getApplication()->languages);
-        
-        $this->language = $this->languages(\App::getLocale())->first();
-        
-        return @$this->language->slug?$this->language->slug:$value;
+
+        if(!isset($this->orig_slug)){
+            if(config('bootlegcms.cms_languages')){
+                $this->language = $this->languages(\App::getLocale())->first();
+            }
+        }
+        $this->orig_slug = $slug;
+        return @$this->language->slug?$this->language->slug:$slug;
     }
 }

@@ -102,7 +102,7 @@ body {
     left: 0;
     right: 0;
     background: rgba(0,0,0,0.5);
-    z-index: 5;
+    z-index: 6000;
     display:none;
 }
 
@@ -215,9 +215,10 @@ form.main-form{
         & > a.align-right{
             float:right;
             clear:none;
+            padding-right:60px;
         }
         & > a.main{
-            clear:none;   
+            clear:none;
         }
     } 
 } 
@@ -231,7 +232,8 @@ form.main-form{
 
 //for use with popover dropdowns.
 .select2-container{
-    z-index: 5000; 
+    z-index: 5000;
+    width:100%; //for use with language splits
 }
 
 .child{

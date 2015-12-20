@@ -62,7 +62,6 @@ class UsersController extends CMSController
             $user->last_loggedin_at = $user->loggedin_at;
             $user->loggedin_at = date("Y-m-d H:i:s");
             $user->save();
-
             \Session::flash('success', 'You are now logged in!');
             return redirect()->intended(action('\Bootleg\Cms\UsersController@anyDashboard'));
         }
@@ -85,6 +84,7 @@ class UsersController extends CMSController
     
     
     public function anyDashboard(){
+
         return $this->render('users.dashboard');
     }
     

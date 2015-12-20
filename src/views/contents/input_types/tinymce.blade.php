@@ -11,15 +11,15 @@ $params = Contentsetting::parseParams($setting);
 $niceName = preg_replace('/\s+/', '', $setting->name);
 ?>
 <div class='form-group'>
-    {!! Form::label("setting[".$setting->orig_name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
+    {!! Form::label("setting[".$setting->name."][".get_class($setting)."][".$setting->id."]", ucfirst($setting->name.":")) !!}
     <div id="upload_target" src="/random"></div>
-    {!! Form::textarea("setting[".$setting->orig_name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'tinymce '.$niceName.$setting->id, 'id'=>$niceName.$setting->id)) !!}
+    {!! Form::textarea("setting[".$setting->name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'tinymce '.$niceName.$setting->id, 'id'=>$niceName.$setting->id.App::getLocale())) !!}
 </div>
 <script>
     var inline_image = "";
     $(function() {
          //purge any existing instances of this.
-        tinymce.remove("#{{$niceName.$setting->id}}");
+        tinymce.remove("#{{$niceName.$setting->id.App::getLocale()}}");
 
         tinymce.PluginManager.add('uploadImage', function(editor, url) {
             // Add a button that opens a window
@@ -52,7 +52,7 @@ $niceName = preg_replace('/\s+/', '', $setting->name);
         tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
         tinymce.init({
             height:{{$params->height}},
-            selector:'#{{$niceName.$setting->id}}',
+            selector:'#{{$niceName.$setting->id.App::getLocale()}}',
             plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
             toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload",
             relative_urls: false,

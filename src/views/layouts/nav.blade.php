@@ -7,12 +7,21 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">
+
+      <a class="navbar-brand" href="/">
+          @if($application->getSetting('cms logo'))
+              {{-- TODO: clean this up --}}
+              <img style="height: 50px;position: relative;top: -15px; margin-right: -15px;"src="{{$application->getSetting('site logo')}}" />
+          @else
             BootlegCMS
-            @if(config('bootlegcms.cms_debug'))
-                <span class='text-danger'>DEBUG</span>
-            @endif
-        </a>
+          @endif
+          @if(config('bootlegcms.cms_debug'))
+              <span class='text-danger'>DEBUG</span>
+          @endif
+      </a>
+
+
+
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">

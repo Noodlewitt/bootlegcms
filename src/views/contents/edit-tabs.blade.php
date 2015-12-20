@@ -57,23 +57,27 @@ if(!isset($settings['Content']) || !$settings['Content']){
                             </label>
                         </div>
                     </li>
-
-                    <li class="form-group">
-                        {!! Form::label('template_id', 'Template:') !!}
+                    @if($content_mode == 'contents')
                         <?php
                         $tpl = $content->template->getSiblingsAndSelf();
                         foreach($tpl as $tmplt){
                             $templates[$tmplt->id] = $tmplt->name;
                         }
                         ?>
-                        {!! Form::select('template_id', $templates, $content->template_id, array('class'=>'form-control js-content-template')) !!}
-                    </li>
+                        @if(count($templates) > 1)
+                        <li class="form-group">
+                            {!! Form::label('template_id', 'Template:') !!}
+                            {!! Form::select('template_id', $templates, $content->template_id, array('class'=>'form-control js-content-template')) !!}
+                        </li>
+                        @endif
+                    @endif
 
                 @endif
 
                 @if($section !== false)
                     @foreach($section as $field)
                     {{-- This is where the custom input types are rendered in. --}}
+                        @if(!@$field->parent_id)
                         <li class="form-group">
 
                             @if(strpos($field->field_type, '::')!== false)
@@ -83,6 +87,7 @@ if(!isset($settings['Content']) || !$settings['Content']){
                             @endif
                             
                         </li>
+                        @endif
                     @endforeach
                 @endif
             </ul>

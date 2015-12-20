@@ -24,13 +24,24 @@ class Applicationsetting extends Eloquent
     }
 
     public function getValueAttribute($value){
-        $this->language = $this->languages(\App::getLocale())->first();
+        //if we cant find a value we want a template value.
+        return $value;
+        if(!isset($this->orig_value)){
+            if(config('bootlegcms.cms_languages')){
+                $this->language = $this->languages(\App::getLocale())->first();
+            }        
+        }
         $this->orig_value = $value;
         return @$this->language->value?$this->language->value:$value;
     }
 
     public function getNameAttribute($name){
-        $this->language = $this->languages(\App::getLocale())->first();
+        return $name;
+        if(!isset($this->orig_name)){
+            if(config('bootlegcms.cms_languages')){
+                $this->language = $this->languages(\App::getLocale())->first();
+            }
+        }
         $this->orig_name = $name;
         return @$this->language->name?$this->language->name:$name;
     }

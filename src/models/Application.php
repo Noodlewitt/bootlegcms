@@ -56,22 +56,37 @@ class Application extends Baum\Node{
         /*
      * returns a single setting given the name;
      */
+    /*
+     * returns a single setting given the name;
+     */
     public function getSetting($getSetting){
         $settings = $this->setting->filter(function($model) use(&$getSetting){
             return $model->name === $getSetting;
-            
         });
+
         if($settings->count() == 0){
             return null;
         }
         if($settings->count() > 1){
+
             $return = array();
             foreach($settings as $setting){
-                $return[] = $setting->value;
+                if($setting->languages->count()){
+                    $return[] = $setting->languages->first()->value;
+                }
+                else{
+                    $return[] = $setting->value;   
+                }
             }
         }
         else{
-            $return = $settings->first()->value;
+            if(isset($settings->first()->languages->first()->value)){
+
+                $return = $settings->first()->languages->first()->value;
+            }
+            else{
+                $return = $settings->first()->value;
+            }
         }
         return($return);
     }

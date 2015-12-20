@@ -92,13 +92,13 @@ class ContentwrapperController extends CMSController
         if ($validation->passes()) {
             Event::fire('content.create', array($this->content));
             Event::fire('content.update', array($this->content));
-            $this->content = $this->content->superSave($input);
-            $this->content = ContentwrapperController::saveSettings($this->content, $input);
+            $content = $this->content->superSave($input);
+            $content = ContentwrapperController::saveSettings($content, $input);
             Event::fire('content.created', array($this->content));
             Event::fire('content.updated', array($this->content));
           //  dd($tree);
 
-            return \Redirect::action(@$this->content->edit_action?$this->content->edit_action:'\Bootleg\Cms\ContentsController@anyEdit', $this->content->id);
+            return \Redirect::action(@$content->edit_action?$content->edit_action:'\Bootleg\Cms\ContentsController@anyEdit', $content->id);
 
         }
 
@@ -391,107 +391,184 @@ class ContentwrapperController extends CMSController
     public function saveSettings($content, $input){
         //TODO: take another look at a better way of doing this vv ..also VALIDATION!
         //add any settings:
-        
+        //dd($input);
         if (isset($input['setting'])) {
             foreach ($input['setting'] as $name => $settingGroup) {
                 foreach ($settingGroup as $type => $setGrp) {
-                    foreach ($setGrp as $key => $setting) {
 
-                        if(is_array($setting)){
-                            //we have an array of stuff in this field - maybe for a tag field or something.
-                            $setting = implode(',', $setting);
-                        }
+                    //if we are on a multi field we need to treat this a little differently..
+                    $multimode = (isset($settingGroup['_multi'])?true:false);
 
-                        if ($this->content_mode == 'template') {
-                            $contentSetting = \Templatesetting::withTrashed()
-                                ->where('name', '=', $name)
-                                ->where('template_id', '=', $content->id)
-                                ->where('id', '=', $key)->first();
-                        } else {
-                            if ($type != 'Templatesetting') {
-                                //dd($name . $content->id . $key);
-                                $contentSetting = \Contentsetting::withTrashed()
-                                    ->where('name', '=', $name)
-                                    ->where('content_id', '=', $content->id)
-                                    ->where('id', '=', $key)->first();
+                    if($type != '_multi'){
 
+                        foreach ($setGrp as $key => $setting) {
+                            if(!$multimode && is_array($setting)){
+                                //we have an array of stuff in this field - maybe for a tag field or something.
+                                $setting = implode(',', $setting);
                             }
-                        }
+                            if(is_array($setting)){
+                                //we have a multifield.. we need to deal with this carefully:
 
+                                foreach($setting as $template_id=>$template_set){
 
-                        //if it's not found (even in trashed) then we need to make a new field.
-                        //if it's template, we need to create the contentsetting too it too since
-                        //it doesn't exist!
-                        if (($type == 'Templatesetting' || is_null($contentSetting)) && $this->content_mode != 'template') {
-                            //TODO: Do we want protection in there so there has to be a
-                            //template setting in her for this?
+                                    foreach($template_set as $index=>$set){
+                                        if(isset($set['deleted'])){
+                                            \Contentsetting::where('parent_id',$key)->where('index',$index)->delete();
+                                        }
+                                        else{
+                                            if($type == "Contentsetting"){
+                                                //update existing
+                                                $contentSetting = \Contentsetting::where('parent_id',$key)->where('index',$index)->first();
+                                                if($contentSetting->value != $set){
+                                                    $contentSetting->value=$set;
+                                                    $contentSetting->save();
+                                                }
+                                            }
+                                            else{
+                                                //we need to create this guy.
+                                                $template = \Templatesetting::find($template_id);
+                                                //we need to find the right parent id based off that ^^
+                                                $templateParent = \Templatesetting::find($template->parent_id); //this is the multi field as it exists on the template..
+                                                //we can now try and find the parent of this conten item based on that.
 
-                            //if we can't find the field, we need to create it from the default:
+                                                $parent = \Contentsetting::where('name',$templateParent->name)->where('content_id',$content->id)->first();
 
-                            $defaultContentSetting = \Templatesetting::find($key);
-
-                            if (!$defaultContentSetting) {
-                                $defaultContentSetting = \Templatesetting::where('name', '=', $name)
-                                                        ->where('template_id', '=', $content->template_id)
-                                                        ->first();
+                                                $contentSetting = new \Contentsetting();
+                                                $contentSetting->parent_id = $parent->id;//TODO: this should be the key of the newly created multi field. NOT $key;
+                                                $contentSetting->index = $index;
+                                                $contentSetting->value = $set;
+                                                $contentSetting->templatesetting_id = $template->id;
+                                                $contentSetting->field_type = $template->field_type;
+                                                $contentSetting->field_parameters =  $template->field_parameters;
+                                                $contentSetting->section =  $template->section?$template->section:"Content";
+                                                $contentSetting->content_id = $content->id;
+                                                $contentSetting->name = $template->name;
+                                                $contentSetting->save();
+                                            }
+                                        }
+                                    }
+                                }
                             }
-
-                            $contentSetting = new \Contentsetting();
-                            $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
-                            $contentSetting->value = $setting;
-                            $contentSetting->content_id = $content->id;
-                            $contentSetting->field_parameters = @$defaultContentSetting->field_parameters;
-                            $contentSetting->field_type = @$defaultContentSetting->field_type;
-                            $contentSetting->section = @$defaultContentSetting->section;
-                        } else {
-                            //otherwise this field exists.. we can overwrite it's settings.
-                            //
-                            $contentSetting->name = $name;
-                            $contentSetting->value = $setting;
-                            $contentSetting->content_id = $content->id;
-                            $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
-
-                        }
-                        //dd($contentSetting->name, $contentSetting->value, $contentSetting->content_id);
-                        //if we are in a language, we need to save the language version not the item itself..
-                        if (\App::getLocale() != $this->application->default_locale) {
-                            $contentSettingLanguage = $contentSetting->languages(\App::getLocale())->first();
-
-                            if (!$contentSettingLanguage) {
+                            else{
+                                //this isn't a multifield.. go and add it as normal
                                 if ($this->content_mode == 'template') {
-                                    $contentSettingLanguage = new \TemplatesettingLanguage();
-
-                                    $contentSettingLanguage->template_setting_id = $contentSetting->id;
-                                    $contentSettingLanguage->template_id = $content->id;
+                                    $contentSetting = \Templatesetting::withTrashed()
+                                        ->where('name', '=', $name)
+                                        ->where('template_id', '=', $content->id)
+                                        ->where('id', '=', $key)->first();
                                 } else {
-                                    $contentSettingLanguage = new \ContentsettingLanguage();
-                                    $contentSettingLanguage->content_setting_id = $contentSetting->id;
-                                    $contentSettingLanguage->content_id = $content->id;
+                                    if ($type != 'Templatesetting') {
+                                        //dd($name . $content->id . $key);
+                                        $contentSetting = \Contentsetting::withTrashed()
+                                            ->where('name', '=', $name)
+                                            ->where('content_id', '=', $content->id)
+                                            ->where('id', '=', $key)->first();
+                                    }
+                                }
+
+
+                                //if it's not found (even in trashed) then we need to make a new field.
+                                //if it's template, we need to create the contentsetting too it too since
+                                //it doesn't exist!
+                                if (($type == 'Templatesetting' || is_null($contentSetting)) && $this->content_mode != 'template') {
+                                    //TODO: Do we want protection in there so there has to be a
+                                    //template setting in her for this?
+
+                                    //if we are not editing a tepmplate,
+                                    // if we can, we're going to create the field based off the relevant template setting.
+
+                                    $defaultContentSetting = \Templatesetting::find($key);
+
+                                    if (!$defaultContentSetting) {
+                                        $defaultContentSetting = \Templatesetting::where('name', '=', $name)
+                                            ->where('template_id', '=', $content->template_id)
+                                            ->first();
+                                    }
+
+                                    $contentSetting = new \Contentsetting();
+                                    $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
+                                    $contentSetting->value = $setting;
+                                    $contentSetting->content_id = $content->id;
+                                    $contentSetting->field_parameters = @$defaultContentSetting->field_parameters;
+                                    $contentSetting->field_type = @$defaultContentSetting->field_type;
+                                    $contentSetting->templatesetting_id = @$defaultContentSetting->id;
+                                    $contentSetting->section = @$defaultContentSetting->section;
+                                    $contentSetting->templatesetting_id = $defaultContentSetting->id;
+                                    //and for multi-fields:
+                                    //$contentSetting->parent_id = $input['multi']['parent'][];
+                                } else {
+                                    //otherwise this field exists.. we can overwrite it's settings.
+                                    //
+                                    $contentSetting->name = $name;
+                                    $contentSetting->value = $setting;
+                                    $contentSetting->content_id = $content->id;
+                                    $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
+
+                                }
+                                //dd($contentSetting->name, $contentSetting->value, $contentSetting->content_id);
+                                //if we are in a language, we need to save the language version not the item itself..
+                                if (\App::getLocale() != $this->application->default_locale) {
+                                    $contentSettingLanguage = $contentSetting->languages(\App::getLocale())->first();
+
+                                    if (!$contentSettingLanguage) {
+                                        if ($this->content_mode == 'template') {
+                                            $contentSettingLanguage = new \TemplatesettingLanguage();
+
+                                            $contentSettingLanguage->template_setting_id = $contentSetting->id;
+                                            $contentSettingLanguage->template_id = $content->id;
+                                        } else {
+                                            $contentSettingLanguage = new \ContentsettingLanguage();
+                                            $contentSettingLanguage->content_setting_id = $contentSetting->id;
+                                            $contentSettingLanguage->content_id = $content->id;
+                                        }
+                                    }
+
+                                    $contentSettingLanguage->name = $contentSetting->name;
+                                    $contentSettingLanguage->value = $setting;
+
+                                    $contentSettingLanguage->field_parameters = $contentSetting->field_parameters;
+                                    $contentSettingLanguage->field_type = $contentSetting->field_type;
+                                    $contentSettingLanguage->section = $contentSetting->section;
+                                    $contentSettingLanguage->code = \App::getLocale();
+
+                                    $contentSettingLanguage->save();
+                                } else {
+
+                                    if($contentSetting->value == ''){
+                                        $contentSetting->forceDelete();
+                                    }
+                                    else{
+
+                                        $contentSetting->save();
+                                    }
+
                                 }
                             }
 
-                            $contentSettingLanguage->name = $contentSetting->name;
-                            $contentSettingLanguage->value = $setting;
+                            //$contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
+                        }
+                    }
+                    else{
+                        //this is the actual multi field - we need to see if we need create this correctly!
 
-
-                            $contentSettingLanguage->field_parameters = $contentSetting->field_parameters;
-                            $contentSettingLanguage->field_type = $contentSetting->field_type;
-                            $contentSettingLanguage->section = $contentSetting->section;
-                            $contentSettingLanguage->code = \App::getLocale();
-
-                            $contentSettingLanguage->save();
-                        } else {
-                            
-                            if($contentSetting->value == ''){
-                                $contentSetting->forceDelete();
-                            }
-                            else{
-
+                        foreach($setGrp as $k=>$s){
+                            if($k == "Templatesetting"){
+                                //we are on a template setting - create the contentsetting!
+                                $template = \Templatesetting::find($s);
+                                $contentSetting = new \Contentsetting();
+                                $contentSetting->templatesetting_id = $template->id;
+                                $contentSetting->field_type = $template->field_type;
+                                $contentSetting->field_parameters =  $template->field_parameters;
+                                $contentSetting->section =  $template->section?$template->section:"Content";
+                                $contentSetting->content_id = $content->id;
+                                $contentSetting->name = $template->name;
                                 $contentSetting->save();
                             }
-
+                            else{
+                                //do nothing - this should never really be editable.
+                            }
                         }
-                        //$contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
+                        //$contentSetting = \Contentsetting::where('parent_id',$key)->where('index',$index)->first();
                     }
                 }
             }
@@ -525,6 +602,7 @@ class ContentwrapperController extends CMSController
     //requests descendents for given node
     public function anyTreeJson()
     {
+
         $id = \Input::all();
         if (@$id['id'] == '#') {
             $id = '';
@@ -785,11 +863,10 @@ class ContentwrapperController extends CMSController
 
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
-                    //dd($destinationPath.$fileName);
                     if (@$this->application->getSetting('Enable s3')) {
-                        $finalUrl = S3::upload($fileName, $destinationPath.$fileName);
+                        $finalUrl = S3::upload($fileName, $destinationPath.$uploadFolder.'/'.$fileId.'.'.$extension);
                     }
-                    
+
                     //and we need to build the json response.
                     $fileObj = new \stdClass();
                     $fileObj->name = $originalName;

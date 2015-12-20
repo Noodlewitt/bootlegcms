@@ -1,5 +1,6 @@
     <?php
     $settings = $settings->groupBy('section');
+
     ?>
     <div class='overlay'></div>
         
@@ -42,7 +43,6 @@
         @include('cms::contents.edit-tabs')
     </div>
     <script type="text/javascript">
-
         $(function () {
             
             
@@ -75,19 +75,19 @@
                 $('.js-slug', $form).val(str.toLowerCase());
             });
         
-            if(!disableUpdate){
-                $('.form-wrap').on('click','.js-content-update', function(e){
-                    //e.stopPropagation();
-                    e.preventDefault();
-                    alert('derp.');
-                    $form = $(this).closest('form');
-                    $.post($form.attr('action'), $form.serialize(), function(data){
-                        //boop.
-                    //    tree.jstree("refresh");
-                    });
-                });    
-            }
-            
+
+            $('.form-wrap').on('click','.js-content-update', function(e){
+                //e.stopPropagation();
+                e.preventDefault();
+                tinyMCE.triggerSave();
+                $form = $(this).closest('form');
+                $.post($form.attr('action'), $form.serialize(), function(data){
+                    //boop.
+                    $('.main-content').html(data);
+                    swal('updated');
+                    //tree.jstree("refresh");
+                });
+            });
 
 
             @if(count($application->languages) > 1)

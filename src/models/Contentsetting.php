@@ -84,12 +84,10 @@ class Contentsetting extends Eloquent {
     }';
     
     
-    public function languages($code = NULL){
-
+    public function languages(){
+        $code = App::getLocale();
         $langs = $this->hasMany('ContentsettingLanguage', 'content_setting_id');
-        if($code){
-            $langs->where('code',$code);
-        }
+        $langs = $langs->where('code',$code);
         return($langs);
     }
 
@@ -104,8 +102,7 @@ class Contentsetting extends Eloquent {
     public function content(){
         return $this->belongsTo('Content');
     }
-    
-    
+
     /*
      * Grabs the params field from wherever it can and parses the json.
      */
@@ -151,16 +148,22 @@ class Contentsetting extends Eloquent {
 
     public function getValueAttribute($value){
         //if we cant find a value we want a template value.
-        if(config('bootlegcms.cms_languages')){
-            $this->language = $this->languages(\App::getLocale())->first();
-        }        
+        return $value;
+        if(!isset($this->orig_value)){
+            if(config('bootlegcms.cms_languages')){
+                $this->language = $this->languages(\App::getLocale())->first();
+            }        
+        }
         $this->orig_value = $value;
         return @$this->language->value?$this->language->value:$value;
     }
 
     public function getNameAttribute($name){
-        if(config('bootlegcms.cms_languages')){
-            $this->language = $this->languages(\App::getLocale())->first();
+        return $name;
+        if(!isset($this->orig_name)){
+            if(config('bootlegcms.cms_languages')){
+                $this->language = $this->languages(\App::getLocale())->first();
+            }
         }
         $this->orig_name = $name;
         return @$this->language->name?$this->language->name:$name;

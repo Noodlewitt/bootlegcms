@@ -10830,6 +10830,14 @@ body {
 /*
  * Main content
  */
+.modal-close {
+  display: none;
+}
+
+.modal-content .modal-close {
+  display: block;
+}
+
 .overlay {
   position: absolute;
   top: 0;
@@ -10929,6 +10937,7 @@ form.main-form ul li div.upload table.uploaded td.preview-wrap span.preview img 
 .dropdown-menu > li > a.align-right {
   float: right;
   clear: none;
+  padding-right: 60px;
 }
 .dropdown-menu > li > a.main {
   clear: none;

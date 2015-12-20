@@ -65,7 +65,7 @@ class Img{
         $uploadFolder = trim(@$application->getSetting('Upload Folder'), '/\ ');
 
         if($upload){
-            
+
             $finalFile = $source_path_parts['filename']."_".$mode."_".$desired_x."_".$desired_y.'.'.$source_path_parts['extension'];
 
             //this leaves us with something like this 55ee4c5e032e5_300_150.jpg
