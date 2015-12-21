@@ -6,5 +6,6 @@ return [
     'cms_tree_descendents'      => 3,               //the number of tree descendants to get at one time
     'cms_application_title'     => 'Applications',
     'cms_timezone'              => 'Australia/Sydney',
-    'custom_errors'             => true
+    'custom_errors'             => true,
+    'show_tutorial'             => false,
 ];

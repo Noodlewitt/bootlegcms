@@ -1,5 +1,5 @@
 <script>
-    introJs().setOptions({
+    var tutorial = introJs().setOptions({
         showStepNumbers: false,
         showProgress: false,
         showBullets: false,
@@ -54,5 +54,8 @@
                 position: "top"
             }
         ]
-    }).start();
+    });
+    @if(config('bootlegcms.show_tutorial', false))
+    tutorial.start();
+    @endif
 </script>
