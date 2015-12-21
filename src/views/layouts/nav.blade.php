@@ -11,7 +11,7 @@
       <a class="navbar-brand" href="/">
           @if($application->getSetting('cms logo'))
               {{-- TODO: clean this up --}}
-              <img style="height: 50px;position: relative;top: -15px; margin-right: -15px;"src="{{$application->getSetting('site logo')}}" />
+              <img style="height: 40px; padding-top: 10px; position: relative; top: -15px; margin-right: -15px;"src="{{$application->getSetting('cms logo')}}" />
           @else
             BootlegCMS
           @endif
