@@ -11,9 +11,9 @@ $params = Contentsetting::parseParams($setting);
 $niceName = preg_replace('/\s+/', '', $setting->name);
 ?>
 <div class='form-group'>
-    {!! Form::label("setting[".$setting->orig_name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
+    {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
     <div class='text {{$niceName}}' >  
-        {!! Form::text("setting[".$setting->orig_name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'form-control')) !!}
+        {!! Form::text("setting[".$setting->name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'form-control')) !!}
     </div>
 </div>
 <script>
