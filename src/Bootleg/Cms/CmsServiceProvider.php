@@ -1,6 +1,8 @@
 <?php namespace Bootleg\Cms;
 
 use Config;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider {
@@ -17,10 +19,12 @@ class CmsServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
-    /**
-     * Bootstrap the application events.
-     */
-	public function boot()
+	/**
+	 * Bootstrap the application events.
+	 *
+	 * @param Router $router
+	 */
+	public function boot(Router $router)
 	{
 		//publishes the assets
 	    $this->publishes([__DIR__.'/../../../public' => public_path('vendor/bootleg/cms')], 'public');
@@ -38,6 +42,9 @@ class CmsServiceProvider extends ServiceProvider {
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
 
+		//load middleware, helpers, views, routes
+		$router->middleware('permissions', 'Bootleg\Cms\Middleware\Permissions');
+
 		//register the command...
 		$this->commands('Bootleg\Cms\Publish');
 	}
@@ -52,7 +59,24 @@ class CmsServiceProvider extends ServiceProvider {
 					'Bootleg\Cms\ExceptionHandler'
 			);
 		}
-    }
+
+		$additional_services = [
+			'\Collective\Html\HtmlServiceProvider',
+		];
+
+		foreach($additional_services as $service){
+			if(class_exists($service)) $this->app->register($service);
+		}
+
+		$additional_facades = [
+			'Form' => '\Collective\Html\FormFacade',
+			'Html' => '\Collective\Html\HtmlFacade',
+		];
+
+		foreach($additional_facades as $facade => $class){
+			if(class_exists($class)) AliasLoader::getInstance()->alias($facade, $class);
+		}
+	}
     /**
      * Get the services provided by the provider.
      *
