@@ -25,7 +25,7 @@ $cms_title = $application->name ? $application->name : ($application->getSetting
     @if($application->getSetting('theme_file'))
         <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
     @else
-        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.min.css" />
+        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.css" />
     @endif
 
     @foreach($html_head_end as $html_head_end_item)

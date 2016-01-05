@@ -22,7 +22,7 @@ $navItems = Event::fire('nav.links', []);
                             @foreach($applications as $app)
                                 @if(@$app->url[0])
                                     <li>
-                                        <a href="{{ action('\Bootleg\Cms\ApplicationController@getSwitch', [$app->id]) }}">{{$app->name}}</a>
+                                        <a href="{{ $app->url[0]->protocol or 'http://'}}{{ $app->url[0]->domain . $app->url[0]->folder . config('bootlegcms.cms_route') }}">{{ $app->name }}</a>
                                     </li>
                                 @endif
                             @endforeach

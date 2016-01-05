@@ -20,16 +20,14 @@
         <title>{{ $cms_title }}</title>
     @show
 
-    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/scripts.min.js"></script>
-    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/cms.min.js"></script>
+    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/script.min.js"></script>
 
     @if($application->getSetting('theme_file'))
         <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
     @else
-        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.min.css" />
+        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.css" />
     @endif
-    <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/components/bootleg-imagetagger/bootleg-imagetagger.css" />
-    <script src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/components/bootleg-imagetagger/bootleg-imagetagger.js" ></script>
+
     @foreach($html_head_end as $html_head_end_item)
         {!! $html_head_end_item !!}
     @endforeach
