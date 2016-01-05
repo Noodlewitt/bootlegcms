@@ -1,38 +1,45 @@
+<?php
+    $html_head_start = Event::fire('html.master.header.start', []);
+    $html_head_end = Event::fire('html.master.header.end', []);
+    $html_body_start = Event::fire('html.body.start', []);
+    $html_body_end = Event::fire('html.body.end', []);
+?>
+
 <!doctype html>
 <html lang="en" class="fullheight">
-    <head>
-        <meta charset="utf-8">
-        <?php
-            $headerItems = Event::fire('html.master.header.start', array());
-        ?>
-        @foreach($headerItems as $headerItem)
-            {{$headerItem}}
-        @endforeach
+<head>
+    <meta charset="utf-8">
+    @foreach($html_head_start as $html_head_start_item)
+        {{ $html_head_start_item }}
+    @endforeach
 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        @section('main-head')
-            <title>BootlegCMS: {{@$application->name}}</title>
-        @show
-        <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/js/script.min.js"></script>
-        <link rel="stylesheet" href="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/css/application.css" />
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
-        <?php
-            $headerItems = Event::fire('html.master.header.end', array());
-        ?>
-        @foreach($headerItems as $headerItem)
-            {!!$headerItem!!}
-        @endforeach
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <body class="">
-        
-        
-        <div class="container">
-            @section('main-content')
+    @section('main-head')
+        <title>{{ @$application->name ? $application->name : config('bootlegcms.cms_title', 'BootlegCMS') }}</title>
+    @show
+    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/script.min.js"></script>
 
-            @show
-        </div>
-    </body>
+    @if($application->getSetting('theme_file'))
+        <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
+    @else
+        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.min.css" />
+    @endif
 
+    @foreach($html_head_end as $html_head_end_item)
+        {!! $html_head_end_item !!}
+    @endforeach
+</head>
+
+<body class="login-page">
+    @foreach($html_body_start as $html_body_start_item)
+        {{ $html_body_start_item }}
+    @endforeach
+    <div class="container">
+        @yield('main-content')
+    </div>
+    @foreach($html_body_end as $html_body_end_item)
+        {!! $html_body_end_item !!}
+    @endforeach
+</body>
 </html>

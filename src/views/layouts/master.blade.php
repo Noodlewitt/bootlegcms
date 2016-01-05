@@ -1,8 +1,8 @@
 <?php
-$html_head_start = Event::fire('html.master.header.start', []);
-$html_head_end = Event::fire('html.master.header.end', []);
-$html_body_start = Event::fire('html.body.start', []);
-$html_body_end = Event::fire('html.body.end', []);
+    $html_head_start = Event::fire('html.master.header.start', []);
+    $html_head_end = Event::fire('html.master.header.end', []);
+    $html_body_start = Event::fire('html.body.start', []);
+    $html_body_end = Event::fire('html.body.end', []);
 ?>
 
         <!doctype html>
@@ -34,35 +34,35 @@ $html_body_end = Event::fire('html.body.end', []);
 </head>
 
 <body class="">
-@foreach($html_body_start as $html_body_start_item)
-    {{ $html_body_start_item }}
-@endforeach
-@include('cms::partials.nav')
-<div class="container-fluid">
-    <div class="row">
-        @include('cms::partials.sidebar')
-        <div class="content-area">
-            @yield('main-content')
+    @foreach($html_body_start as $html_body_start_item)
+        {{ $html_body_start_item }}
+    @endforeach
+    @include('cms::partials.nav')
+    <div class="container-fluid">
+        <div class="row">
+            @include('cms::partials.sidebar')
+            <div class="content-area">
+                @yield('main-content')
+            </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div>
-<script>
-    $(function() {
-        $(document).on('hidden.bs.modal', function (e) {
-            $(e.target).removeData('bs.modal');
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <script>
+        $(function() {
+            $(document).on('hidden.bs.modal', function (e) {
+                $(e.target).removeData('bs.modal');
+            });
         });
-    });
-</script>
-@foreach($html_body_end as $html_body_end_item)
-    {!! $html_body_end_item !!}
-@endforeach
+    </script>
+    @foreach($html_body_end as $html_body_end_item)
+        {!! $html_body_end_item !!}
+    @endforeach
 </body>
 
 </html>
