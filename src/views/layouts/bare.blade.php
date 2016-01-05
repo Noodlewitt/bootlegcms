@@ -3,6 +3,8 @@
     $html_head_end = Event::fire('html.master.header.end', []);
     $html_body_start = Event::fire('html.body.start', []);
     $html_body_end = Event::fire('html.body.end', []);
+
+$cms_title = $application->name ? $application->name : ($application->getSetting('logo_title') ? $application->getSetting('logo_title') : 'BootlegCMS');
 ?>
 
 <!doctype html>
@@ -16,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     @section('main-head')
-        <title>{{ @$application->name ? $application->name : config('bootlegcms.cms_title', 'BootlegCMS') }}</title>
+        <title>{{ $cms_title }}</title>
     @show
     <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/script.min.js"></script>
 
