@@ -1,0 +1,20 @@
+.nav-tabs {
+  background-color: $gray-lightest;
+  border: 1px solid $gray-light;
+  border-radius: 5px;
+  padding: 5px;
+  border: 0;
+  li {
+    a, a:focus, a:visited {
+      border: none !important;
+      border-radius: 4px;
+      background-color: $gray-light;
+    }
+    a:hover {
+      background-color: $gray;
+    }
+    &.active a {
+      color: #fff !important;
+    }
+  }
+}

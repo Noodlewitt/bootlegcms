@@ -21,11 +21,12 @@
     @show
 
     <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/script.min.js"></script>
+    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/cms.min.js"></script>
 
     @if($application->getSetting('theme_file'))
         <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
     @else
-        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.css" />
+        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.min.css" />
     @endif
 
     @foreach($html_head_end as $html_head_end_item)

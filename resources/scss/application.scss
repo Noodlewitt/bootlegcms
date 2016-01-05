@@ -1,0 +1,32 @@
+@import "variables";
+@import "mixins";
+@import "bootstrap/main";
+@import '../components/fontawesome/scss/font-awesome';
+@import '../components/jstree/dist/themes/default/style.css';
+@import '../components/blueimp-file-upload/css/jquery.fileupload.css';
+@import '../components/soundasleep-bootstrap-datetimepicker-sass/src/sass/bootstrap-datetimepicker';
+@import '../components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css';
+@import '../components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css';
+@import '../components/intro.js/introjs.css';
+
+//base layout
+@import "core";
+@import "helpers";
+
+//repeatable blocks supplying page layout
+@import "blocks/content";
+@import "blocks/navbar";
+@import "blocks/sidebar";
+
+//repeatable elements frequenting on individual pages
+@import "elements/buttons";
+@import "elements/form";
+@import "elements/introjs";
+@import "elements/jstree";
+@import "elements/navtabs";
+@import "elements/table";
+@import "elements/text";
+
+//styling unique to a single page
+@import "pages/dashboard";
+@import "pages/login";

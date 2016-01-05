@@ -1,0 +1,39 @@
+.btn-wide {
+  width:100%;
+}
+
+.btn,
+.sidebar-menu-items a,
+.nav-tabs a {
+  i, span, & {
+    transition: border-color 200ms linear, background-color 200ms linear;
+  }
+}
+
+.btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus{
+  outline:0;
+}
+
+.btn-cms-primary {
+  background-color: $primary-color !important;
+  i {
+    color: #000;
+  }
+  &:hover {
+    background-color: darken($primary-color, 7%) !important;
+  }
+}
+
+.btn-cms-primary-inverse {
+  background-color:$gray-darkest;
+  color:#fff;
+  &:hover {
+    background-color: darken($gray-darkest, 10%);
+  }
+}
+
+.btn-cms-primary, .btn-cms-primary-inverse {
+  i + span, span + i {
+    padding-left: 5px;
+  }
+}

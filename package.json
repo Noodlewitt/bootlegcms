@@ -1,22 +1,31 @@
 {
-  "name": "wombats",
+  "name": "CMS",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
+  "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "gulp-compass": "^2.0.3",
-    "gulp": "^3.8.10",
-    "gulp-watch": "^3.0.0",
-    "gulp-shell": "^0.2.11",
-    "gulp-uglifyjs": "^0.6.0",
-    "gulp-uglify": "^1.1.0"
+  "author": "Ryan",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "del": "^2.0.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-batch": "^1.0.5",
+    "gulp-concat": "^2.6.0",
+    "gulp-iconfont": "^5.0.0",
+    "gulp-iconfont-css": "^2.0.0",
+    "gulp-if": "^2.0.0",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-merge": "^0.1.1",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.4",
+    "gulp-size": "^2.0.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.4.0",
+    "gulp-util": "^3.0.6",
+    "gulp-watch": "^4.3.5"
   }
 }

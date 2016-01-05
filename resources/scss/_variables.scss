@@ -1,0 +1,89 @@
+// BASE COLOURS
+
+$gray-darkest: #1F2021;
+$gray-darker: #3B3C3D;
+$gray-dark: #464748;
+$gray: #CECFD0;
+$gray-light: #D6D7D9;
+$gray-lighter: #F2F4F5;
+$gray-lightest: #F6F7F8;
+
+$cms-primary-color: #F6560A;
+$cms-secondary-color: $gray-dark;
+
+// SIDEBAR
+
+$sidebar-bg: $gray-dark;
+$sidebar-selected-border-width: 5px;
+
+$sidebar-link-default-bg: $gray-dark;
+$sidebar-link-default-text: $gray-lighter;
+$sidebar-link-default-icon: $gray-lighter;
+
+$sidebar-link-selected-bg: $gray-darkest;
+$sidebar-link-selected-text: #FFFFFF;
+$sidebar-link-selected-icon: #FFFFFF;
+
+$sidebar-link-hover-bg: $gray-darker;
+$sidebar-link-hover-text: #FFFFFF;
+$sidebar-link-hover-icon: #FFFFFF;
+
+$sidebar-sublink-default-bg: $sidebar-link-default-bg;
+$sidebar-sublink-default-text: $sidebar-link-default-text;
+$sidebar-sublink-default-icon: $sidebar-link-default-text;
+
+$sidebar-sublink-selected-bg: $sidebar-link-selected-bg;
+$sidebar-sublink-selected-text: $sidebar-link-selected-text;
+$sidebar-sublink-selected-icon: $sidebar-link-selected-text;
+
+$sidebar-sublink-hover-bg: $sidebar-link-hover-bg;
+$sidebar-sublink-hover-text: $sidebar-link-hover-text;
+$sidebar-sublink-hover-icon: $sidebar-link-hover-text;
+
+// NAVBAR
+
+$navbar-height: 70px;
+
+$navbar-default-color:             $gray-lighter;
+$navbar-default-bg:                #2B2B2B;
+$navbar-default-border:            transparent;
+
+$navbar-link-default-bg: #2B2B2B;
+$navbar-link-default-text: $gray-lighter;
+$navbar-link-default-icon: $cms-primary-color;
+
+$navbar-link-selected-bg: $gray-darkest;
+$navbar-link-selected-text: #FFFFFF;
+$navbar-link-selected-icon: $cms-primary-color;
+
+$navbar-link-hover-bg: $gray-darker;
+$navbar-link-hover-text: #FFFFFF;
+$navbar-link-hover-icon: $cms-primary-color;
+
+$navbar-user-bg: $gray-darkest;
+$navbar-user-text: #fff;
+$navbar-user-lougout-text: $cms-primary-color;
+$navbar-user-lougout-icon: $cms-primary-color;
+
+// BUTTONS
+
+$btn-default-color: $gray-dark;
+$btn-primary-color: #FFF;
+$btn-success-color: #FFF;
+$btn-info-color: #FFF;
+$btn-warning-color: #FFF;
+$btn-danger-color: #FFF;
+
+// FORM INPUTS
+
+$input-border: $gray-light;
+
+// MISC VARIABLES
+
+$global-border-radius: 3px;
+$grid-gutter-width: 30px;
+$gutter-half: $grid-gutter-width / 2;
+$icon-font-path: '../components/bootstrap-sass/assets/fonts/bootstrap/';
+
+$web-font-path: "http://fonts.googleapis.com/css?family=Roboto:500italic,600italic,700italic,500,600,700&subset=latin";
+$font-family-sans-serif: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;

@@ -1,0 +1,96 @@
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+html, body {
+  background-color: $gray-lightest;
+  height: 100%;
+  font-size: 100%;
+}
+
+body {
+  padding-top: $navbar-height;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-font-smoothing: antialiased !important;
+  font-smoothing: antialiased !important;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+
+  .content-area > div {
+    padding: 25px 40px;
+    .page-header {
+      border-color: $gray-light;
+      h1 {
+        font-weight: 700;
+        font-size: 24px;
+        margin: 0;
+      }
+    }
+  }
+}
+
+/*fix for bootstrap bug. fix is apparently coming soon for this.*/
+.container-fluid {
+  padding: 0 $gutter-half;
+}
+
+/*
+ * Main content
+ */
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  display: none;
+}
+
+.main {
+  padding: 20px;
+}
+
+.main .page-header {
+  margin-top: 0;
+}
+
+.cms-logo {
+  padding: 0 20px;
+  &.no-padding {
+    padding: 0;
+  }
+  img {
+    max-height:$navbar-height;
+  }
+  .cms-logo-title {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 10px;
+    div {
+      color: $gray-light;
+      line-height: 1;
+    }
+  }
+}
+
+.page-header {
+  margin-top: 0;
+  i {
+    color: $primary-color;
+  }
+
+}
+
+.nav-tabs {
+  margin-bottom: $gutter-half;
+  li {
+    &.active a {
+      background-color: $brand-primary !important;
+      color: #fff !important;
+    }
+  }
+}

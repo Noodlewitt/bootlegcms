@@ -1,76 +1,299 @@
 var gulp = require('gulp');
-var compass = require('gulp-compass');
-var shell = require('gulp-shell');
-var uglify = require('gulp-uglifyjs');
+var del = require('del');
+var chalk = require('chalk');
+var config = require('./gulpconfig.js');
+$ = require('gulp-load-plugins')();
 
-gulp.task('default', function() {
-  // place code for your default task here
+gulp.task('publish:css', function () {
+    checkCleanFolder('css');
+    var stream = gulp.src(config.assets.folder + getSetting(config.assets, defaults.assets, 'css.path') + getSetting(config.assets, defaults.assets, 'css.wildcard'))
+        .pipe($.plumber(logError))
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'css.sourcemaps'), $.sourcemaps.init())) //initialize sourcemap
+        .pipe( //compile sass
+            $.sass({
+                outputStyle: getSetting(config.assets, defaults.assets, 'css.output'),
+                precision: getSetting(config.assets, defaults.assets, 'css.precision')
+            })
+        )
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'css.autoprefix'), $.autoprefixer())) //handles browser support
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'css.min_suffix'), $.rename({suffix: ".min"}))) //append .min to filename
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'css.show_size'), $.size({
+            showFiles: true,
+            title: 'Minified: ',
+            pretty: true
+        }))) //output minified size
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'css.sourcemaps'), $.sourcemaps.write('./'))); //generate sourcemap files
+
+    config.publish.map(function (output) { //write for each output folder
+        stream.pipe(
+            gulp.dest(output.folder + getSetting(output, defaults.publish, 'css.path'))
+        )
+    });
+
+    return stream; //tell gulp that async stream task is complete
 });
 
-gulp.task('compass', function() {
-    //we need to work out the package name from the location for the asset publish.
-    var location = process.cwd();
-    location = location.split("workbench/");
-    location = location.slice(-1)[0];
+gulp.task('publish:js', function () {
+    checkCleanFolder('js');
+    var stream = gulp.src(config.assets.folder + getSetting(config.assets, defaults.assets, 'js.path') + getSetting(config.assets, defaults.assets, 'js.wildcard'))
+        .pipe($.plumber(logError))
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'js.show_size'), $.size({
+            showFiles: true,
+            title: 'Original: ',
+            pretty: true
+        }))) //output original size
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'js.sourcemaps'), $.sourcemaps.init())) //initialize sourcemap
+        .pipe($.uglify()) //minify js
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'js.min_suffix'), $.rename({suffix: ".min"}))) //append .min to filename
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'js.show_size'), $.size({
+            showFiles: true,
+            title: 'Minified: ',
+            pretty: true
+        }))) //output minified size
+        .pipe($.if(getSetting(config.assets, defaults.assets, 'js.sourcemaps'), $.sourcemaps.write('./'))); //generate sourcemap files
 
-    gulp.src('./public/sass/*.scss')
-        .pipe(compass({
-            css: 'public/css',
-            sass: 'public/sass',
-            image: 'public/images'
-        }))
-        .pipe(shell([
-            'php ../../../artisan asset:publish --bench="'+location+'"'
-        ]));
+    config.publish.map(function (output) { //write for each output folder
+        stream.pipe(
+            gulp.dest(output.folder + getSetting(output, defaults.publish, 'js.path'))
+        )
+    });
+
+    return stream; //tell gulp that async stream task is complete
 });
 
-gulp.task('uglify', function() {
-    //we need to work out the package name from the location for the asset publish.
-    var location = process.cwd();
-    location = location.split("workbench/");
-    location = location.slice(-1)[0];
+gulp.task('publish:img', function () {
+    checkCleanFolder('img');
+    var stream = gulp.src(config.assets.folder + getSetting(config.assets, defaults.assets, 'img.path') + getSetting(config.assets, defaults.assets, 'img.wildcard'));
+    //Used to have image optimization here - but holy hell it can crash a computer or ten.
 
-    gulp.src([
-        'public/components/jquery/jquery.js',
-        'public/components/jquery-ui/ui/jquery-ui.js',
-        'public/components/bootstrap-sass/assets/javascripts/bootstrap.js',
-        'public/components/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
-        'public/components/bootstrap-sass/assets/javascripts/bootstrap/modal.js',
-        'public/components/bootstrap-sass/assets/javascripts/bootstrap/tab.js',
-        'public/components/bootstrap-sass/assets/javascripts/bootstrap/dropdown.js',
-        'public/components/bootstrap-sass/assets/javascripts/bootstrap/collapse.js',
-        'public/components/bootstrap-sass/assets/javascripts/bootstrap/transition.js',
-        'public/components/jstree/dist/jstree.js',
-        'public/components/blueimp-tmpl/js/tmpl.js',
-        'public/components/blueimp-load-image/js/load-image.all.min.js',
-        'public/components/blueimp-canvas-to-blob/js/canvas-to-blob.min.js',
-        'public/components/blueimp-file-upload/js/jquery.iframe-transport.js',
-        'public/components/blueimp-file-upload/js/jquery.fileupload.js',
-        'public/components/blueimp-file-upload/js/jquery.fileupload-process.js',
-        'public/components/blueimp-file-upload/js/jquery.fileupload-image.js',
-        'public/components/blueimp-file-upload/js/jquery.fileupload-audio.js',
-        'public/components/blueimp-file-upload/js/jquery.fileupload-video.js',
-        'public/components/blueimp-file-upload/js/jquery.fileupload-validate.js',
-        'public/components/blueimp-file-upload/js/jquery.fileupload-ui.js',
-        'public/components/tinymce-builded/js/tinymce/tinymce.jquery.js',
-        'public/components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
-        'public/components/bootstrap-sass-datepicker/js/bootstrap-sass-datepicker.js',
-        'public/components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
-        ])
-        .pipe(uglify('script.min.js', {
-            mangle: true,
-            outSourceMap: true,
-            output: {
-                beautify: false
+    config.publish.map(function (output) { //write for each output folder
+        stream.pipe(
+            gulp.dest(output.folder + getSetting(output, defaults.publish, 'img.path'))
+        )
+    });
+
+    return stream; //tell gulp that async stream task is complete
+});
+
+gulp.task('publish:font', function () {
+    checkCleanFolder('font');
+    var stream = gulp.src(config.assets.folder + getSetting(config.assets, defaults.assets, 'font.path') + getSetting(config.assets, defaults.assets, 'font.wildcard'));
+
+    config.publish.map(function (output) { //write for each output folder
+        stream.pipe(
+            gulp.dest(output.folder + getSetting(output, defaults.publish, 'font.path'))
+        )
+    });
+
+    return stream; //tell gulp that async stream task is complete
+});
+
+gulp.task('publish:svg', function () {
+    var stream = gulp.src(config.assets.folder + getSetting(config.assets, defaults.assets, 'svg.path') + getSetting(config.assets, defaults.assets, 'svg.wildcard'))
+    stream = stream.pipe($.iconfontCss({
+        fontName: getSetting(config.assets, defaults.assets, 'svg.name'),
+        path: getSetting(config.assets, defaults.assets, 'svg.template'),
+        targetPath: '../../' + getSetting(config.assets, defaults.assets, 'css.path') + '/font/_' + getSetting(config.assets, defaults.assets, 'svg.name') + '.scss',
+        fontPath: './../' + getSetting(config.assets, defaults.assets, 'font.path') + '/' + getSetting(config.assets, defaults.assets, 'svg.name') + '/'
+    }));
+    stream = stream.pipe($.iconfont({
+        formats: ['svg', 'ttf', 'eot', 'woff'],
+        normalize: true,
+        fontName: getSetting(config.assets, defaults.assets, 'svg.name')
+    }));
+    stream = stream.pipe(gulp.dest(config.assets.folder + '/' + getSetting(config.assets, defaults.assets, 'font.path') + '/' + getSetting(config.assets, defaults.assets, 'svg.name') + '/'));
+
+    return stream; //tell gulp that async stream task is complete
+});
+
+gulp.task('publish:components', function () {
+    checkCleanFolder('components');
+    var tasks = [];
+
+    //run per package group
+    objMap(config.components, function (pkg, pkg_name) {
+        var stream = gulp.src(pkg)
+            .pipe($.plumber(logError))
+            .pipe($.if(getSetting(config.assets, defaults.assets, 'components.show_size'), $.size({
+                showFiles: false,
+                title: pkg_name + ' original: ',
+                pretty: true
+            }))) //output original size
+            .pipe($.if(getSetting(config.assets, defaults.assets, 'components.sourcemaps'), $.sourcemaps.init())) //initialize sourcemap
+            .pipe($.concat(pkg_name + (getSetting(config.assets, defaults.assets, 'components.min_suffix') ? '.min.js' : '.js'))) //merge js files into one - name based off of package group
+            .pipe($.uglify()) //now minify it
+            .pipe($.if(getSetting(config.assets, defaults.assets, 'components.show_size'), $.size({
+                showFiles: false,
+                title: pkg_name + ' minified: ',
+                pretty: true
+            }))) //output minified size
+            .pipe($.if(getSetting(config.assets, defaults.assets, 'components.sourcemaps'), $.sourcemaps.write('./'))); //generate sourcemap files
+
+        //write for each output folder
+        config.publish.map(function (output) {
+            stream.pipe(gulp.dest(output.folder + getSetting(output, defaults.publish, 'components.path')))
+        });
+
+        //push onto task array
+        tasks.push(stream);
+    });
+
+    //execute task array
+    return $.merge(tasks);
+});
+
+gulp.task('publish:all', function () {
+    gulp.start('publish:svg');
+    gulp.start('publish:font');
+    gulp.start('publish:css');
+    gulp.start('publish:js');
+    gulp.start('publish:img');
+    gulp.start('publish:components');
+});
+
+gulp.task('watch', function () {
+    var base = getSetting(config.assets, defaults.assets, 'folder');
+
+    //watch these directories and call the appropriate gulp functions. gulp-batch is used so that multiple files modified at once are processed in one single hit
+    $.watch(base + getSetting(config.assets, defaults.assets, 'css.path') + getSetting(config.assets, defaults.assets, 'css.wildcard'), $.batch(function (events, done) {
+        gulp.start('publish:css', done);
+    }));
+
+    $.watch(base + getSetting(config.assets, defaults.assets, 'js.path') + getSetting(config.assets, defaults.assets, 'js.wildcard'), $.batch(function (events, done) {
+        gulp.start('publish:js', done);
+    }));
+
+    $.watch(base + getSetting(config.assets, defaults.assets, 'img.path') + getSetting(config.assets, defaults.assets, 'img.wildcard'), $.batch(function (events, done) {
+        gulp.start('publish:img', done);
+    }));
+
+    $.watch(base + getSetting(config.assets, defaults.assets, 'font.path') + getSetting(config.assets, defaults.assets, 'font.wildcard'), $.batch(function (events, done) {
+        gulp.start('publish:font', done);
+    }));
+
+    $.watch(base + getSetting(config.assets, defaults.assets, 'svg.path') + getSetting(config.assets, defaults.assets, 'svg.wildcard'), $.batch(function (events, done) {
+        gulp.start('publish:svg', done);
+    }));
+});
+
+//handle errors gracefully - output to console and resume script
+var logError = function (err) {
+    $.util.log(chalk.red('Error' + err.toString()));
+    this.emit('end');
+}
+
+//Array.map functionality... for objects
+var objMap = function (obj, callback) {
+    var result = {};
+    Object.keys(obj).forEach(function (key) {
+        result[key] = callback.call(obj, obj[key], key, obj);
+    });
+    return result;
+}
+
+//delete all files at specified path
+var cleanFolder = function (path) {
+    $.util.log(chalk.yellow('Cleaning directory ' + path));
+    del([path + '/**/*']);
+}
+
+//check if folder should be cleaned - then clean it
+var checkCleanFolder = function (type) {
+    config.publish.map(function (output, i) {
+        if (getSetting(output, defaults.publish, type + '.clean')) {
+            cleanFolder(output.folder + getSetting(output, defaults.publish, type + '.path'));
+            var map_type = Object.keys(defaults.publish)[i];
+            if (getSetting(output, defaults.publish, type + '.path') == getSetting(output, defaults.publish, map_type + '.path') && type != map_type) {
+                $.util.log(chalk.yellow('Notice: "' + map_type + '" was cleaned by "' + type + '" clean function. Re-publishing.'));
+                gulp.start('publish:' + map_type);
             }
-        }))
-        .pipe(gulp.dest('public/js'))
-        .pipe(shell([
-            'php ../../../artisan asset:publish --bench="'+location+'"'
-        ]));
-});
+        }
+    });
+}
 
+//access object properties by a string identifier
+var accessProperties = function (object, string, safe) {
+    var explodedString = string.split('.');
+    for (i = 0, l = explodedString.length; i < l; i++) {
+        object = object[explodedString[i]];
+        if (object === undefined && safe == true) return undefined;
+    }
+    return object;
+}
 
-gulp.task('watch', function() {
-    gulp.watch('./public/sass/**/*.scss', ['compass', ]);
-});
+//get setting with defaults
+var getSetting = function (obj, def_obj, setting) {
+    var out = accessProperties(obj, setting, true);
+    if (out == undefined) {
+        out = accessProperties(def_obj, setting);
+    }
+    return out;
+}
+
+//default values
+var defaults = {
+    assets: {
+        css: {
+            path: 'scss',
+            wildcard: '/**/*.scss',
+            output: 'compressed',
+            autoprefix: true,
+            precision: 8,
+            min_suffix: true,
+            sourcemaps: true,
+            show_size: true
+        },
+        js: {
+            path: 'js',
+            wildcard: '/**/*.js',
+            min_suffix: true,
+            sourcemaps: true,
+            show_size: true
+        },
+        img: {
+            path: 'img',
+            wildcard: '/**/*.*',
+        },
+        svg: {
+            name: 'icon-font',
+            path: 'svg',
+            wildcard: '/**/*.svg',
+            template: 'scss',
+        },
+        font: {
+            path: 'font',
+            wildcard: '/**/*.*'
+        },
+        components: {
+            min_suffix: true,
+            sourcemaps: false,
+            show_size: true
+        }
+    },
+    publish: {
+        css: {
+            path: 'css',
+            clean: false
+        },
+        js: {
+            path: 'js',
+            clean: false
+        },
+        img: {
+            path: 'img',
+            clean: false
+        },
+        svg: {
+            path: 'font',
+            clean: false
+        },
+        font: {
+            path: 'font',
+            clean: true
+        },
+        components: {
+            path: 'js',
+            clean: true
+        }
+    }
+}

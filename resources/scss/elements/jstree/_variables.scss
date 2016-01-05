@@ -1,0 +1,18 @@
+/* jsTree default theme */
+$theme-name:				proton;
+$hovered-bg-color:			$gray-darker;
+$hovered-text-color:        #fff;
+$hovered-shadow-color:      $gray-darker;
+$disabled-color:            #666666;
+$disabled-bg-color:         #efefef;
+$clicked-bg-color:          $gray;
+$clicked-text-color:        #fff;
+$clicked-shadow-color:		$gray;
+$clicked-gradient-color-1:	$gray;
+$clicked-gradient-color-2:	$gray;
+$search-result-color:		#8b0000;
+$mobile-wholerow-bg-color:	rgba(0, 0, 0, 0.02);
+$mobile-wholerow-shadow:	rgba(0,0,0,0.05);
+$responsive:				true;
+$image-path:				"/vendor/bootleg/cms/img/jstree/";
+$base-height:				30px;
