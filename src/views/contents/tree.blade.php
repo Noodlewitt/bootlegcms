@@ -63,7 +63,7 @@
                 }
             }
         },
-        'plugins':["search", "dnd", "state", "types", "wholerow"] //"contextmenu",
+        'plugins':["search", "dnd", "state", "types", "wholerow", "contextmenu"] //"contextmenu",
     });
     
 
