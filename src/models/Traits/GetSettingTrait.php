@@ -4,7 +4,7 @@ trait GetSettingTrait
 {
     public function getSetting($getSetting){
         $settings = $this->setting->filter(function($model) use(&$getSetting){
-            return str_slug($model->name) === $getSetting;
+            return str_slug($model->name, "_") === $getSetting;
 
         });
         if($settings->count() == 0){
