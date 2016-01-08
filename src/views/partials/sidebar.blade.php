@@ -38,6 +38,9 @@
                 <a href="{{ action($menuItem['location']) }}" class="{{ Request::is(config('bootlegcms.cms_route') . $menuItem['activePattern']) ? 'active' : '' }}">
                     <i class="menu-icon glyphicon {{ $menuItem['icon'] }}"></i>
                     <span class="mm-text">{{ $menuItem['title'] }}</span>
+                    @if(isset($menuItem['badge']))
+                        <span class="badge">{{ $menuItem['badge'] }}</span>
+                    @endif
                 </a>
             @endif
         @endforeach
