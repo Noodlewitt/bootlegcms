@@ -2,7 +2,8 @@
 
 class Widget extends Eloquent {
 
-    public function getWidget(){
-        
+    public function getWidget()
+    {
+
     }
 }

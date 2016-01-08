@@ -1,8 +1,10 @@
 <?php
+use Bootleg\Cms\GetSettingTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Application extends Baum\Node{
 
-    use SoftDeletes;
+    use SoftDeletes, GetSettingTrait;
     protected $dates = ['deleted_at'];
 
 
@@ -49,28 +51,5 @@ class Application extends Baum\Node{
     
     public static function getApplication($domain='', $folder = ''){        
         return(unserialize($GLOBALS['application']));
-    }
-
-        /*
-     * returns a single setting given the name;
-     */
-    public function getSetting($getSetting){
-        $settings = $this->setting->filter(function($model) use(&$getSetting){
-            return $model->name === $getSetting;
-            
-        });
-        if($settings->count() == 0){
-            return null;
-        }
-        if($settings->count() > 1){
-            $return = array();
-            foreach($settings as $setting){
-                $return[] = $setting->value;
-            }
-        }
-        else{
-            $return = $settings->first()->value;
-        }
-        return($return);
     }
 }

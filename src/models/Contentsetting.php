@@ -2,7 +2,8 @@
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contentsetting extends Eloquent {
-    protected $fillable = array('content_id', 'name', 'value', 'field_type');
+
+    protected $fillable = ['content_id', 'name', 'value', 'field_type'];
 
     protected $table = 'content_settings';
 
@@ -72,62 +73,68 @@ class Contentsetting extends Eloquent {
     }';
 
 
-    public function content(){
-        return($this->belongsTo('Content'));
+    public function content()
+    {
+        return ($this->belongsTo('Content'));
     }
-
 
 
     /*
      * Grabs the params field from wherever it can and parses the json.
      */
-    public static function parseParams($setting){
-        if(@$setting->field_parameters){
+    public static function parseParams($setting)
+    {
+        if (@$setting->field_parameters)
+        {
             //OLD CODE: Uses supplied parameters, but must include ALL paramaters
             //$params = $setting->field_parameters;
 
             //NEW CODE: Merges supplied paramaters, and defaults on parameters that were not supplied
             $default_settings = json_decode(self::getDefaultParams($setting), true);
             $provided_settings = json_decode($setting->field_parameters, true);
-            $params = json_encode(array_merge($default_settings,$provided_settings));
-        }
-        else if(@$setting->default_setting->field_parameters){
+            $params = json_encode(array_merge($default_settings, $provided_settings));
+        } else if (@$setting->default_setting->field_parameters)
+        {
             $params = @$setting->default_setting->field_parameters;
-        }
-        else{
+        } else
+        {
             $params = self::getDefaultParams($setting);
         }
-        return(json_decode($params));
+
+        return (json_decode($params));
     }
 
-    public static function getDefaultParams($setting){
+    public static function getDefaultParams($setting)
+    {
         //todo: there must be a nicer way than this..
         //dd($setting->field_type);
-        if($setting->field_type == 'upload'){
+        if ($setting->field_type == 'upload')
+        {
             $params = self::DEFAULT_UPLOAD_JSON;
-        }
-        else if($setting->field_type == 'dropdown'){
+        } else if ($setting->field_type == 'dropdown')
+        {
             $params = self::DEFAULT_DROPDOWN_JSON;
-        }
-        else if($setting->field_type == 'checkbox'){
+        } else if ($setting->field_type == 'checkbox')
+        {
             $params = self::DEFAULT_CHECKBOX_JSON;
-        }
-        else if($setting->field_type == 'datepicker'){
+        } else if ($setting->field_type == 'datepicker')
+        {
             $params = self::DEFAULT_DATEPICKER_JSON;
-        }
-        else if($setting->field_type == 'tinymce'){
+        } else if ($setting->field_type == 'tinymce')
+        {
             $params = self::DEFAULT_TINYMCE_JSON;
-        }
-        else if($setting->field_type == 'relationship'){
+        } else if ($setting->field_type == 'relationship')
+        {
             $params = self::DEFAULT_RELATIONSHIP_JSON;
-        }
-        else if($setting->field_type == 'radio'){
+        } else if ($setting->field_type == 'radio')
+        {
             $params = self::DEFAULT_RADIO_JSON;
-        }
-        else{
+        } else
+        {
             $params = self::DEFAULT_TEXT_JSON;
         }
-        return($params);
+
+        return ($params);
     }
 
     public function getNameAttribute()

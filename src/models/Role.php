@@ -1,5 +1,6 @@
 <?php
-class Role extends Eloquent{
+
+class Role extends Eloquent {
 
     /**
      * The database table used by the model.
@@ -8,11 +9,13 @@ class Role extends Eloquent{
      */
     protected $table = 'roles';
 
-    public function users(){
-        return($this->hasMany('Users'));
+    public function users()
+    {
+        return ($this->hasMany('Users'));
     }
-    
-    public function permission(){
-            return $this->morphMany('Permission', 'requestor');
+
+    public function permission()
+    {
+        return $this->morphMany('Permission', 'requestor');
     }
 }
