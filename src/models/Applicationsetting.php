@@ -8,5 +8,10 @@ class Applicationsetting extends Eloquent
     {
         return($this->belongsTo('Application'));
     }
+
+    public function getNameAttribute()
+    {
+        return unslug($this->attributes['name'], true);
+    }
     
 }

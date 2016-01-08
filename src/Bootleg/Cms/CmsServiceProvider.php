@@ -41,6 +41,7 @@ class CmsServiceProvider extends ServiceProvider {
 	    //Load views
 		$this->loadViewsFrom(__DIR__.'/../../views', 'cms');
 		include __DIR__.'/../../routes.php';
+		include __DIR__.'/../../components/helpers.php';
 
 		//load middleware, helpers, views, routes
 		$router->middleware('permissions', 'Bootleg\Cms\Middleware\Permissions');

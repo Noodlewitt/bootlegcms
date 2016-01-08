@@ -8,4 +8,9 @@ class Plugindefaultsetting extends \Eloquent {
         return $this->belongsTo('Plugin');
     }
 
+    public function getNameAttribute()
+    {
+        return unslug($this->attributes['name'], true);
+    }
+
 }
