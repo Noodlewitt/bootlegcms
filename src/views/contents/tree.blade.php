@@ -58,7 +58,7 @@
                 }
             }
         },
-        'plugins':["search", "contextmenu", "dnd", "state", "types"]
+        'plugins':["search", "contextmenu", "dnd", "state", "types", "wholerow"]
     });
     
 
