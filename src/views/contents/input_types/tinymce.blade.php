@@ -46,7 +46,8 @@ $field_title = isset($params->field_title) ? $params->field_title : $setting[0]-
             tinymce.init({
                 height:{{$params->height}},
                 selector:'#{{$niceName.$field->id}}',
-                plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
+                plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage", "textcolor", "colorpicker"],
+                toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload | forecolor backcolor",
                 toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload",
                 relative_urls: false,
                 entity_encoding : "raw"
