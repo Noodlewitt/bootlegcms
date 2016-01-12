@@ -14,7 +14,7 @@
         @section('main-head')
             <title>{{ @$application->name ? $application->name : config('bootlegcms.cms_title', 'BootlegCMS') }}</title>
         @show
-        <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/js/script.min.js"></script>
+        <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/js/scripts.min.js"></script>
         @if($application->getSetting('theme_file'))
             <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
         @else
