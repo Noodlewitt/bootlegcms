@@ -137,8 +137,8 @@ class Contentsetting extends Eloquent {
         return ($params);
     }
 
-    public function getNameAttribute()
-    {
-        return unslug($this->attributes['name'], true);
-    }
+    // public function getNameAttribute()
+    // {
+    //     return unslug($this->attributes['name'], true);
+    // }
 }
