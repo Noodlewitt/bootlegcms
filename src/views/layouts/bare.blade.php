@@ -20,7 +20,7 @@ $cms_title = $application->name ? $application->name : ($application->getSetting
     @section('main-head')
         <title>{{ $cms_title }}</title>
     @show
-    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/script.min.js"></script>
+    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/scripts.min.js"></script>
 
     @if($application->getSetting('theme_file'))
         <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
