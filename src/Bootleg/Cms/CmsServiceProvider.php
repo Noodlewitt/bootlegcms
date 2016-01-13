@@ -1,5 +1,6 @@
 <?php namespace Bootleg\Cms;
 
+use Carbon\Carbon;
 use Config;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Router;
