@@ -48,6 +48,12 @@ class CmsServiceProvider extends ServiceProvider {
 
 		//register the command...
 		$this->commands('Bootleg\Cms\Publish');
+
+		$this->app->events->listen('auth.login', function ($user)
+		{
+			$user->loggedin_at = Carbon::now();
+			$user->save();
+		});
 	}
 
 
