@@ -1,8 +1,15 @@
 <?php
+
+$setting_class = get_class($setting[0]);
+$settingAfterEvent = \Event::fire('content.dropdown.draw', [$setting]);
+$settingAfterEvent = reset($settingAfterEvent);
+if(!empty($settingAfterEvent) && $settingAfterEvent[0] instanceof $setting_class) $setting = $settingAfterEvent;
+
 $params = Contentsetting::parseParams($setting[0]);
 $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 $field_title = isset($params->field_title) ? $params->field_title : $setting[0]->name;
 $values = (array)$params->values;
+
 ?>
 {!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($field_title.":")) !!}
 @if($params->max_number  && $params->max_number > 1)
