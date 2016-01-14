@@ -22,17 +22,6 @@ class UsersController extends CMSController
         parent::__construct();
         $this->user = $user;
         $this->beforeFilter('csrf', array('on'=>'post'));
-
-        //add in some standard dash items..
-        \Event::listen('dashboard.items', function(){
-            $user = User::find(\Auth::user()->id);
-            return $this->render('users.dash_item', array('user'=>$user));
-        });
-
-        //TODO: move this into applications
-        \Event::listen('dashboard.items', function(){
-            return $this->render('application.dash_item', array('application'=>$this->application));
-        });
     }
 
     /**
