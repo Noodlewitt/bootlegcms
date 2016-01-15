@@ -45,10 +45,14 @@ $field_title = isset($params->field_title) ? $params->field_title : $setting[0]-
             tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
             tinymce.init({
                 height:{{$params->height}},
+                relative_urls: false,
                 selector:'#{{$niceName.$field->id}}',
                 plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage", "textcolor", "colorpicker"],
-                toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload | forecolor backcolor",
-                relative_urls: false,
+                toolbar:"{{$params->toolbar}}",
+                content_css:"{{$params->content_css}}",
+                @foreach((array) $params->tiny_parameters as $key=>$p)
+                    {{$key}}:"{{$p}}",
+                @endforeach
                 entity_encoding : "raw"
             });
         });
