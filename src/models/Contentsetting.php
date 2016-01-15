@@ -68,7 +68,12 @@ class Contentsetting extends Eloquent {
     const DEFAULT_TINYMCE_JSON = '{
         "tooltip":"",
         "max_number":1,
-        "height":300
+        "height":300,
+        "formats": {},
+        "plugins": ["link", "code", "hr", "image", "table", "media", "uploadImage"],
+        "toolbar": "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload | fontsizeselect",
+        "content_css":"",
+        "tiny_parameters":{}
     }';
 
 
