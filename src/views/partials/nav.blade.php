@@ -1,5 +1,12 @@
 <?php
-$navItems = Event::fire('nav.links', []);
+    $navItems = Event::fire('nav.links', []);
+
+    $authorized_apps = Application::where('user_id', Auth::user()->id)->get();
+
+    foreach($authorized_apps as $app)
+    {
+        $authorized_apps = $authorized_apps->merge($app->getDescendants());
+    }
 ?>
 
 <div class="navbar navbar-fixed-top navbar-default" role="navigation">
@@ -13,13 +20,13 @@ $navItems = Event::fire('nav.links', []);
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
 
-                @if(count($applications) > 1 || Permission::getPermission('\Bootleg\Cms\ApplicationController@anyCreate','')->result)
+                @if(count($authorized_apps) > 1 && Permission::getPermission('\Bootleg\Cms\ApplicationController@getSwitch','')->result)
                     <li class="navbar-menu-item dropdown">
                         <a href="#" class="dropdown-toggle"
                            data-toggle="dropdown">{{ config('bootlegcms.cms_application_title') }} <i
                                     class="fa fa-chevron-down"></i></a>
                         <ul class="dropdown-menu">
-                            @foreach($applications as $app)
+                            @foreach($authorized_apps as $app)
                                 @if(@$app->url[0])
                                     <li>
                                         <a href="{{ action('\Bootleg\Cms\ApplicationController@getSwitch', [$app->id]) }}">{{$app->name}}</a>

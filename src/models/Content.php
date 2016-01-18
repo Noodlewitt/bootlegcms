@@ -1,7 +1,8 @@
 <?php
+use Baum\Node;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Content extends \Baum\Node{ //Eloquent {status
+class Content extends Node { //Eloquent {status
     use \Bootleg\Cms\Models\Traits\HasSettingModelTrait;
     use SoftDeletes;
 
