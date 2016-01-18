@@ -44,17 +44,17 @@ $field_title = isset($params->field_title) ? $params->field_title : $setting[0]-
             });
             tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
             tinymce.init({
-                height:{{$params->height}},
-                relative_urls: false,
-                selector:'#{{$niceName.$field->id}}',
-                plugins: "{{$params->plugins}}",
-                toolbar:"{{$params->toolbar}}",
-                content_css:"{{$params->content_css}}",
-                @foreach((array) $params->tiny_parameters as $key=>$p)
-                    {{$key}}:"{{$p}}",
-                @endforeach
-                entity_encoding : "raw"
-            });
+               height:{{$params->height}},
+               relative_urls: false,
+               selector:'#{{$niceName.$field->id}}',
+               plugins: {!! json_encode($params->plugins)!!},
+               toolbar:"{{$params->toolbar}}",
+               content_css:"{{$params->content_css}}",
+               @foreach((array) $params->tiny_parameters as $key=>$p)
+                   {{$key}}:"{{$p}}",
+               @endforeach
+               entity_encoding : "raw"
+           });
         });
     </script>
 @endforeach
