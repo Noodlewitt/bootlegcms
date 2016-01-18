@@ -47,7 +47,7 @@ $field_title = isset($params->field_title) ? $params->field_title : $setting[0]-
                 height:{{$params->height}},
                 relative_urls: false,
                 selector:'#{{$niceName.$field->id}}',
-                plugins: "{{json_encode($params->plugins)}}",
+                plugins: "{{$params->plugins}}",
                 toolbar:"{{$params->toolbar}}",
                 content_css:"{{$params->content_css}}",
                 @foreach((array) $params->tiny_parameters as $key=>$p)
