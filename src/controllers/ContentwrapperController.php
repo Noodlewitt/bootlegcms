@@ -874,7 +874,7 @@ class ContentwrapperController extends CMSController
                     $fileObj->thumbnailUrl = $finalUrl; //todo
                     $fileObj->deleteUrl = action('\Bootleg\Cms\ContentsController@getDeleteUpload', array($fileName)); //"//".$_SERVER['SERVER_NAME']."/cms/deleteuploads/$fileName"; //todo
                     $fileObj->deleteType = "GET";
-
+                    $fileObj->content_type = $type;
                     $return->files[] = $fileObj;
                 } else {
                     //TODO:validation failure messages.
