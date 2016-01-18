@@ -64,4 +64,20 @@ class Application extends Node {
 
         return (unserialize($GLOBALS['application']));
     }
+
+    public static function getAuthorized()
+    {
+        $authorized_apps = Application::where('user_id', @Auth::user()->id)->get();
+
+        foreach($authorized_apps as $app)
+        {
+            $authorized_apps = $authorized_apps->merge($app->getDescendants());
+        }
+
+        //$current_app = static::getApplication();
+
+        //if($current_app instanceof static::class) $authorized_apps = $authorized_apps->merge($current_app);
+
+        return $authorized_apps;
+    }
 }

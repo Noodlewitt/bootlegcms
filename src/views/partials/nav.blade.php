@@ -1,12 +1,7 @@
 <?php
     $navItems = Event::fire('nav.links', []);
 
-    $authorized_apps = Application::where('user_id', Auth::user()->id)->get();
-
-    foreach($authorized_apps as $app)
-    {
-        $authorized_apps = $authorized_apps->merge($app->getDescendants());
-    }
+    $authorized_apps = Application::getAuthorized();
 ?>
 
 <div class="navbar navbar-fixed-top navbar-default" role="navigation">
