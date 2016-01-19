@@ -39,6 +39,11 @@ class Application extends Node {
         return ($this->hasMany('ApplicationUrl'));
     }
 
+    public function secure_url()
+    {
+        return ($this->hasMany('ApplicationUrl')->where('ssl', 1));
+    }
+
     public function setting()
     {
         return ($this->hasMany('Applicationsetting'));

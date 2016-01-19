@@ -33,7 +33,10 @@ Route::group(['middleware' => 'cms.setup'], function () {
     $GLOBALS['applicationurl'] = serialize($applicationurl);
     $GLOBALS['application'] = serialize($application);
 
-    Route::group(array('prefix'=>@$applicationurl->folder), function () use ($application, $applicationurl) {
+    $prefix = @$applicationurl->folder ? $applicationurl->folder : '/';
+    if($applicationurl->prefix) $prefix .= $applicationurl->prefix;
+
+    Route::group(array('prefix'=>$prefix), function () use ($application, $applicationurl) {
     //dd(Request::path());
         $languages = array('en'); //TODO <<
         $locale = null;

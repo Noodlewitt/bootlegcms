@@ -44,10 +44,15 @@ class ApplicationUrl extends Eloquent
         $prefix = static::getPrefix();
 
                
-        $applicationUrl = ApplicationUrl::with('application', 'application.setting', 'application.languages', 'application.plugins')->where('domain', '=', "$domain")
-            ->where('folder', 'LIKE', $folder)->where('prefix', 'LIKE', $prefix)->first();
-
-
+        $applicationUrl = ApplicationUrl::with('application', 'application.setting', 'application.languages', 'application.plugins', 'application.url', 'application.secure_url')
+            ->where('domain', '=', "$domain")
+            ->where('folder', 'LIKE', $folder)
+            ->where(function($sq) use ($prefix) {
+                $sq->where('prefix', 'LIKE', $prefix)->orWhere('prefix', '')->orWhereNull('prefix');
+            })
+            ->orderBy('ssl', \Request::secure() ? 'DESC' : 'ASC')
+            ->orderBy('prefix', 'DESC')
+            ->first();
 
         if ($setSession && !Session::get('application_url'.$folder)) {
             Session::put('application_url'.$folder, $applicationUrl);
@@ -69,13 +74,19 @@ class ApplicationUrl extends Eloquent
 
     public static function getPrefix()
     {
-        $path = parse_url($_SERVER['REQUEST_URI']);
-        $folder = static::getFolder();
+        $url = parse_url($_SERVER['REQUEST_URI']);
 
-        if($folder == '/') {
-            if(isset($path[1])) return $path[1];
-        } else {
-            if(isset($path[2])) return $path[2];
+        if(isset($url['path']))
+        {
+            $path = explode('/', $url['path']);
+
+            $folder = static::getFolder();
+
+            if($folder == '/') {
+                if(isset($path[1])) return $path[1];
+            } else {
+                if(isset($path[2])) return $path[2];
+            }
         }
 
         return '';
@@ -88,5 +99,26 @@ class ApplicationUrl extends Eloquent
         }
 
         return(@$domain);
+    }
+
+    public function getUrlAttribute($secure = null)
+    {
+        $protocol = 'http://';
+
+        if($secure == null) {
+            $protocol = \Request::secure() ? 'https://' : 'http://';
+        } else {
+            $protocol = $secure ? 'https://' : 'http://';
+        }
+
+        $folder = ($this->folder ? $this->folder : '/');
+        if($folder == '/') $folder = '';
+
+        return $protocol . $this->domain . $folder;
+    }
+
+    public function getUrlPrefixedAttribute($secure = null)
+    {
+        return $this->url . '/' . $this->prefix;
     }
 }
