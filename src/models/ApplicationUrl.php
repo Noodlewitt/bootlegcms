@@ -41,18 +41,21 @@ class ApplicationUrl extends Eloquent
             $folder = ApplicationUrl::getFolder();
         }
 
+        $prefix = static::getPrefix();
+
                
         $applicationUrl = ApplicationUrl::with('application', 'application.setting', 'application.languages', 'application.plugins')->where('domain', '=', "$domain")
-                          ->where('folder', 'LIKE', "$folder")->first();
-    
-        
+            ->where('folder', 'LIKE', $folder)->where('prefix', 'LIKE', $prefix)->first();
+
+
+
         if ($setSession && !Session::get('application_url'.$folder)) {
             Session::put('application_url'.$folder, $applicationUrl);
         }
         
         return($applicationUrl);
     }
-    
+
     public static function getFolder()
     {
         $folder = str_replace('public/index.php', '', $_SERVER['SCRIPT_NAME']);
@@ -62,6 +65,20 @@ class ApplicationUrl extends Eloquent
             $folder = '/'.$folder;
         }
         return($folder);
+    }
+
+    public static function getPrefix()
+    {
+        $path = parse_url($_SERVER['REQUEST_URI']);
+        $folder = static::getFolder();
+
+        if($folder == '/') {
+            if(isset($path[1])) return $path[1];
+        } else {
+            if(isset($path[2])) return $path[2];
+        }
+
+        return '';
     }
     
     public static function getDomain()
