@@ -121,6 +121,6 @@ class ApplicationUrl extends Eloquent
 
     public function getUrlPrefixedAttribute($secure = null)
     {
-        return $this->url . '/' . $this->prefix;
+        return $this->getUrlAttribute($secure) . '/' . $this->prefix;
     }
 }
