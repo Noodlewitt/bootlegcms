@@ -82,7 +82,9 @@ class Application extends Node {
 
     public static function getAuthorized()
     {
-        $authorized_apps = Application::where('user_id', @Auth::user()->id)->get();
+        $user_id = @Auth::user()->id ? @Auth::user()->id : 0;
+
+        $authorized_apps = Application::where('user_id', $user_id)->get();
 
         foreach($authorized_apps as $app)
         {
