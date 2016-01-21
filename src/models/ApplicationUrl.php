@@ -111,7 +111,7 @@ class ApplicationUrl extends Eloquent
             $protocol = $secure ? 'https://' : 'http://';
         }
 
-        if($protocol == 'https://' && !app()->environment('production')) $protocol = 'http://';
+        if($protocol == 'https://' && (!app()->environment('production') || $this->ssl == 0)) $protocol = 'http://';
 
         $folder = ($this->folder ? $this->folder : '/');
         if($folder == '/') $folder = '';
