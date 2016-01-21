@@ -70,6 +70,12 @@ class Application extends Node {
         return (unserialize($GLOBALS['application']));
     }
 
+    public static function getApplicationUrl($domain = '', $folder = '')
+    {
+
+        return (unserialize($GLOBALS['applicationurl']));
+    }
+
     public static function getAuthorized()
     {
         $authorized_apps = Application::where('user_id', @Auth::user()->id)->get();
