@@ -72,8 +72,12 @@ class Application extends Node {
 
     public static function getApplicationUrl($domain = '', $folder = '')
     {
+        $url = @static::getApplication()->url->where('ssl','=','0')->first();
 
-        return static::getApplication()->urls->where('ssl','0')->first();
+        if(!$url) $url = unserialize($GLOBALS['application']);
+
+        return $url;
+
     }
 
     public static function getAuthorized()
