@@ -1,4 +1,7 @@
 @extends(view()->exists($cms_package.'::layouts.master') ? $cms_package.'::layouts.master' : 'cms::layouts.master')
+<?php
+$i = 0;
+?>
 @section('main-content')
     <div class="col-md-offset-2 col-md-10">
         <div class="page-header row">
