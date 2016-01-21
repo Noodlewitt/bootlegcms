@@ -70,11 +70,11 @@ class Application extends Node {
         return (unserialize($GLOBALS['application']));
     }
 
-    public static function getApplicationUrl($domain = '', $folder = '')
+    public static function getApplicationUrl($force_current = false)
     {
         $url = @static::getApplication()->url->where('ssl','=','0')->first();
 
-        if(!$url) $url = unserialize($GLOBALS['application']);
+        if(!$url || $force_current) $url = unserialize($GLOBALS['applicationurl']);
 
         return $url;
 
