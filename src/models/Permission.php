@@ -72,19 +72,13 @@ class Permission extends Eloquent {
         if ($perm->result === false)
         {
             //we can redirect!
-            if ($message)
-            {
-                return Redirect::guest(config('bootlegcms.cms_route') . 'login')
-                    ->with('danger', $message);
-            } else
-            {
-                return Redirect::guest(config('bootlegcms.cms_route') . 'login');
-            }
+            $response = Redirect::to(config('bootlegcms.cms_route') . 'login');
+            if ($message) $response = $response->with('danger', $message);
 
-        } else
-        {
-            return (true);
+            return $response;
         }
+
+        return true;
     }
 
     public static function getPermission($controller_type, $controller_id = null, $return = false)
