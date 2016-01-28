@@ -14,7 +14,7 @@
         "aws/aws-sdk-php-laravel": "2.0.1",
         "baum/baum": "~1.1",
 	    "filp/whoops": "^1.1",
-        "zofe/rapyd": "2.0.*"
+        "zofe/rapyd": "2.1.*"
     },
     "autoload": {
         "classmap": [
