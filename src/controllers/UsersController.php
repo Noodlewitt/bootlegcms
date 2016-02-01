@@ -49,7 +49,7 @@ class UsersController extends CMSController
             $user = User::find(Auth::user()->id);
 
             \Session::flash('success', 'You are now logged in!');
-            return redirect()->intended(action('\Bootleg\Cms\UsersController@anyDashboard'));
+            return redirect()->action('\Bootleg\Cms\UsersController@anyDashboard');
         }
         else if(\Input::get('email') && \Input::get('password')){
             \Session::flash('danger', 'Authentication Failed!');
