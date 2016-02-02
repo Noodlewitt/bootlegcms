@@ -46,9 +46,9 @@ class ApplicationUrl extends Eloquent
                           ->where('folder', 'LIKE', "$folder")->first();
     
         
-        if ($setSession && !Session::get('application_url'.$folder)) {
-            Session::put('application_url'.$folder, $applicationUrl);
-        }
+        //if ($setSession && !Session::get('application_url'.$folder)) {
+        //    Session::put('application_url'.$folder, $applicationUrl);
+        //}
         
         return($applicationUrl);
     }
