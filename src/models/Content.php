@@ -457,7 +457,7 @@ class Content extends \Baum\Node{ //Eloquent {status
 
             if(config('bootlegcms.cms_languages')){
 
-                $this->language = $this->languages(\App::getLocale())->first();
+                $this->language = $this->languages->first();
             }
         }
         $this->orig_name = $name;
@@ -469,7 +469,7 @@ class Content extends \Baum\Node{ //Eloquent {status
 
         if(!isset($this->orig_slug)){
             if(config('bootlegcms.cms_languages')){
-                $this->language = $this->languages(\App::getLocale())->first();
+                $this->language = $this->languages->first();
             }
         }
         $this->orig_slug = $slug;

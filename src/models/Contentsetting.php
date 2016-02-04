@@ -151,7 +151,7 @@ class Contentsetting extends Eloquent {
         return $value;
         if(!isset($this->orig_value)){
             if(config('bootlegcms.cms_languages')){
-                $this->language = $this->languages(\App::getLocale())->first();
+                $this->language = $this->languages->first();
             }        
         }
         $this->orig_value = $value;
@@ -162,7 +162,7 @@ class Contentsetting extends Eloquent {
         return $name;
         if(!isset($this->orig_name)){
             if(config('bootlegcms.cms_languages')){
-                $this->language = $this->languages(\App::getLocale())->first();
+                $this->language = $this->languages->first();
             }
         }
         $this->orig_name = $name;
