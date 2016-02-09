@@ -15,7 +15,7 @@ $values = (array)$params->values;
 <div class='text {{$niceName}}' >
     @foreach($setting as $field)
         @if(isset($params->max_number)  && $params->max_number > 1)
-            {!! Form::select("setting[".$field->name."][".get_class($field)."][".$field->id."][]",  $values, $field->value, ['class'=>'form-control', 'multiple'=>'multiple', 'id'=>str_slug('setting_'.$field->name."_".get_class($field)."_".$field->id, '_')])!!}
+            {!! Form::select("setting[".$field->name."][".get_class($field)."][".$field->id."][]",  $values, $field->value == -1 ? array_keys($values) : $field->value, ['class'=>'form-control', 'multiple'=>'multiple', 'id'=>str_slug('setting_'.$field->name."_".get_class($field)."_".$field->id, '_')])!!}
         @else
             {!! Form::select("setting[".$field->name."][".get_class($field)."][".$field->id."]",  $values, $field->value, ['class'=>'form-control'])!!}
         @endif
