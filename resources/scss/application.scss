@@ -2,12 +2,13 @@
 @import "mixins";
 @import "bootstrap/main";
 @import '../components/fontawesome/scss/font-awesome';
-@import '../components/jstree/dist/themes/default/style.css';
-@import '../components/blueimp-file-upload/css/jquery.fileupload.css';
+@import '../components/jstree/dist/themes/default/style';
+@import '../components/blueimp-file-upload/css/jquery.fileupload';
 @import '../components/soundasleep-bootstrap-datetimepicker-sass/src/sass/bootstrap-datetimepicker';
-@import '../components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css';
-@import '../components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css';
-@import '../components/intro.js/introjs.css';
+@import '../components/bootstrap-tagsinput/dist/bootstrap-tagsinput';
+@import '../components/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker';
+@import '../components/intro.js/introjs';
+@import '../components/bootstrap-multiselect/dist/css/bootstrap-multiselect';
 
 //base layout
 @import "core";

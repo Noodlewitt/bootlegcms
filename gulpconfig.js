@@ -91,7 +91,10 @@ module.exports = {
             'resources/components/blueimp-file-upload/js/jquery.fileupload-ui.js',
             'resources/components/tinymce-builded/js/tinymce/tinymce.jquery.js',
             'resources/components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
+            'resources/components/moment/moment.js',
+            'resources/components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js',
             'resources/components/bootstrap-sass-datepicker/js/bootstrap-sass-datepicker.js',
+            'resources/components/soundasleep-bootstrap-datetimepicker-sass/src/js/bootstrap-datetimepicker.js',
             'resources/components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
             'resources/components/intro.js/intro.js',
 
