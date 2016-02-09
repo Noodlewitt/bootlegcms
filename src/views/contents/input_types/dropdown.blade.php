@@ -1,4 +1,12 @@
 <?php
+if(@$content){
+    $settingAfterEvent = \Event::fire('content.dropdown.draw', array('content'=>$content, 'setting'=>$setting));    
+    $settingAfterEvent = reset($settingAfterEvent);
+    if(!empty($settingAfterEvent)){
+        $setting = $settingAfterEvent;
+    }
+}
+
 $params = Contentsetting::parseParams($setting[0]);
 $niceName = preg_replace('/\s+/', '', $setting[0]->name);
 $field_title = isset($params->field_title) ? $params->field_title : $setting[0]->name;
