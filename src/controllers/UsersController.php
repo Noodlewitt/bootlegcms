@@ -55,7 +55,11 @@ class UsersController extends CMSController
     {
         //dd(array('email'=>Input::get('email'), 'password'=>Input::get('password')));
         //var_dump(Hash::make('admin'));
-        if (\Auth::attempt(array('email'=>\Input::get('email'), 'password'=>\Input::get('password')))) {
+        if (\Auth::attempt(array(
+            'email'=>\Input::get('email'), 
+            'password'=>\Input::get('password',
+            'status'=>1
+            )))) {
             //and we need to update last logged in datetime
             $user = User::find(Auth::user()->id);
 
