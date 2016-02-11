@@ -1,5 +1,8 @@
 <?php namespace Bootleg\Cms;
 
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+
 class ApplicationController extends CmsController {
 
     public function __construct() {
@@ -166,8 +169,7 @@ class ApplicationController extends CmsController {
     public function getSwitch($id){
         $application = \Application::find($id);
         if($application){
-            \Session::put('cms_app', $id);
-            return redirect()->back()->with('message', 'Application switched');
+            return redirect()->away('http://' . $application->url[0]->domain . '/cms?sid=' . Session::getID());
         } else {
             return redirect()->back()->with('message', 'An error occured when switching app');
         }
