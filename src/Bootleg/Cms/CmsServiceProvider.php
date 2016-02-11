@@ -57,9 +57,13 @@ class CmsServiceProvider extends ServiceProvider
         
         Event::listen('router.matched', function ()
         {
-            if(Request::has('sid')) Session::setId(Request::get('sid'));
-
-            if (Auth::user()) $this->loadUserPermissions();
+            if(Request::has('sid')){
+                Session::setId(Request::get('sid'));
+                Session::start();
+            }
+            else{
+                if (Auth::user()) $this->loadUserPermissions();
+            }
         });
 
         //add in some standard dash items..
