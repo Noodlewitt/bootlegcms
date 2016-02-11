@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Zofe\Rapyd\RapydServiceProvider;
+use Request;
+use Session;
 
 class CmsServiceProvider extends ServiceProvider
 {
@@ -52,8 +54,11 @@ class CmsServiceProvider extends ServiceProvider
             $user->loggedin_at = Carbon::now();
             $user->save();
         });
+        
         Event::listen('router.matched', function ()
         {
+            if(Request::has('sid')) Session::setId(Request::get('sid'));
+
             if (Auth::user()) $this->loadUserPermissions();
         });
 
@@ -77,7 +82,6 @@ class CmsServiceProvider extends ServiceProvider
 
         //load middleware, helpers, views, routes
         $router->middleware('permissions', 'Bootleg\Cms\Middleware\Permissions');
-        $router->middleware('cms.setup', 'Bootleg\Cms\Middleware\CmsSetup');
 
         //register the command...
         $this->commands('Bootleg\Cms\Publish');
