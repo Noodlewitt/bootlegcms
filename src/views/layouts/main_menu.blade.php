@@ -27,7 +27,7 @@
         ?>
         @foreach($menuItems as $menuItem)
             <?php
-            $loc = @$menuItem['href']?$menuItem['href']:$menuItem['location'];
+            $loc = @$menuItem['href']?$menuItem['href']:action($menuItem['location']);
             ?>
         @if(Permission::getPermission($menuItem['location'],'')->result)
         <li class="{{Request::is(config('bootlegcms.cms_route').$menuItem['activePattern'])?'active':''}}">
