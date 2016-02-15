@@ -26,9 +26,12 @@
             $menuItems = Event::fire('menu.links', array());
         ?>
         @foreach($menuItems as $menuItem)
+            <?php
+            $loc = @$menuItem['href']?$menuItem['href']:$menuItem['location'];
+            ?>
         @if(Permission::getPermission($menuItem['location'],'')->result)
         <li class="{{Request::is(config('bootlegcms.cms_route').$menuItem['activePattern'])?'active':''}}">
-            <a href="{{action($menuItem['location'])}}">
+            <a href="{{$loc}}">
                 <i class="menu-icon glyphicon {{$menuItem['icon']}}"></i>
                 <span class="mm-text">{{$menuItem['title']}}</span>
             </a>
