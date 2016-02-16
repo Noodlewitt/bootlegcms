@@ -71,6 +71,14 @@
                 });
             });
 
+            $('body').on('click', ".js-main-content-container a", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $.get($(this).attr('href'), function(data){
+                    $('.main-content').html(data);
+                });
+            });
+
             $('body').on('click', "input.js-main-content, button.js-main-content", function(e) {
                 e.preventDefault();
                 e.stopPropagation();

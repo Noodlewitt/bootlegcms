@@ -10,7 +10,13 @@ if(@$childrenSettings){
         left: -100%;
         z-index: 1;    
     }
-
+    .popover{
+        left:0 !important;
+        max-width: 330px !important;
+    }
+    .popover .arrow{
+        left:15% !important;
+    }
     a.edit-field, a.ok-field{
         position: absolute;
         top:5px;
@@ -93,7 +99,7 @@ if(@$childrenSettings){
                                     <div class="btn-group table-actions" role="group" aria-label="get children">
                                         <button title='expand' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-primary btn-sm js-show-children' data-toggle="button"><span class='glyphicon glyphicon-chevron-down'></span></button>
                                         <a title='open' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-info btn-sm '><span class='glyphicon glyphicon-th-list'></span></a>
-                                        <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm '><span class='glyphicon glyphicon-pencil'></span></a>
+                                        <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm js-edit-row'><span class='glyphicon glyphicon-pencil'></span></a>
                                         <a title='delete' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@anyDestroy', array($child->id))}}' class='btn btn-danger btn-sm js-delete-item'><span class='glyphicon glyphicon-remove'></span></a>
                                     </div>
                                 </th>
@@ -109,40 +115,43 @@ if(@$childrenSettings){
                             <td>{{$child->slug}}</td>
                             @endif
                             @foreach($childrenSettings[$child->id] as $setting)
-                                <td class='setting-cell'>
+                                @if(!$setting->parent_id) {{--we want ot ignore all the nested settings --}}
+                                <td class='setting-cell {{$setting->field_type}}'>
                                     
                                     <form action='{{action('\Bootleg\Cms\ContentsController@anyUpdate', array($child->id))}}' method='POST'>
                                         <div class='setting'>
                                             <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>" />
-                                            
-                                            @if($setting->field_type == 'upload')
-                                                @if(strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'png' || strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'jpg' || strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'gif')
-                                                        <a href="{{$setting->value}}" target="_blank">
-                                                            <img src='{{$setting->value}}'  width='100'/>
-                                                        </a>
+
+                                                @if($setting->field_type == 'upload')
+                                                    @if(strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'png' || strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'jpg' || strtolower(pathinfo($setting->value, PATHINFO_EXTENSION)) ==  'gif')
+                                                            <a href="{{$setting->value}}" target="_blank">
+                                                                <img src='{{$setting->value}}'  width='100'/>
+                                                            </a>
+                                                    @else
+                                                        <strong>{{$setting->name}}</strong>
+                                                        <div class='value {{$setting->field_type}}'>
+                                                        {{$setting->value}}
+                                                        </div>
+                                                    @endif
+                                                @elseif($setting->field_type == 'textarea' || $setting->field_type == 'tinymce')
+                                                    <strong>{{$setting->name}}</strong>
+                                                    <div class='value {{$setting->field_type}}'>
+                                                        ...
+                                                    </div>
                                                 @else
                                                     <strong>{{$setting->name}}</strong>
-                                                    <div class='value {{$setting->field_type}}'>    
-                                                    {{$setting->value}}
-                                                    </div>
-                                                @endif
-                                            @else
-                                                <strong>{{$setting->name}}</strong>
-                                                <div class='value {{$setting->field_type}}'>
-                                                    <?php
+                                                    <div class='value {{$setting->field_type}}'>
+                                                        <?php
                                                         if(!is_array($setting->value)){
                                                             $t = substr($setting->value, 0, 200);
                                                             if($t != $setting->value){
                                                                 $t = strip_tags($t) . '&hellip;';
                                                             }
                                                         }
-                                                        else{
-                                                            $t='arr';
-                                                        }
-                                                    ?>
-                                                    {{$t}}
-                                                </div>
-                                            @endif
+                                                        ?>
+                                                        {{$t}}
+                                                    </div>
+                                                @endif
                                         </div>     
                                     </form>
                                     
@@ -152,6 +161,7 @@ if(@$childrenSettings){
                                     </a>
                                     @endif
                                 </td>
+                                @endif
                             @endforeach
                            
                                <?php /*    @for($i=0; $i < $padCells; $i++)
@@ -167,7 +177,7 @@ if(@$childrenSettings){
                                     <div class="btn-group" role="group" aria-label="get children">
                                         <button title='expand' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-primary btn-sm js-show-children' data-toggle="button"><span class='glyphicon glyphicon-chevron-down'></span></button>
                                         <a title='open' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@getTable', array($child->id))}}' class='btn btn-info btn-sm '><span class='glyphicon glyphicon-th-list'></span></a>
-                                        <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm '><span class='glyphicon glyphicon-pencil'></span></a>
+                                        <a title='edit' data-toggle="modal" data-target="#popup" href='{{action('\Bootleg\Cms\ContentsController@anyEdit', array($child->id))}}' class='btn btn-warning btn-sm' role="button" tabindex="0"><span class='glyphicon glyphicon-pencil'></span></a>
                                         <a title='delete' data-toggle="tooltip" href='{{action('\Bootleg\Cms\ContentsController@anyDestroy', array($child->id))}}' class='btn btn-danger btn-sm js-delete-item'><span class='glyphicon glyphicon-remove'></span></a>
                                     </div>
                                 </td>
@@ -189,12 +199,16 @@ if(@$childrenSettings){
             </tfoot>
         </table>
     @endif
+
     @if(isset($children) && method_exists($children, 'currentPage'))
-        {!!$children->appends(Input::get())->render()!!}
+        <div class="js-main-content-container">{!!$children->appends(Input::get())->render()!!}</div>
     @endif
+
     <script type="text/javascript">
         $(function () {
-            $('[data-toggle="popover"]').popover();
+            $('[data-toggle="popover"]').popover({
+                'placement':'bottom'
+            });
 
             if(typeof(tableEvents) === 'undefined'){
                 tableEvents = true;
@@ -224,12 +238,21 @@ if(@$childrenSettings){
                     e.preventDefault();
                     $me = $(this);
                     $td = $me.closest('td');
-
-                    $.get($me.attr('href'), function(data){
-                        var $data = $.parseHTML(data);
-                        data+= '<button class="btn btn-small btn-success js-submit-setting">OK</button>';
-                        $('form .setting', $td).popover({html:true, content:data}).popover('toggle');
-                    });    
+                    if($td.hasClass('tinymce')){
+                        console.log($('.js-edit-row', $td.closest('tr')));
+                        $('.js-edit-row', $td.closest('tr')).click();
+                    }
+                    else{
+                        $.get($me.attr('href'), function(data){
+                            var $data = $.parseHTML(data);
+                            data+= '<button class="btn btn-small btn-success js-submit-setting">OK</button>';
+                            $('form .setting', $td).popover({
+                                html:true,
+                                content:data,
+                                placement:'bottom'
+                            }).popover('toggle');
+                        });
+                    }
                 });
 
                 //OK on popover box
@@ -243,6 +266,9 @@ if(@$childrenSettings){
                         var formValue = $('.form-control', $form).val();
                         if(endsWith(formValue,'png') || endsWith(formValue,'jpg') || endsWith(formValue,'gif')){
                             formValue = '<img width="100" src="'+formValue+'" />';
+                        }
+                        if(formValue.constructor === Array){
+                            formValue = formValue.join();
                         }
                         $('form .setting .value', $td).html(formValue);
                     });
@@ -289,7 +315,8 @@ if(@$childrenSettings){
                 e.preventDefault();
                 $('#popup').modal('hide');
             });
-            
+
+
             /*if(typeof(jsChildrenSearch) === 'undefined'){
                 jsChildrenSearch = true;
                 $('.main-content').on('click', '.js-children-search', function(e){
