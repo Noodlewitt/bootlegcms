@@ -70,8 +70,8 @@ class Contentsetting extends Eloquent {
         "max_number":1,
         "height":300,
         "formats": {},
-        "plugins": ["link", "code", "hr", "image", "table", "media", "uploadImage","textcolor"],
-        "toolbar": "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload | fontsizeselect",
+        "plugins": ["link", "code", "hr", "image", "table", "media", "uploadImage","textcolor","code"],
+        "toolbar": "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload | fontsizeselect | code",
         "content_css":"",
         "tiny_parameters":{}
     }';
