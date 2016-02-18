@@ -94,8 +94,8 @@ class ContentwrapperController extends CMSController
             Event::fire('content.update', array($this->content));
             $content = $this->content->superSave($input);
             $content = ContentwrapperController::saveSettings($content, $input);
-            Event::fire('content.created', array($this->content));
-            Event::fire('content.updated', array($this->content));
+            Event::fire('content.created', array($content));
+            Event::fire('content.updated', array($content));
           //  dd($tree);
 
             return \Redirect::action(@$content->edit_action?$content->edit_action:'\Bootleg\Cms\ContentsController@anyEdit', $content->id);
