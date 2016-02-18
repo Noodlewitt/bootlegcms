@@ -128,8 +128,8 @@ class ContentwrapperController extends CMSController
             Event::fire('content.create', array($this->content));
             Event::fire('content.update', array($this->content));
             $tree = $this->content->superSave($input);
-            Event::fire('content.created', array($this->content));
-            Event::fire('content.updated', array($this->content));
+            Event::fire('content.created', array($tree));
+            Event::fire('content.updated', array($tree));
           //  dd($tree);
 
 
