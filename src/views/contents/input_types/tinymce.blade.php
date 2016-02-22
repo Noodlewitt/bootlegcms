@@ -20,13 +20,9 @@ $field_title = isset($params->field_title) ? $params->field_title : $setting[0]-
                     text: 'Upload Image',
                     icon: 'image',
                     onclick: function() {
-                        // Open window
                         editor.windowManager.open({
                             title: 'Upload Image',
                             url: '/cms/content/inline-upload',
-                        //    body: [
-                        //        {type: 'textbox', name: 'title', label: 'Title'}
-                        //    ],
                             buttons: [{
                                 text: 'Close',
                                 onclick: 'close'
@@ -43,15 +39,15 @@ $field_title = isset($params->field_title) ? $params->field_title : $setting[0]-
                 });
             });
             tinymce.baseURL = '/vendor/bootleg/cms/components/tinymce-builded/js/tinymce';
-            tinymce.init({
-                skin_url: '/vendor/bootleg/cms/components/tinymce-skin',
-                height:{{$params->height}},
-                selector:'#{{$niceName.$field->id}}',
-                plugins: ["link", "code", "hr", "image", "table", "media", "uploadImage"],
-                toolbar:"undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload",
-                relative_urls: false,
-                entity_encoding : "raw"
-            });
+            tinymce.init({!! json_encode(array_merge((array) @$params->options, [
+                    'skin_url'        => '/vendor/bootleg/cms/components/tinymce-skin',
+                    'height'          => $params->height,
+                    'selector'        => '#' . $niceName . $field->id,
+                    'plugins'         => ["link", "code", "hr", "image", "table", "media", "uploadImage"],
+                    'toolbar'         => "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image upload",
+                    'relative_urls'   => false,
+                    'entity_encoding' => "raw",
+                ])) !!});
         });
     </script>
 @endforeach
