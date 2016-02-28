@@ -579,6 +579,7 @@ class ContentwrapperController extends CMSController {
 		Event::fire('content.delete', [$d]);
 		$d->delete();
 		Event::fire('content.deleted', [$d]);
+		$this->content->find($id)->delete();
 
 		if (!\Request::ajax()) {
 			return redirect()->action('ContentsController@anyTree');
