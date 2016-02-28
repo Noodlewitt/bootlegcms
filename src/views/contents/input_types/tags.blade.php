@@ -18,22 +18,32 @@ $options['multiple'] = 'multiple';
 if(!@$params->simple){
     $options['class'] .= ' select2';
 }
-$tagsArr = explode(@$params->delimiter?$params->delimiter:',', $setting->value)
 
-//dd($tagsArr);
+$tagsArr = explode(@$params->delimiter?$params->delimiter:',', $setting->value);
+
+//we flip this arrout so we can have the defaults included into this but not selected.
+$tagsArr = array_flip($tagsArr);
+foreach($tagsArr as $key=>$tagArr){
+    $out[$key] = true;
+}
+
+$tagsArr = $out;
+
+//we need to merge in any default values.
+foreach($params->values as $key=>$default){
+    if(!isset($tagsArr[$key])){
+        $tagsArr[$key] = $default;    
+    }
+}
+
 ?>
 <div class='form-group'>
     {!! Form::label("setting[".$setting->orig_name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
 
     <div class='text {{$niceName}} {{$unique}}' >   
         <select id="{{$niceName}}{{$unique}}" name="setting[{{$setting->name}}][{{get_class($setting)}}][{{$setting->id}}][]" class="{{$options['class']}}" multiple="" tabindex="-1" aria-hidden="true">
-            @foreach($tagsArr as $tag)
-                @if($tag)
-                    <option selected="selected">{{$tag}}</option>
-                @endif
-            @endforeach
-            @foreach($values as $standardValue)
-                <option>{{$standardValue}}</option>
+            @foreach($tagsArr as $key=>$tag)
+                <option {{$tag?'selected="selected"':''}}>{{$key}}</option>
             @endforeach
         </select>
     </div>
@@ -41,7 +51,9 @@ $tagsArr = explode(@$params->delimiter?$params->delimiter:',', $setting->value)
 <script type="text/javascript">
 $(function () {
     $('.{{$unique}} select').select2({
-        tags:true
+        @if(!@$params->fixed)
+        tags:true,
+        @endif
     });
 });
 </script>

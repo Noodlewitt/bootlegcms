@@ -1,5 +1,5 @@
 <?php
-if($content){
+if(isset($content)){
 
     $settingAfterEvent = \Event::fire('content.text.draw', array('content'=>$content, 'setting'=>$setting));
     $settingAfterEvent = reset($settingAfterEvent);

@@ -12,7 +12,7 @@ if(@$childrenSettings){
     }
     .popover{
         left:0 !important;
-        max-width: 330px !important;
+        max-width: 425px !important;
     }
     .popover .arrow{
         left:15% !important;
@@ -262,8 +262,11 @@ if(@$childrenSettings){
                     $form = $me.closest('form');
                     $td = $me.closest('td');
                     $.post($form.attr('action'), $form.serialize(), function(data){
+                        console.log($form.serialize());
                         $('form .setting', $td).popover('hide');
                         var formValue = $('.form-control', $form).val();
+                        console.log(formValue);
+                        console.log($('.form-control', $form));
                         if(endsWith(formValue,'png') || endsWith(formValue,'jpg') || endsWith(formValue,'gif')){
                             formValue = '<img width="100" src="'+formValue+'" />';
                         }

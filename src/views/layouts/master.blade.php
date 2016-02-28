@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="popup" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
 
                 </div><!-- /.modal-content -->

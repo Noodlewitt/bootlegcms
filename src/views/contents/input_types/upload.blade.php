@@ -43,9 +43,11 @@ if($content_mode == 'contents'){
 }
 ?>
 <div class='form-group'>
-    <div class='upload {{$niceName}}-{{$unique}}' >   
+    <div class='upload {{$niceName}}-{{$unique}}' >
+
         @if($setting->name !="_inline")
         {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
+        <p>{{@$params->text}}</p>
         @endif
         
 
@@ -229,7 +231,7 @@ if($content_mode == 'contents'){
                     //on deleted, we remove the input file
                     console.log(data);
                     var $input = $('input.upload-value', $(data.context).closest('tr')).val('');
-                    $input.clone().appendTo( $container);
+                    //$input.clone().appendTo( $container);
                     
                     //$inp = $('input.file-url', $container{{$niceName}}).eq($(data.context).data('item_id'));
                     //$inp.attr('name',$inp.attr('name')+'[deleted]');

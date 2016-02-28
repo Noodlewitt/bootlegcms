@@ -29,13 +29,14 @@ if(@$params->tooltip->text){
     $settingGroups = $setting->multichildren()->get()->groupBy('index');
 
     if($content_mode == 'contents'){
+
         if(@$setting->templatesetting_id){
             $templateGroup = $setting->templatesetting()->first();
             $templateGroupItems = \Templatesetting::where('parent_id', $templateGroup->id)->get();
         }
         else{
             //this has no templatesettings yet - (ie this is the 1st time saving with it present)
-            $templateGroup = \Template::find($setting->id);
+            $templateGroup = \Template::find($setting->template_id);
             $templateGroupItems = \Templatesetting::where('parent_id', $templateGroup->id)->get();
         }
     }

@@ -1,5 +1,6 @@
 @extends(view()->exists($cms_package.'::layouts.master') ? $cms_package.'::layouts.master' : 'cms::layouts.master')
 @section('main-content')
+    
     <div class="col-md-offset-2 col-md-10">
         <div class="page-header row">	
                 <!-- Page header, center on small screens -->
@@ -28,7 +29,7 @@
                                 <li class="form-group">
                                     {!! Form::label('domains', 'Application Domain(s):') !!}
                                     {{-- We have to do this manually --}}
-                                    <select name='' class='form-control tag' multiple>
+                                    <select name='domains[]' class='form-control tag' multiple="multiple">
                                         @foreach($application->url as $url)
                                             <option value="{{$url->domain}}" selected>{{$url->domain}}</option>
                                         @endforeach

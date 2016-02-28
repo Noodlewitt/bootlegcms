@@ -130,13 +130,13 @@ class ApplicationController extends CmsController
 
             $this->application->update($input);
             //dd($input);
-            //DOMAINS
-            $domains = explode(',', $input['domains']);
+            $domains = $input['domains'];
             //remove all the domains currently on the application:
             foreach ($this->application->url as $url) {
                 $url->delete();
             }
             $appUrls = [];
+
             foreach ($domains as $domain) {
                 $appUrl = new \ApplicationUrl();
                 $appUrl->domain = $domain;
@@ -144,7 +144,6 @@ class ApplicationController extends CmsController
                 $appUrls[] = $appUrl;
             }
             $this->application->url()->saveMany($appUrls);
-
 
             if (@$input['setting']) {
                 foreach ($input['setting'] as $type=>$setGrp) {
@@ -158,7 +157,7 @@ class ApplicationController extends CmsController
                             $applicationSetting->field_type = $applicationSetting->field_type?$applicationSetting->field_type:'text';
 
                             $applicationSetting->save();
-                            $applicationSetting->restore();     //TODO: do we always want to restore the deleted field here?
+                            $applicationSetting->restore();
                         }                        
                     }
                 }

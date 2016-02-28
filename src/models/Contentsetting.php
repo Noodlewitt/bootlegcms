@@ -67,8 +67,7 @@ class Contentsetting extends Eloquent {
 
     const DEFAULT_TAGS_JSON = '{
         "values": {
-          "default": "A Default Tag",
-          "customise": "If you want more default tags"
+
         },
         "max_number":1,
         "tooltip": {
