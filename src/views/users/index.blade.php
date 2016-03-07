@@ -3,7 +3,7 @@
 <div class="col-md-offset-2 col-md-10">
     <div class="page-header row">	
             <!-- Page header, center on small screens -->
-            <h1 class="col-xs-12"><i class="glyphicon glyphicon-user"></i>&nbsp;&nbsp;Users {!! link_to_action('\Bootleg\Cms\UsersController@anyCreate', 'Create User', null, array('class'=>'btn btn-primary pull-right')) !!}</h1>
+            <h1 class="col-xs-12"><i class="glyphicon glyphicon-user"></i> Users {!! link_to_action('\Bootleg\Cms\UsersController@anyCreate', 'Create User', null, array('class'=>'btn btn-primary pull-right')) !!}</h1>
     </div>
     <div class="row">
         <div class="col-xs-12">

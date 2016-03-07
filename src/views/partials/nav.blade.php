@@ -15,6 +15,14 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
 
+            </ul>
+
+            <!--<div class="navbar-menu-item">
+                <a href="#">Home</a>
+            </div>-->
+            <ul class="nav navbar-nav navbar-right">
+
+
                 @if(count($authorized_apps) > 1 && Permission::getPermission('\Bootleg\Cms\ApplicationController@getSwitch','')->result)
                     <li class="navbar-menu-item dropdown">
                         <a href="#" class="dropdown-toggle"
@@ -57,12 +65,6 @@
                     </li>
                 @endforeach
 
-            </ul>
-
-            <!--<div class="navbar-menu-item">
-                <a href="#">Home</a>
-            </div>-->
-            <ul class="nav navbar-nav navbar-right">
                 <li class="navbar-user">
                     <div class="navbar-user-avatar">
                         <!-- <img src="/vendor/bootleg/cms/img/madeinkatana.png" />-->
@@ -72,9 +74,7 @@
                         <!--<div class="text-bold">Welcome</div>-->
                         <div>{{ @Auth::user()->name ? Auth::user()->name : (@Auth::user()->username ? Auth::user()->username : 'Administrator') }}</div>
                     </div>
-                    <a title='Logout' href="{{ action('\Bootleg\Cms\UsersController@anyLogout') }}" class="logout-button">
-                        <span>Logout</span> <i class="text-cms-primary glyphicon glyphicon-log-out"></i>
-                    </a>
+                    <a title='Logout' href="{{ action('\Bootleg\Cms\UsersController@anyLogout') }}" class="logout-button">Logout</a>
                 </li>
             </ul>
         </div>

@@ -4,7 +4,7 @@
     <div class="col-md-offset-2 col-sm-10">
         <div class="page-header row">
             <!-- Page header, center on small screens -->
-            <h1 class="col-xs-12"><i class="glyphicon glyphicon-home"></i>&nbsp;&nbsp;Dashboard</h1>
+            <h1 class="col-xs-12"><i class="glyphicon glyphicon-home"></i>Dashboard</h1>
         </div>
         <div class="row">
             @foreach(Event::fire('dashboard.items', []) as $dashItem)

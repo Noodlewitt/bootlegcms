@@ -4,7 +4,7 @@
 <div class="col-md-offset-2 col-md-10">
     <div class="page-header row">   
             <!-- Page header, center on small screens -->
-            <h1 class="col-xs-12"><i class="glyphicon glyphicon-user"></i>&nbsp;&nbsp;Create User</h1>
+            <h1 class="col-xs-12"><i class="glyphicon glyphicon-user"></i>Create User</h1>
     </div>
     <div class="row">
         <div class="col-xs-12">

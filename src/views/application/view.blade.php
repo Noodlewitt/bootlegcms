@@ -3,7 +3,7 @@
     <div class="col-md-offset-2 col-md-10">
         <div class="page-header row">   
                 <!-- Page header, center on small screens -->
-                <h1 class="col-xs-12"><i class="glyphicon glyphicon-cog"></i>&nbsp;&nbsp;View Application</h1>
+                <h1 class="col-xs-12"><i class="glyphicon glyphicon-cog"></i>View Application</h1>
         </div>
         
         

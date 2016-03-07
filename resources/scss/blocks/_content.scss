@@ -1,0 +1,16 @@
+.content-area > div {
+  padding: 25px 40px;
+  .page-header {
+    margin-top: 0;
+    i {
+      color: $primary-color;
+      margin-right: 10px;
+    }
+    border-color: $gray-light;
+    h1 {
+      font-weight: 700;
+      font-size: 24px;
+      margin: 0;
+    }
+  }
+}

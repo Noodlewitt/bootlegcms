@@ -3,7 +3,7 @@
     <div class="col-md-offset-2 col-md-10 main-content">
         <div class="page-header row">
             <!-- Page header, center on small screens -->
-            <h1 class="col-xs-12"><i class="glyphicon glyphicon-book"></i>&nbsp;&nbsp;Applications</h1>
+            <h1 class="col-xs-12"><i class="glyphicon glyphicon-book"></i>Applications</h1>
         </div>
         @if ($applications->count())
             <table class="table table-striped table-bordered">
