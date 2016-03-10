@@ -17,7 +17,7 @@
     </div>
     -->
     <div class="sidebar-menu-items">
-        <a href="{{ action('\Bootleg\Cms\UsersController@anyDashboard') }}" class="{{ Request::is(config('bootlegcms.cms_route') . 'users/dashboard*') ? 'active' : '' }}">
+        <a href="{{ action('\Bootleg\Cms\UsersController@anyDashboard') }}" class="{{ Request::is(config('bootlegcms.cms_route') . 'users/dashboard*') || Request::is(rtrim(config('bootlegcms.cms_route'), '/')) ? 'active' : '' }}">
             <i class="menu-icon glyphicon glyphicon-home"></i>
             <span class="mm-text">Home</span>
         </a>

@@ -53,10 +53,6 @@ class ApplicationUrl extends Eloquent {
             ->orderBy('prefix', 'DESC')
             ->first();
 
-        if ( $setSession && ! Session::get('application_url' . $folder) ) {
-            Session::put('application_url' . $folder, $applicationUrl);
-        }
-
         return ($applicationUrl);
     }
 
