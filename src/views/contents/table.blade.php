@@ -1,4 +1,4 @@
-<h1>TODO: WORK IN PROGRESS {{@$content->id?'Update':'Create'}} {{$content->name or 'Content'}}</h1>
+<h1>{{@$content->id?'Update':'Create'}} {{$content->name or 'Content'}}</h1>
 @include('cms::layouts.flash_messages')
 <ul class="nav nav-tabs">
     <?php $i = 0; $advanced = false; $contentSection = false?>

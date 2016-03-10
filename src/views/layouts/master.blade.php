@@ -83,9 +83,16 @@
                 e.preventDefault();
                 e.stopPropagation();
                 $form = $(this).closest('form');
-                $.post($form.attr('action'), $form.serialize(), function(data){
-                    $('.main-content').html(data);
-                });
+                if($form.attr('method') == 'post' || $form.attr('method') == 'POST'){
+                    $.post($form.attr('action'), $form.serialize(), function(data){
+                        $('.main-content').html(data);
+                    });
+                }
+                else{
+                    $.get($form.attr('action'), $form.serialize(), function(data){
+                        $('.main-content').html(data);
+                    });
+                }
             });
         });
         </script>

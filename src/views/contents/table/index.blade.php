@@ -36,6 +36,10 @@ if(@$childrenSettings){
     .table-actions{
         width:155px;
     }
+
+    .modal-content{
+        padding: 15px;
+    }
     
 </style>
     <div class='overlay'></div>
@@ -239,7 +243,6 @@ if(@$childrenSettings){
                     $me = $(this);
                     $td = $me.closest('td');
                     if($td.hasClass('tinymce')){
-                        console.log($('.js-edit-row', $td.closest('tr')));
                         $('.js-edit-row', $td.closest('tr')).click();
                     }
                     else{
