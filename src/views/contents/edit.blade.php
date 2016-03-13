@@ -1,7 +1,7 @@
     <div class='overlay'></div>
     <div class="page-header row">
         <!-- Page header, center on small screens -->
-        <h1 class="col-xs-12"><i class="glyphicon glyphicon-list-alt"></i>&{{@$content->id?'Update':'Create'}} {{$content->name or 'Content'}}</h1>
+        <h1 class="col-xs-12"><i class="glyphicon glyphicon-list-alt"></i>{{@$content->id?'Update':'Create'}} {{$content->name or 'Content'}}</h1>
     </div>
     @include('cms::layouts.flash_messages')
     <ul class="nav nav-tabs">

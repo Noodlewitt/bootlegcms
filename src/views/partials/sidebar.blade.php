@@ -1,6 +1,6 @@
 <?php
     $application = Application::getApplication();
-    $menuItems = Event::fire('menu.links', []);
+    $menuItems = collect(Event::fire('menu.links', []))->sortBy('order');
 ?>
 
 <div id="side-nav" class="col-sm-3 col-md-2 sidebar">

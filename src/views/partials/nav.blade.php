@@ -72,7 +72,7 @@
                     </div>
                     <div class="navbar-user-summary">
                         <!--<div class="text-bold">Welcome</div>-->
-                        <div>{{ @Auth::user()->name ? Auth::user()->name : (@Auth::user()->username ? Auth::user()->username : 'Administrator') }}</div>
+                        <div>{{ @Auth::user()->name ? Auth::user()->name : (@Auth::user()->name ? Auth::user()->name : 'Administrator') }}</div>
                     </div>
                     <a title='Logout' href="{{ action('\Bootleg\Cms\UsersController@anyLogout') }}" class="logout-button">Logout</a>
                 </li>

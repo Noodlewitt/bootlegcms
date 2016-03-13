@@ -1,5 +1,6 @@
 <?php namespace Bootleg\Cms;
 
+use Application;
 use Exception;
 use Illuminate\Http\Response;
 use Psr\Log\LoggerInterface;
@@ -62,7 +63,7 @@ class ExceptionHandler extends \App\Exceptions\Handler
      */
     public function renderHttpExceptionView(Exception $e)
     {
-        $package = 'cms'; //@todo - allow for custom CMS packages and themes
+        $package = @Application::getApplication()->package ? Application::getApplication()->package : 'cms';
         $status = $e->getStatusCode();
 
         if (!view()->exists($package."::errors.".$status)) {

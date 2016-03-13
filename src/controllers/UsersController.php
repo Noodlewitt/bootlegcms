@@ -1,6 +1,9 @@
 <?php namespace Bootleg\Cms; 
 use Auth;
 use Illuminate\Routing\Controller;
+use Input;
+use Session;
+
 class UsersController extends CMSController
 {
 
@@ -44,15 +47,15 @@ class UsersController extends CMSController
     {
         //dd(array('email'=>Input::get('email'), 'password'=>Input::get('password')));
         //var_dump(Hash::make('admin'));
-        if (\Auth::attempt(array('email'=>\Input::get('email'), 'password'=>\Input::get('password')))) {
+        if (Auth::attempt(['email' => Input::get('email'), 'password' => Input::get('password')], Input::get('remember'))) {
             //and we need to update last logged in datetime
-            $user = User::find(Auth::user()->id);
+            //$user = User::find(Auth::user()->id);
 
-            \Session::flash('success', 'You are now logged in!');
+            Session::flash('success', 'You are now logged in!');
             return redirect()->action('\Bootleg\Cms\UsersController@anyDashboard');
         }
-        else if(\Input::get('email') && \Input::get('password')){
-            \Session::flash('danger', 'Authentication Failed!');
+        else if(Input::get('email') && Input::get('password')){
+            Session::flash('danger', 'Authentication Failed!');
         }  
 
         return $this->render('users.login');
