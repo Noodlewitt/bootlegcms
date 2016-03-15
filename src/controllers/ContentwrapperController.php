@@ -477,7 +477,7 @@ class ContentwrapperController extends CMSController {
 									$contentSetting->field_type = @$defaultContentSetting->field_type;
 									$contentSetting->templatesetting_id = @$defaultContentSetting->id;
 									$contentSetting->section = @$defaultContentSetting->section;
-									$contentSetting->templatesetting_id = $defaultContentSetting->id;
+									$contentSetting->templatesetting_id = @$defaultContentSetting->id;
 									//and for multi-fields:
 									//$contentSetting->parent_id = $input['multi']['parent'][];
 								} else {
