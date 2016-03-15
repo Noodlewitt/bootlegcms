@@ -29,6 +29,11 @@ class Notification extends Eloquent
         return $this->morphTo();
     }
 
+    public function scopeUnread($q)
+    {
+        return $q->whereStatus(static::STATUS_UNREAD);
+    }
+
     public function scopeToApplication($q, $id = null)
     {
         if($id === null) $id = @Application::getApplication()->id;
