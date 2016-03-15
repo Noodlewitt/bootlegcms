@@ -7,19 +7,18 @@
 <div class="navbar navbar-fixed-top navbar-default" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <div class="navbar-sidebar-collapse">
-
-            </div>
             @include(view()->exists($cms_package.'::partials.logo') ? $cms_package.'::partials.logo' : 'cms::partials.logo')
+            <button type="button" class="navbar-toggle visible-xs" data-toggle="collapse" data-target="#side-nav.sidebar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
 
             </ul>
-
-            <!--<div class="navbar-menu-item">
-                <a href="#">Home</a>
-            </div>-->
             <ul class="nav navbar-nav navbar-right">
 
 

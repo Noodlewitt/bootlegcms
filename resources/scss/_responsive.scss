@@ -1,0 +1,15 @@
+@media (max-width: 768px) {
+  .navbar.navbar-default .navbar-header {
+    max-width: 50% !important;
+    .cms-logo {
+      margin-left: 20px;
+    }
+  }
+  .content-area {
+    > div {
+      position: relative;
+      margin: 0;
+      padding: 20px 40px;
+    }
+  }
+}

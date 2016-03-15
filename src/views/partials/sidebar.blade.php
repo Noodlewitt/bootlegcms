@@ -3,7 +3,7 @@
     $menuItems = collect(Event::fire('menu.links', []))->sortBy('order');
 ?>
 
-<div id="side-nav" class="col-sm-3 col-md-2 sidebar">
+<div id="side-nav" class="col-sm-3 col-md-2 sidebar collapse">
     <!--
     <div class="sidebar-header row">
         <div class="sidebar-avatar-image">
