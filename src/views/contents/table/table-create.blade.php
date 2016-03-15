@@ -64,16 +64,6 @@
             });
 
 
-            $('.form-wrap').on('click','.js-content-update', function(e){
-              /*  e.stopPropagation();
-                e.preventDefault();
-                $form = $(this).closest('form');
-               /* $.post($form.attr('action'), $form.serialize(), function(data){
-                    //boop.
-                    window.location.replace("/cms/");
-                });*/
-            });
-
 
             @if(count($application->languages) > 1)
             //language selection

@@ -391,7 +391,13 @@ class ContentwrapperController extends CMSController {
 						foreach ($setGrp as $key => $setting) {
 							if (!$multimode && is_array($setting)) {
 								//we have an array of stuff in this field - maybe for a tag field or something.
+								foreach($setting as $set){
+									if(is_array($set)){
+										dd($key,$setting, $type,$set);
+									}
+								}
 								$setting = implode(',', $setting);
+
 							}
 							if (is_array($setting)) {
 								//we have a multifield.. we need to deal with this carefully:
@@ -402,6 +408,7 @@ class ContentwrapperController extends CMSController {
 										if (isset($set['deleted'])) {
 											\Contentsetting::where('parent_id', $key)->where('index', $index)->delete();
 										} else {
+
 											if ($type == "Contentsetting") {
 												//update existing
 												$contentSetting = \Contentsetting::where('parent_id', $key)->where('index', $index)->first();
@@ -412,14 +419,15 @@ class ContentwrapperController extends CMSController {
 											} else {
 												//we need to create this guy.
 												$template = \Templatesetting::find($template_id);
+
 												//we need to find the right parent id based off that ^^
 												$templateParent = \Templatesetting::find($template->parent_id); //this is the multi field as it exists on the template..
 												//we can now try and find the parent of this conten item based on that.
 
-												$parent = \Contentsetting::where('name', $templateParent->name)->where('content_id', $content->id)->first();
+												//$parent = \Templatesetting::where('name', $templateParent->name)->where('content_id', $content->id)->first();
 
 												$contentSetting = new \Contentsetting();
-												$contentSetting->parent_id = $parent->id;//TODO: this should be the key of the newly created multi field. NOT $key;
+												$contentSetting->parent_id = @$templateParent->id;//TODO: this should be the key of the newly created multi field. NOT $key;
 												$contentSetting->index = $index;
 												$contentSetting->value = $set;
 												$contentSetting->templatesetting_id = $template->id;
@@ -534,24 +542,25 @@ class ContentwrapperController extends CMSController {
 							//$contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
 						}
 					} else {
-						//this is the actual multi field - we need to see if we need create this correctly!
+						//this is the actual multi field - we don't need to create anything here really..
 
-						foreach ($setGrp as $k => $s) {
-							if ($k == "Templatesetting") {
-								//we are on a template setting - create the contentsetting!
-								$template = \Templatesetting::find($s);
-								$contentSetting = new \Contentsetting();
-								$contentSetting->templatesetting_id = $template->id;
-								$contentSetting->field_type = $template->field_type;
-								$contentSetting->field_parameters = $template->field_parameters;
-								$contentSetting->section = $template->section ? $template->section : "Content";
-								$contentSetting->content_id = $content->id;
-								$contentSetting->name = $template->name;
-								$contentSetting->save();
-							} else {
-								//do nothing - this should never really be editable.
-							}
-						}
+						//dd($input, $setGrp);
+						//foreach ($setGrp as $k => $s) {
+						//	if ($k == "Templatesetting") {
+						//		//we are on a template setting - create the contentsetting!
+						//		$template = \Templatesetting::find($s);
+						//		$contentSetting = new \Contentsetting();
+						//		$contentSetting->templatesetting_id = $template->id;
+						//		$contentSetting->field_type = $template->field_type;
+						//		$contentSetting->field_parameters = $template->field_parameters;
+						//		$contentSetting->section = $template->section ? $template->section : "Content";
+						//		$contentSetting->content_id = $content->id;
+						//		$contentSetting->name = $template->name;
+						//		$contentSetting->save();
+						//	} else {
+						//		//do nothing - this should never really be editable.
+						//	}
+						//}
 						//$contentSetting = \Contentsetting::where('parent_id',$key)->where('index',$index)->first();
 					}
 				}
@@ -568,18 +577,20 @@ class ContentwrapperController extends CMSController {
 	 */
 	public function anyDestroy($id = NULL) {
 		if (!$id) {
-			$id = \Input::all();
-			if (@$id['id'] == '#') {
+			$input = \Input::all();
+
+			if (@$input['id'] == '#') {
 				$id = '';
 			} else {
-				$id = @$id['id'];
+				$id = @$input['id'];
 			}
 		}
+
 		$d = $this->content->find($id);
 		Event::fire('content.delete', [$d]);
 		$d->delete();
 		Event::fire('content.deleted', [$d]);
-		$this->content->find($id)->delete();
+
 
 		if (!\Request::ajax()) {
 			return redirect()->action('ContentsController@anyTree');

@@ -18,28 +18,36 @@ if(@$params->tooltip->text){
     $options['data-toggle'] = "tooltip";
     $options['data-placement'] = @$params->tooltip->postion?$params->tooltip->postion:"left";
     $options['title'] = $params->tooltip->text;
+
 }
+
 ?>
 <div class="{{$niceName}}-container">
 {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
 <div class="panel-group" id="{{$niceName}}" role="tablist" aria-multiselectable="true">
     <?php
-    //we need to grab all the settings
+    
+    //we need to grab all this item's children (from template)
+    $template_children = \Templatesetting::where('parent_id',$setting->id)->get();
+    $settingGroups = \Contentsetting::whereIn('templatesetting_id',$template_children->lists('id'))->where('content_id',$content->id)->get();
+
+        
     //dd($setting->multichildren()->get()->groupBy('index'));
-    $settingGroups = $setting->multichildren()->get()->groupBy('index');
+    //$contentSettings = \Contentsetting::where('id',$setting->templatesetting_id)->get();
+    //dd($setting);
+        
+ //  $settingGroups = $setting->multichildren()->get()->groupBy('index');
+ //
+ //  if($content_mode == 'contents'){
 
-    if($content_mode == 'contents'){
-
-        if(@$setting->templatesetting_id){
-            $templateGroup = $setting->templatesetting()->first();
-            $templateGroupItems = \Templatesetting::where('parent_id', $templateGroup->id)->get();
-        }
-        else{
-            //this has no templatesettings yet - (ie this is the 1st time saving with it present)
-            $templateGroup = \Template::find($setting->template_id);
-            $templateGroupItems = \Templatesetting::where('parent_id', $templateGroup->id)->get();
-        }
-    }
+ //      if(@$setting->templatesetting_id){
+ //          $templateGroup = $setting->templatesetting()->first();
+ //          $templateGroupItems = \Templatesetting::where('parent_id', $templateGroup->id)->get();
+ //      }
+ //      else{
+ //          $templateGroupItems = \Templatesetting::where('parent_id',$setting->id)->get();
+ //      }
+ //  }
     $count = 0;
     ?>
     <input type='hidden' name="setting[{{$setting->name}}][_multi][{{get_class($setting)}}]" value="{{$setting->id}}" />
@@ -56,9 +64,7 @@ if(@$params->tooltip->text){
                 </div>
                 <div id="{{$niceName}}-collapse{{$key}}" class="panel-collapse collapse {{!$count?'in':''}}" role="tabpanel" aria-labelledby="collapse{{$key}}">
                     <div class="panel-body">
-                        @foreach($settingGroup as $field)
-                            @include("cms::contents.input_types.".$field->field_type, array('setting'=>$field, 'contentItem'=>$content, 'name'=>"setting[".$setting->name."][".get_class($field)."][".$setting->id."][".$field->templatesetting_id."][".$key."]"))
-                        @endforeach
+                        @include("cms::contents.input_types.".$settingGroup->field_type, array('setting'=>$settingGroup, 'contentItem'=>$content, 'name'=>"setting[".$settingGroup->name."][".get_class($settingGroup)."][".$settingGroup->id."][".@$settingGroup->templatesetting_id."]"))
                     </div>
                 </div>
             </div>
@@ -82,7 +88,7 @@ if(@$params->tooltip->text){
         </div>
         <div id="collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="collapse">
             <div class="panel-body">
-                @foreach($templateGroupItems as $key=>$field)
+                @foreach($template_children as $key=>$field)
                     @include("cms::contents.input_types.".$field->field_type, array('setting'=>$field, 'contentItem'=>$content, 'name'=>false, 'opts' =>['data-name'=> "setting[".$setting->name."][".get_class($field)."][".$setting->id."][".$field->id."]"]))
                 @endforeach
             </div>

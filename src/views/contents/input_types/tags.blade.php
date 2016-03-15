@@ -23,11 +23,16 @@ $tagsArr = explode(@$params->delimiter?$params->delimiter:',', $setting->value);
 
 //we flip this arrout so we can have the defaults included into this but not selected.
 $tagsArr = array_flip($tagsArr);
+
 foreach($tagsArr as $key=>$tagArr){
     $out[$key] = true;
 }
 
 $tagsArr = $out;
+
+if(isset($tagsArr[''])){
+    unset($tagsArr['']);
+}
 
 //we need to merge in any default values.
 foreach($params->values as $key=>$default){

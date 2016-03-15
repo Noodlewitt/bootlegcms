@@ -74,17 +74,23 @@
                 str = '/'+str.replace(/[^a-zA-Z0-9-_]/g, '');
                 $('.js-slug', $form).val(str.toLowerCase());
             });
-        
 
-            $('.form-wrap').on('click','.js-content-update', function(e){
-                //e.stopPropagation();
+            $('body').off('click', '.js-content-update');
+            $('body').off('click', '.js-content-cancel');
+            $(".js-content-update").unbind("click");
+            $('body').on('click','.js-content-update', function(e){
+                e.stopPropagation();
                 e.preventDefault();
                 tinyMCE.triggerSave();
+                $form = $(this).closest('form');
+                var $btn = $(this).button('loading');
                 $form = $(this).closest('form');
                 $.post($form.attr('action'), $form.serialize(), function(data){
                     //boop.
                     $('.main-content').html(data);
                     swal('updated');
+                    $btn.button('reset')
+                    $('#popup').modal('hide');
                     //tree.jstree("refresh");
                 });
             });
