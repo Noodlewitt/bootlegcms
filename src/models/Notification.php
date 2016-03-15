@@ -75,9 +75,13 @@ class Notification extends Eloquent
     {
         $ids = [
             'application' => @Application::getApplication()->id,
-            'store' => @app('CurrentStore')->id,
             'user' => @Auth::user()->id,
         ];
+
+        try {
+            $ids['store'] = @app('CurrentStore')->id;
+        } catch (\Exception $e) {
+        }
 
         return $q->where(function($sq) use ($ids){
             foreach($ids as $type => $id) {
