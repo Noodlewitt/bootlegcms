@@ -1,10 +1,11 @@
 <?php
 use Baum\Node;
+use Bootleg\Cms\Models\Traits\HasSettingModelTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Application extends Node {
 
-    use \Bootleg\Cms\Models\Traits\HasSettingModelTrait;
+    use HasSettingModelTrait;
 
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -28,6 +29,16 @@ class Application extends Node {
         'domain' => 'required',
         //'parent_id' => 'required'
     ];
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'to');
+    }
+
+    public function sentNotifications()
+    {
+        return $this->morphMany(NotificationMessage::class, 'from');
+    }
 
     public function creator()
     {

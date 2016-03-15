@@ -1,113 +1,56 @@
 <?php namespace Bootleg\Cms; 
 
+use Application;
+use Eloquent;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Permission;
 
-class User extends \Eloquent implements AuthenticatableContract, CanResetPasswordContract
+class User extends Eloquent implements AuthenticatableContract, CanResetPasswordContract
 {
 
     use Authenticatable, CanResetPassword;
 
-    protected $fillable = ['id', 'username', 'password', 'email', 'role_id', 'status'];
-
-
     protected $permissions;
-
-    /**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
     protected $table = 'users';
+    protected $fillable = ['id', 'username', 'password', 'email', 'role_id', 'status'];
+    protected $hidden = ['password', 'remember_token'];
 
-    /**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-    protected $hidden = array('password');
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'to');
+    }
 
-    public static $rules = array(
-    //'content' => 'required',
-    //'parent_id' => 'required'
-       // 'username' => 'required|unique:users',
-       // 'email' => 'required|email|unique:users',
-        //'password' => 'required',
-        //'password_confirm' => 'required|same:password',
-    );
-    
+    public function sentNotifications()
+    {
+        return $this->morphMany(NotificationMessage::class, 'from');
+    }
+
     public function role()
     {
-        return $this->belongsTo('\Role');
+        return $this->belongsTo(Role::class);
     }
-    
-    
+
     public function author(){
-        return $this->hasMany('Content');
+        return $this->hasMany(Content::class);
     }
 
     public function permission()
     {
-        return $this->morphMany('Permission', 'requestor');
-    }
-        
-    /**
-	 * Get the unique identifier for the user.
-	 *
-	 * @return mixed
-	 */
-    public function getAuthIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-	 * Get the password for the user.
-	 *
-	 * @return string
-	 */
-    public function getAuthPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-	 * Get the e-mail address where password reminders are sent.
-	 *
-	 * @return string
-	 */
-    public function getReminderEmail()
-    {
-        return $this->email;
-    }
-        
-
-    public function getRememberToken()
-    {
-        return $this->remember_token;
-    }
-
-    public function setRememberToken($value)
-    {
-        $this->remember_token = $value;
-    }
-
-    public function getRememberTokenName()
-    {
-        return 'remember_token';
+        return $this->morphMany(Permission::class, 'requestor');
     }
 
     public function applications(){
-        return $this->hasMany('Application', 'user_id');
+        return $this->hasMany(Application::class, 'user_id');
     }
 
     public function getPermissions()
     {
         if (!isset($this->permissions))
         {
-            $this->permissions = \Permission::where(function ($query)
+            $this->permissions = Permission::where(function ($query)
             {
                 $query->where(function ($query)
                 {
@@ -130,7 +73,7 @@ class User extends \Eloquent implements AuthenticatableContract, CanResetPasswor
             })
                 ->where(function ($query)
                 {
-                    $app_id = \Application::getApplication()->id;
+                    $app_id = Application::getApplication()->id;
                     $query->where('application_id', $app_id)
                         ->orWhere('application_id', '*');
                 })->get();

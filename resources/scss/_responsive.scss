@@ -12,4 +12,29 @@
       padding: 20px 40px;
     }
   }
+
+  .sidebar {
+    &.collapse:not(.in) {
+      display: none;
+    }
+    position: static;
+    width: 100%;
+    min-height: 0 !important;
+    .sidebar-menu-items {
+      height: auto !important;
+      a {
+        text-align: center;
+        width: 100%;
+        i {
+          width: auto;
+        }
+        span {
+          display: inline-block;
+          position: static;
+          z-index: 1;
+          transition: none;
+        }
+      }
+    }
+  }
 }

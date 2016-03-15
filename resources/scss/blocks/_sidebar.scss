@@ -1,5 +1,6 @@
 .sidebar {
-  display: none;
+  display: block;
+  visibility: visible;
   background-color: $sidebar-bg;
   position: fixed;
   top: $navbar-height;
@@ -10,9 +11,6 @@
   overflow-x: hidden;
   overflow-y: auto;
 
-  @media (min-width: 768px) {
-    display: block;
-  }
   .sidebar-menu-items {
     overflow-y:auto;
     a {
