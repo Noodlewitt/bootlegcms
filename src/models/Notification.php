@@ -47,13 +47,17 @@ class Notification extends Eloquent
 
     public function scopeToStore($q, $id = null)
     {
-        if($id === null) $id = @app('CurrentStore')->id;
+        try {
+            if($id === null) $id = @app('CurrentStore')->id;
 
-        if($id === null) return $q->where('to_type', 'invalid');
+            if($id === null) return $q->where('to_type', 'invalid');
 
-        return $q->where(function($sq) use ($id) {
-            $sq->where('to_type', 'store')->where('to_id', $id);
-        });
+            return $q->where(function($sq) use ($id) {
+                $sq->where('to_type', 'store')->where('to_id', $id);
+            });
+        } catch (\Exception $e) {
+            return $q->where('to_type', 'invalid');
+        }
     }
 
     public function scopeToUser($q, $id = null)
