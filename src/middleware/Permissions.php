@@ -27,7 +27,7 @@ class Permissions {
         if ($perm !== true) {
             if(@Auth::user()->id){
                 Session::flash('danger', "You do not have permission to do that.");
-                if(starts_with(URL::current(), URL::to(config('bootlegcms.cms_route')))) return redirect()->back()->withInput();
+                if(starts_with(URL::current(), URL::to(config('bootlegcms.cms_route'))) && starts_with(URL::previous(), URL::to(config('bootlegcms.cms_route')))) return redirect()->back()->withInput();
             }
             
             return($perm);
