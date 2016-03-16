@@ -79,7 +79,7 @@ class Notification extends Eloquent
         ];
 
         try {
-            $ids['Bootleg\Cms\Store'] = @app('CurrentStore')->id;
+            $ids['Bootleg\Checkout\Models\Store'] = @app('CurrentStore')->id;
         } catch (\Exception $e) {
         }
 
