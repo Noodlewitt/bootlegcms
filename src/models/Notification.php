@@ -41,7 +41,7 @@ class Notification extends Eloquent
         if($id === null) return $q->where('to_type', 'invalid');
 
         return $q->where(function($sq) use ($id) {
-            $sq->where('to_type', 'application')->where('to_id', $id);
+            $sq->where('to_type', 'Application')->where('to_id', $id);
         });
     }
 
@@ -53,7 +53,7 @@ class Notification extends Eloquent
             if($id === null) return $q->where('to_type', 'invalid');
 
             return $q->where(function($sq) use ($id) {
-                $sq->where('to_type', 'store')->where('to_id', $id);
+                $sq->where('to_type', 'Bootleg\Checkout\Models\Store')->where('to_id', $id);
             });
         } catch (\Exception $e) {
             return $q->where('to_type', 'invalid');
@@ -67,19 +67,19 @@ class Notification extends Eloquent
         if($id === null) return $q->where('to_type', 'invalid');
 
         return $q->where(function($sq) use ($id) {
-            $sq->where('to_type', 'user')->where('to_id', $id);
+            $sq->where('to_type', 'Bootleg\Cms\User')->where('to_id', $id);
         });
     }
 
     public function scopeToCurrent($q)
     {
         $ids = [
-            'application' => @Application::getApplication()->id,
-            'user' => @Auth::user()->id,
+            'Application' => @Application::getApplication()->id,
+            'User' => @Auth::user()->id,
         ];
 
         try {
-            $ids['store'] = @app('CurrentStore')->id;
+            $ids['Bootleg\Cms\Store'] = @app('CurrentStore')->id;
         } catch (\Exception $e) {
         }
 
