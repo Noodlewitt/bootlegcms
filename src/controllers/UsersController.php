@@ -55,7 +55,7 @@ class UsersController extends CMSController
             return redirect()->action('\Bootleg\Cms\UsersController@anyDashboard');
         }
         else if(Input::get('email') && Input::get('password')){
-            Session::flash('danger', 'Authentication Failed!');
+            Session::flash('danger', 'Incorrect email or password');
         }  
 
         return $this->render('users.login');
