@@ -37,10 +37,10 @@
         @foreach($html_body_start as $html_body_start_item)
             {{ $html_body_start_item }}
         @endforeach
-        @include('cms::partials.nav')
+        @include(view()->exists($cms_package.'::partials.nav') ? $cms_package.'::partials.nav' : 'cms::partials.nav')
         <div class="container-fluid">
             <div class="row">
-                @include('cms::partials.sidebar')
+                @include(view()->exists($cms_package.'::partials.sidebar') ? $cms_package.'::partials.sidebar' : 'cms::partials.sidebar')
                 <div class="content-area">
                     @yield('main-content')
                 </div>
