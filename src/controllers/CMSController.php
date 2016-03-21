@@ -8,14 +8,6 @@ class CMSController extends BaseController {
         parent::__construct();
         
         $this->middleware('permissions', array('except'=>'anyLogin'));
-
-        //dd(\URL::current());
-
-    //    $this->beforeFilter('permission:'.\Route::currentRouteAction().','.$string, array('except'=>'anyLogin'));
-        //
-        $this->applications = \Application::with('url')->get();
-        view()->share('applications', $this->applications);       
-        //we need to register the package we are using:
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php namespace Bootleg\Cms;
 
+use Application;
 use Carbon\Carbon;
 use Collective\Html\HtmlServiceProvider;
 use Config;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Permission;
 use Zofe\Rapyd\RapydServiceProvider;
 use Request;
 use Session;
@@ -46,7 +48,7 @@ class CmsServiceProvider extends ServiceProvider
 
         if (Config::get('bootlegcms.cms_timezone')) Config::set('app.timezone', Config::get('bootlegcms.cms_timezone'));
 
-        $cms_package = \Application::getApplication()->cms_package;
+        $cms_package = Application::getApplication()->cms_package;
         if(!$cms_package) $cms_package = 'cms';
 
         Event::listen('auth.login', function ($user)
@@ -61,8 +63,8 @@ class CmsServiceProvider extends ServiceProvider
                 Session::setId(Request::get('sid'));
                 Session::start();
             }
-            else{
-                if (Auth::user()) $this->loadUserPermissions();
+            else {
+                Permission::loadUserPermissions();
             }
         });
 
@@ -78,10 +80,12 @@ class CmsServiceProvider extends ServiceProvider
         });
         */
 
-        View::composer($cms_package.'::*', function($view) use ($cms_package)
+        $all_applications = Application::with('url')->get();
+
+        View::composer(['cms::*', $cms_package.'::*'], function($view) use ($cms_package, $all_applications)
         {
             if(!$view->offsetExists('cms_package')) $view->with('cms_package', $cms_package);
-            $view->with('applications', \Application::with('url')->get());
+            $view->with('applications', $all_applications);
         });
 
         //load middleware, helpers, views, routes
@@ -118,42 +122,6 @@ class CmsServiceProvider extends ServiceProvider
     public static function getPublishGroups()
     {
         return static::$publishGroups;
-    }
-
-    public function loadUserPermissions()
-    {
-        if(Auth::user()->relations['permissions'] === null)
-        {
-            $permissions = \Permission::where(function ($query)
-            {
-                $query->where(function ($query)
-                {
-                    $query->where(function ($query)
-                    {
-                        $query->where('requestor_id', '=', Auth::user()->id)
-                            ->orWhere('requestor_id', '=', '*');
-                    })
-                        ->where('requestor_type', '=', 'user');
-                })
-                    ->orWhere(function ($query)
-                    {    //where role
-                        $query->where(function ($query)
-                        {
-                            $query->where('requestor_id', '=', Auth::user()->role_id)
-                                ->orWhere('requestor_id', '=', '*');
-                        })
-                            ->where('requestor_type', '=', 'role');
-                    });
-            })
-                ->where(function ($query)
-                {
-                    $app_id = \Application::getApplication()->id;
-                    $query->where('application_id', $app_id)
-                        ->orWhere('application_id', '*');
-                })->get();
-
-            Auth::user()->setRelation('permissions', $permissions);
-        }
     }
 
 }

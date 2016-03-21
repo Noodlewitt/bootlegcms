@@ -6,6 +6,7 @@ class Permission extends Eloquent {
     //This should hold the actual permission table.. who is allowed into what.
 
     protected $table = 'permissions';
+    protected static $user;
 
     //allows permission->controller
     public function controller(){
@@ -16,9 +17,6 @@ class Permission extends Eloquent {
     public function requestor(){
         return $this->morphTo();
     }
-
-
-
     //a permissions query you can dump into your query.
     public static function hasPermission($controller_type = '', Model $user){
 
@@ -54,24 +52,16 @@ class Permission extends Eloquent {
     }
 
     public static function getPermission($controller_type, $controller_id = null, $return = false){
-        //check permisssion against user
-        if (Auth::guest()) {
-            $user = User::find(1);  //select the guest row.
-        } else {
-            $user = User::find(Auth::user()->id);
-        }
+
+        if (Auth::guest()) static::$user = User::find(1);  //select the guest row.
+
+        if(!static::$user) static::loadUserPermissions();
+
         $controller_type = trim($controller_type, '/\\');
 
-        //$controller_type = (addslashes($controller_type));
-
-        //$p = Permission::where('controller_type', $controller_type)->first();
-
-        //dd($p->id);
-        $perm = $user->getPermissions()->filter(function($permission) use ($controller_type, $controller_id) {
+        $perm = static::$user->permissions->filter(function($permission) use ($controller_type, $controller_id) {
             if ($permission->controller_type == $controller_type && ($permission->controller_id == '*' || $permission->controller_id == $controller_id)) return true;
         });
-
-        //dd($perm);
 
         $return = new stdClass();
         $return->result = false;
@@ -84,12 +74,9 @@ class Permission extends Eloquent {
                 $return->result = false;
                 $return->picked = $p;
                 break;
-            } else {
-                //var_dump($p->id);
-                //we are inheriting from the enxt level up.
             }
         }
-        //dd($controller_type, $controller_id, $user->getPermissions(), $perm);
+
         $return->set = $perm;
         return $return;
     }
@@ -106,5 +93,42 @@ class Permission extends Eloquent {
         ->orderBy('controller_id', 'desc')
         ->get();
         return($perm);
+    }
+
+    public static function loadUserPermissions()
+    {
+        if(!isset(Auth::user()->relations['permissions']))
+        {
+            $permissions = static::where(function ($query)
+            {
+                $query->where(function ($query)
+                {
+                    $query->where(function ($query)
+                    {
+                        $query->where('requestor_id', '=', Auth::user()->id)
+                            ->orWhere('requestor_id', '=', '*');
+                    })
+                        ->where('requestor_type', '=', 'user');
+                })
+                    ->orWhere(function ($query)
+                    {    //where role
+                        $query->where(function ($query)
+                        {
+                            $query->where('requestor_id', '=', Auth::user()->role_id)
+                                ->orWhere('requestor_id', '=', '*');
+                        })
+                            ->where('requestor_type', '=', 'role');
+                    });
+            })
+                ->where(function ($query)
+                {
+                    $query->where('application_id', Application::getApplication()->id)
+                        ->orWhere('application_id', '*');
+                })->get();
+
+            Auth::user()->setRelation('permissions', $permissions);
+        }
+
+        static::$user = Auth::user();
     }
 }
