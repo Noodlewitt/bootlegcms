@@ -1,12 +1,12 @@
 /* jsTree default theme */
 $theme-name:				proton;
 $hovered-bg-color:			$gray-darker;
-$hovered-text-color:        #fff;
+$hovered-text-color:        #000 !important;
 $hovered-shadow-color:      $gray-darker;
 $disabled-color:            #666666;
 $disabled-bg-color:         #efefef;
 $clicked-bg-color:          $gray;
-$clicked-text-color:        #fff;
+$clicked-text-color:        #000 !important;
 $clicked-shadow-color:		$gray;
 $clicked-gradient-color-1:	$gray;
 $clicked-gradient-color-2:	$gray;
