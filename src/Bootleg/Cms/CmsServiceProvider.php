@@ -106,6 +106,7 @@ class CmsServiceProvider extends ServiceProvider
         }
         $this->app->register(RapydServiceProvider::class);
         $this->app->register(HtmlServiceProvider::class);
+
         AliasLoader::getInstance()->alias('Form', 'Collective\Html\FormFacade');
     }
 

@@ -1,4 +1,5 @@
 .jstree-proton {
+
   .jstree-node, .jstree-icon {
     background-repeat: no-repeat;
     background-color: transparent;
@@ -89,6 +90,9 @@
     background: transparent;
     box-shadow: none;
     border-radius: 0;
+    input {
+      color: #000;
+    }
   }
   .jstree-wholerow {
     -moz-box-sizing: border-box;

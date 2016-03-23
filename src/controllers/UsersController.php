@@ -1,13 +1,30 @@
-<?php namespace Bootleg\Cms; 
+<?php
+
+namespace Bootleg\Cms;
+
 use Auth;
-use Illuminate\Routing\Controller;
 use Input;
 use Session;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\PasswordBroker;
+use Illuminate\Http\Request;
 
 class UsersController extends CMSController
 {
 
+    /**
+     * The Guard implementation.
+     *
+     * @var Guard
+     */
+    protected $auth;
 
+    /**
+     * The password broker implementation.
+     *
+     * @var PasswordBroker
+     */
+    protected $passwords;
 
 //use \Illuminate\Routing\Controller;
 
@@ -20,11 +37,13 @@ class UsersController extends CMSController
     protected $user;
     
     
-    public function __construct(User $user)
+    public function __construct(User $user, Guard $auth, PasswordBroker $passwords)
     {
         parent::__construct();
+
         $this->user = $user;
-        $this->beforeFilter('csrf', array('on'=>'post'));
+        $this->auth = $auth;
+        $this->passwords = $passwords;
     }
 
     /**
@@ -36,11 +55,6 @@ class UsersController extends CMSController
         $users = $this->user->paginate();
         return $this->render('users.index', compact('users')) ;
         
-    }
-    
-    public function anyLocale()
-    {
-        dd(App::getLocale());
     }
 
     public function anyLogin()
@@ -192,5 +206,101 @@ class UsersController extends CMSController
         $this->user->find($id)->delete();
 
         return Redirect::route('users.index');
+    }
+
+
+
+    /**
+     * Display the form to request a password reset link.
+     *
+     * @return Response
+     */
+    public function getForgotPassword()
+    {
+        return $this->render('users.forgot-password');
+    }
+
+    /**
+     * Send a reset link to the given user.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+     //23ave@chempro.com.au
+    public function postForgotPassword(Request $request)
+    {
+        try {
+            $this->validate($request, ['email' => 'required|email']);
+        } catch(\Exception $e) {
+            return redirect()->back()->with('danger', 'Invalid email address');
+        }
+
+        $this->passwords->setEmailView('pharmacy-cms::emails.password-reset');
+
+        $response = $this->passwords->sendResetLink($request->only('email'), function($m)
+        {
+            $m->subject('Password reset request');
+        });
+
+        switch ($response)
+        {
+            case PasswordBroker::RESET_LINK_SENT:
+                return redirect()->back()->with('message', trans($response));
+
+            case PasswordBroker::INVALID_USER:
+                return redirect()->back()->with('danger', 'User not found');
+        }
+    }
+
+    /**
+     * Display the password reset view for the given token.
+     *
+     * @param  string  $token
+     * @return Response
+     */
+    public function getResetPassword($token = null)
+    {
+        if (is_null($token)) throw new NotFoundHttpException;
+
+        return $this->render('users.reset-password')->with('token', $token);
+    }
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function postResetPassword(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed',
+        ]);
+
+        $credentials = $request->only(
+            'email', 'password', 'password_confirmation', 'token'
+        );
+
+        $response = $this->passwords->reset($credentials, function($user, $password)
+        {
+            $user->password = bcrypt($password);
+
+            $user->save();
+
+            $this->auth->login($user);
+        });
+
+        switch ($response)
+        {
+            case PasswordBroker::PASSWORD_RESET:
+                return redirect()->action('\Bootleg\Cms\UsersController@anyDashboard')->with(['success' => 'Password reset successfully.']);
+
+            default:
+                return redirect()->back()
+                    ->withInput($request->only('email'))
+                    ->withErrors(['email' => trans($response)]);
+        }
     }
 }
