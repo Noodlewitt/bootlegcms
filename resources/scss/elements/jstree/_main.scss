@@ -1,5 +1,7 @@
 .jstree-proton {
-
+  .jstree-rename-input{
+    color: #000 !important;
+  }
   .jstree-node, .jstree-icon {
     background-repeat: no-repeat;
     background-color: transparent;
@@ -174,4 +176,9 @@
 
 .jstree-proton-responsive {
   @import "responsive";
+}
+
+
+.jstree-clicked > input{
+  color: black !important;
 }
