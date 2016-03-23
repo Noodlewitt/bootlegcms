@@ -39,6 +39,7 @@ class CmsServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
+        include __DIR__ . '/../../components/helpers.php';
         include __DIR__ . '/../../routes.php';
         $this->publishes([__DIR__ . '/../../../public' => public_path('vendor/bootleg/cms')], 'bootleg.cms.public');
         $this->publishes([__DIR__ . '/../../migrations/' => base_path('database/migrations')], 'bootleg.cms.migrations');

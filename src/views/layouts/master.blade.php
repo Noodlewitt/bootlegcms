@@ -37,10 +37,10 @@
         @foreach($html_body_start as $html_body_start_item)
             {{ $html_body_start_item }}
         @endforeach
-        @include(view()->exists($cms_package.'::partials.nav') ? $cms_package.'::partials.nav' : 'cms::partials.nav')
+        @include(cmsViewPath('partials.nav', $cms_package))
         <div class="container-fluid">
             <div class="row">
-                @include(view()->exists($cms_package.'::partials.sidebar') ? $cms_package.'::partials.sidebar' : 'cms::partials.sidebar')
+                @include(cmsViewPath('partials.sidebar', $cms_package))
                 <div class="content-area">
                     @yield('main-content')
                 </div>
@@ -63,7 +63,7 @@
         @foreach($html_body_end as $html_body_end_item)
             {!! $html_body_end_item !!}
         @endforeach
-        @include('cms::partials.colour-swatch')
+        @include(cmsViewPath('partials.colour-swatch', $cms_package))
     </body>
 
 </html>
