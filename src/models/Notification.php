@@ -29,6 +29,12 @@ class Notification extends Eloquent
         return $this->morphTo();
     }
 
+    public function scopeIsReady($q) {
+        return $q->whereIn('message_id', function($sq){
+            $sq = Notification::select('id')->whereNull('sent_at')->orWhere('sent_at', '<', Carbon::now());
+        });
+    }
+
     public function scopeUnread($q)
     {
         return $q->whereStatus(static::STATUS_UNREAD);
