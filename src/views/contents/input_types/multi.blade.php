@@ -29,14 +29,27 @@ if(@$params->tooltip->text){
     
     //we need to grab all this item's children (from template)
     if($content_mode == 'contents'){
-        $template_children = \Templatesetting::where('parent_id',$setting->templatesetting_id)->get();
+        if(get_class($setting) == 'Templatesetting'){
+            $template_children = \Templatesetting::where('parent_id',$setting->id)->get();
+        }
+        else{
+          //dd($setting->templatesetting_id);
+            if($setting->templatesetting_id){
+                $template_children = \Templatesetting::where('parent_id',$setting->templatesetting_id)->get();
+//              dd($template_children);
+            }
+        }
     }
     else{
+
         $template_children = \Templatesetting::where('parent_id',$setting->id)->get();
     }
-    //dd($template_children);
+//        dd($setting->id);
+    //dd($template_children->lists('id'));
 
     $settingGroups = \Contentsetting::whereIn('templatesetting_id',$template_children->lists('id'))->where('content_id',$content->id)->get();
+      //  dd($settingGroups);
+
 //dd($content_mode, $setting->id, $settingGroups, $template_children->lists('id'));
         
     //dd($setting->multichildren()->get()->groupBy('index'));
