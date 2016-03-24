@@ -97,4 +97,14 @@ class Notification extends Eloquent
     {
         return $this->status == static::STATUS_UNREAD;
     }
+
+    public function setRead(){
+        $this->status = static::STATUS_READ;
+        $this->save();
+    }
+
+    public function setUnread(){
+        $this->status = static::STATUS_UNREAD;
+        $this->save();
+    }
 }
