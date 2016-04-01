@@ -1,6 +1,9 @@
 <?php namespace Bootleg\Cms; 
 use Auth;
+use Event;
 use Illuminate\Routing\Controller;
+use Session;
+
 class UsersController extends CMSController
 {
 
@@ -24,13 +27,13 @@ class UsersController extends CMSController
         $this->beforeFilter('csrf', array('on'=>'post'));
 
         //add in some standard dash items..
-        \Event::listen('dashboard.items', function(){
-            $user = User::find(\Auth::user()->id);
+        Event::listen('dashboard.items', function(){
+            $user = $this->user->find(Auth::user()->id);
             return $this->render('users.dash_item', array('user'=>$user));
         });
 
         //TODO: move this into applications
-        \Event::listen('dashboard.items', function(){
+        Event::listen('dashboard.items', function(){
             return $this->render('application.dash_item', array('application'=>$this->application));
         });
     }
@@ -61,17 +64,17 @@ class UsersController extends CMSController
             'status'=>1
             ))) {
             //and we need to update last logged in datetime
-            $user = User::find(Auth::user()->id);
+            $user = $this->user->find(Auth::user()->id);
 
             $user->last_loggedin_at = $user->loggedin_at;
             $user->loggedin_at = date("Y-m-d H:i:s");
             $user->save();
 
-            \Session::flash('success', 'You are now logged in!');
+            Session::flash('success', 'You are now logged in!');
             return redirect()->intended(action('\Bootleg\Cms\UsersController@anyDashboard'));
         }
         else if(\Input::get('email') && \Input::get('password')){
-            \Session::flash('danger', 'Authentication Failed!');
+            Session::flash('danger', 'Authentication Failed!');
         }  
 
         return $this->render('users.login');
@@ -127,7 +130,7 @@ class UsersController extends CMSController
             if($input['send_email']){
                 //we need to send an email to the user with details for login and reset pw etc.
                 $application = $this->application;
-                Mail::send('emails.auth.new_user', $data, function($message) use($application, $user){
+                Mail::send('emails.auth.new_user', @$data, function($message) use($application, $user){
                     $message->from($application->getSetting('Admin Email'), $application->name);
                     $message->to($user->email);
                 });
