@@ -1,5 +1,4 @@
 <?php
-use Auth;
 
 class Permission extends Eloquent {
     //This should hold the actual permission table.. who is allowed into what.
