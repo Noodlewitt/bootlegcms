@@ -12,6 +12,7 @@ class NotificationMessage extends Eloquent
         'message',
         'from_id',
         'from_type',
+        'when',
     ];
 
     public function from()
