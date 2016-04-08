@@ -771,6 +771,7 @@ class ContentwrapperController extends CMSController {
 
 	//upload plugin won't allow us to use deleteUpload since we can't send a csrf token :(
 	public function getDeleteUpload($id = '') {
+
 		if ($id) {
 			$content_setting = \Contentsetting::findOrFail($id);
 			$content_setting->delete();
@@ -781,7 +782,8 @@ class ContentwrapperController extends CMSController {
 			$return->files[] = $delete;
 			return response()->json($return);
 		} else {
-			return (TRUE);
+
+			return ('true');
 		}
 	}
 
@@ -802,15 +804,28 @@ class ContentwrapperController extends CMSController {
 	 * pass in a content_setting id to upload to.
 	 */
 	public function postUpload($id, $type = "Custom") {
-		$setting = $type::withTrashed()->find($id);
-		if (!$setting && $type == "Contentsetting") {
-			//if there's no setting and the field type is
-			//content - we can assume this is coming from
-			//a template instead - we can safely change
-			//this to template and continue
+		if($type != 'Custom'){
+			$setting = $type::withTrashed()->find($id);
+			if (!$setting && $type == "Contentsetting") {
+				//if there's no setting and the field type is
+				//content - we can assume this is coming from
+				//a template instead - we can safely change
+				//this to template and continue
 
-			$setting = \Templatesetting::find($id);
+				$setting = \Templatesetting::find($id);
+			}
 		}
+		else{
+			$setting = new \stdClass();
+			$setting->field_type = 'upload';
+			$setting->name = 'Image';
+			$setting->value = '';
+			$setting->id = 0;
+			$setting->content_id = 0;
+			$setting->section = 'content';
+			$setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
+		}
+
 
 		$params = \Contentsetting::parseParams($setting);
 

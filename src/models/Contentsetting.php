@@ -164,7 +164,7 @@ class Contentsetting extends Eloquent {
                 $this->language = $this->languages->first();
             }
         }
-        $this->orig_name = $name;
+        //$this->orig_name = $name;
         return @$this->language->name?$this->language->name:$name;
     }
 

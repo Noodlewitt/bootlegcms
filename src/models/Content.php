@@ -460,7 +460,7 @@ class Content extends \Baum\Node{ //Eloquent {status
                 $this->language = $this->languages->first();
             }
         }
-        $this->orig_name = $name;
+        //$this->orig_name = $name;
         return @$this->language->name?$this->language->name:$name;
     }
 
@@ -472,7 +472,7 @@ class Content extends \Baum\Node{ //Eloquent {status
                 $this->language = $this->languages->first();
             }
         }
-        $this->orig_slug = $slug;
+        //$this->orig_slug = $slug;
         return @$this->language->slug?$this->language->slug:$slug;
     }
 }

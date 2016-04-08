@@ -10,7 +10,7 @@ if(isset($content)){
 $params = \Contentsetting::parseParams($setting);
 $niceName = preg_replace('/\s+/', '', $setting->name);
 $options = array('class'=>'form-control');
-if($params->tooltip->text){
+if(isset($params->tooltip) && isset($params->tooltip->text)){
     $options['data-toggle'] = "tooltip";
     $options['data-placement'] = $params->tooltip->postion?$params->tooltip->postion:"left";
     $options['title'] = $params->tooltip->text;
