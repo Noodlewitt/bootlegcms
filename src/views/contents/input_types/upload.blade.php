@@ -1,5 +1,4 @@
 <?php
-
 if(@$content){
     $settingAfterEvent = \Event::fire('content.upload.draw', array('content'=>$content, 'setting'=>$setting));    
     $settingAfterEvent = reset($settingAfterEvent);
@@ -33,13 +32,13 @@ $files = json_encode($files);
 $unique = uniqid();
 
 //what type of setting item is this?
-if(@$content_mode == 'template'){
+if($content_mode == 'template'){
     $contentItemType = 'Templatesetting';
 }
-if(@$content_mode == 'application'){
+if($content_mode == 'application'){
     $contentItemType = 'Applicationsetting';
 }
-if(@$content_mode == 'contents'){
+if($content_mode == 'contents'){
     $contentItemType = 'Contentsetting';
 }
 ?>
@@ -189,10 +188,10 @@ if(@$content_mode == 'contents'){
                 $form.fileupload({
                     // Uncomment the following to send cross-domain cookies:
                     //xhrFields: {withCredentials: true},
-                    @if(@$contentItemType)
+                    @if($contentItemType)
                         url: "{{action('\Bootleg\Cms\ContentsController@postUpload', array('id'=>$setting->id, 'type'=>$contentItemType))}}",
-                    @else
-                        url: "{{action('\Bootleg\Cms\ContentsController@postUpload', ['id'=>0, 'type'=>'Custom'])}}",
+                    @else(@$contentItem)
+                        url: "{{action('\Bootleg\Cms\ContentsController@postUpload')}}",
                     @endif
                     maxNumberOfFiles:{{$params->max_number or '1'}},
                     @if(isset($params->max_number) && $params->max_number>1)

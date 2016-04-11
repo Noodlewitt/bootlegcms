@@ -10,6 +10,6 @@ if(@$content){
 $field_name = @$setting->name;
 ?>
 <div class='form-group'>
-    {{ Form::label("setting[$field_name]", ucfirst("$field_name:")) }}
+    {!! Form::label("setting[$field_name]", ucfirst("$field_name:")) !!}
     <div class=''> {{ $setting->value }}</div>
 </div>

@@ -205,7 +205,11 @@ if(@$childrenSettings){
     @endif
 
     @if(isset($children) && method_exists($children, 'currentPage'))
-        <div class="js-main-content-container">{!!$children->appends(Input::get())->render()!!}</div>
+        @if(\Input::get('search'))
+            <div class="">{!!$children->appends(Input::get())->render()!!}</div>
+        @else
+            <div class="js-main-content-container">{!!$children->appends(Input::get())->render()!!}</div>
+        @endif
     @endif
 
     <script type="text/javascript">
@@ -216,26 +220,6 @@ if(@$childrenSettings){
 
             if(typeof(tableEvents) === 'undefined'){
                 tableEvents = true;
-                $('.main-content').on('click', '.js-delete-item', function(e){
-                    $me=$(this);
-                    e.preventDefault();
-                    swal({
-                        title: "Are you sure?",
-                        type: "error",
-                        text: "Are you sure you want to delete?",
-                        showCancelButton: true,
-                        confirmButtonText: "Yes, delete it!"
-                    },
-                    function(){   
-                        $.get($me.attr('href'), function(data){
-                            if($me.closest('tr').hasClass('expanded')){
-                                $me.closest('tr').next('tr.children').remove();
-                            }
-                            $me.closest('tr').remove();
-                            
-                        });
-                    });
-                });
 
                 //Edit pencil button
                 $('.main-content').on('click', '.js-edit-click', function(e){
@@ -306,19 +290,15 @@ if(@$childrenSettings){
                 $('#popup').modal('hide');
             });
 
-
-            /*if(typeof(jsChildrenSearch) === 'undefined'){
-                jsChildrenSearch = true;
-                $('.main-content').on('click', '.js-children-search', function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-                    $form = $(this).closest('form');
-                    alert($form.attr('action'));
-                    $.get($form.attr('action'), $form.serialize(), function(data){
-                        $('.main-content').html(data);
-                    });
-                });
-            }*/
+//            $('.main-content').on('click', '.js-children-search', function(e){
+//                e.preventDefault();
+//                e.stopPropagation();
+//                $form = $(this).closest('form');
+//                alert($form.attr('action'));
+//                $.get($form.attr('action'), $form.serialize(), function(data){
+//                    $('.main-content').html(data);
+//                });
+//            });
             
         });
     </script>

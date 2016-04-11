@@ -57,13 +57,6 @@
                 str = '/'+str.replace(/[^a-zA-Z0-9-_]/g, '');
                 $('.js-slug', $form).val(str.toLowerCase());
             });
-        
-            $('.js-content-cancel').click(function(e){
-                e.preventDefault();
-                $('#popup').modal('hide');
-            });
-
-
 
             @if(count($application->languages) > 1)
             //language selection

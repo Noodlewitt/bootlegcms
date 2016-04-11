@@ -95,6 +95,10 @@
                 });
             });
 
+            $('body').on('click','.js-content-cancel', function(e){
+                e.preventDefault();
+                $('#popup').modal('hide');
+            });
 
             @if(count($application->languages) > 1)
             //language selection

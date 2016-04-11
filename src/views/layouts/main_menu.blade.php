@@ -32,7 +32,7 @@
         @foreach($menuItems as $menuItem)
             @if(Permission::getPermission($menuItem['location'],'')->result)
             <li class="{{Request::is(config('bootlegcms.cms_route').$menuItem['activePattern'])?'active':''}}">
-                <a href="{{@$menuItem['href']?$menuItem['href']:action($menuItem['location'])}}">
+                <a href="{{action($menuItem['location'])}}">
                     <i class="menu-icon glyphicon {{$menuItem['icon']}}"></i>
                     <span class="mm-text">{{$menuItem['title']}}</span>
                 </a>

@@ -24,7 +24,7 @@
         <li><a href="#tab-Permission" data-toggle="tab">Permisssions</a></li>
 </ul>
 
-{{ Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('ContentsController@anyUpdate', @$content->id))) }}
+{{ Form::model($content, array('method' => 'POST', 'files'=>true, 'class'=>'main-form', 'action' => array('\Bootleg\Cms\ContentsController@anyUpdate', @$content->id))) }}
 <div class="tab-content">
 <?php 
 $i = 0; 
@@ -159,7 +159,7 @@ $fieldArray = array('class'=>'form-control');
             <li class="form-group">
                 <div class='btn-group btn-group-lg'>
                     {{ Form::submit(@$content->id?'Update':'Create', array('class' => 'btn btn-success ')) }}
-                    {{ link_to_action('ContentsController@anyEdit', 'Cancel', @$content->id, array('class' => 'btn btn-danger ')) }}                  
+                    {{ link_to_action('\Bootleg\Cms\ContentsController@anyEdit', 'Cancel', @$content->id, array('class' => 'btn btn-danger ')) }}
                 </div>
             </li>
         </ul>
