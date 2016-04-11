@@ -216,26 +216,6 @@ if(@$childrenSettings){
 
             if(typeof(tableEvents) === 'undefined'){
                 tableEvents = true;
-                $('.main-content').on('click', '.js-delete-item', function(e){
-                    $me=$(this);
-                    e.preventDefault();
-                    swal({
-                        title: "Are you sure?",
-                        type: "error",
-                        text: "Are you sure you want to delete?",
-                        showCancelButton: true,
-                        confirmButtonText: "Yes, delete it!"
-                    },
-                    function(){   
-                        $.get($me.attr('href'), function(data){
-                            if($me.closest('tr').hasClass('expanded')){
-                                $me.closest('tr').next('tr.children').remove();
-                            }
-                            $me.closest('tr').remove();
-                            
-                        });
-                    });
-                });
 
                 //Edit pencil button
                 $('.main-content').on('click', '.js-edit-click', function(e){
