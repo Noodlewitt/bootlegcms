@@ -30,7 +30,7 @@ $selectedTagsArr = explode(@$params->delimiter?$params->delimiter:',', $setting-
 $selectedTagsArr = array_flip($selectedTagsArr);    //and we want to flip this so it's easer to work with later.
 ?>
 <div class='form-group'>
-    {!! Form::label("setting[{{$setting->name}}][{{get_class($setting)}}][{{$setting->id}}]", ucfirst($setting->name.":")) !!}
+    {!! Form::label("", ucfirst($setting->name.":")) !!}
 
     <div class='text {{$niceName}} {{$unique}}' >   
         <select name="setting[{{$setting->name}}][{{get_class($setting)}}][{{$setting->id}}]" style="width:100%" class="{{$options['class']}}" {{@$params->multiple?'multiple="multiple"':""}}  >
