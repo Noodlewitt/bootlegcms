@@ -12,13 +12,23 @@ if(@$content){
     }
 }
 
+if(@$name === false){
+$name = NULL; //we don't want to set it at all!
+}
+else if(@$name){
+//$name = $name;
+}
+else{
+$name = "setting[".$setting->name."][".get_class($setting)."][".$setting->id."]";
+}
+
 $niceName = preg_replace('/\s+/', '', $setting->name);
 $params = Contentsetting::parseParams($setting);
 
 ?>
 <div class='checkbox checkbox-block js-{{$niceName}}'>
     <label>{!! Form::checkbox("checkbox-$niceName", $setting->value, $setting->value, array('class'=>'js-checkbox')) !!} {{ucfirst($setting->name)}}</label>
-    {!! Form::hidden("setting[".$setting->orig_name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'js-hidden')) !!}
+    {!! Form::hidden($name, $setting->value, array('class'=>'js-hidden')) !!}
 </div>
 <script>
     $('input.js-checkbox', $('.checkbox-block.js-{{$niceName}}')).change(function(e){

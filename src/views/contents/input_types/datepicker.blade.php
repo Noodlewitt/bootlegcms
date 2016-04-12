@@ -12,11 +12,23 @@ $niceName = preg_replace('/\s+/', '', $setting->name);
 $options = array('class'=>'form-control');
 $options2 = ((array) $params->options);
 $options = array_merge($options, $options2);
+//dd($options);
+
+if(@$name === false){
+$name = NULL; //we don't want to set it at all!
+}
+else if(@$name){
+//$name = $name;
+}
+else{
+$name = "setting[".$setting->name."][".get_class($setting)."][".$setting->id."]";
+}
+
 ?>
-{!! Form::label("setting[".$setting->orig_name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
+{!! Form::label($name, ucfirst($setting->name.":")) !!}
 <div class='form-group'>
     <div class='datetime input-group date-{{$niceName}}' >   
-        {!! Form::text("setting[".$setting->orig_name."][".get_class($setting)."][".$setting->id."]", $setting->value, $options)!!}
+        {!! Form::text($name, $setting->value, $options)!!}
         <span class="input-group-addon">
             <span class="glyphicon glyphicon-calendar"></span>
         </span>

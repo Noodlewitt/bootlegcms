@@ -43,7 +43,7 @@ foreach($params->values as $key=>$default){
 
 ?>
 <div class='form-group'>
-    {!! Form::label("setting[".$setting->orig_name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
+    {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
 
     <div class='text {{$niceName}} {{$unique}}' >   
         <select id="{{$niceName}}{{$unique}}" name="setting[{{$setting->name}}][{{get_class($setting)}}][{{$setting->id}}][]" class="{{$options['class']}}" multiple="" tabindex="-1" aria-hidden="true">

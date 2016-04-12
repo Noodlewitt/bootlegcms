@@ -264,6 +264,7 @@ class ContentwrapperController extends CMSController {
 			$id = $input['id'];
 		}
 		if ($id !== FALSE) {
+
 			$input = array_except(\Input::all(), '_method');
 
 			$validation = \Validator::make($input, $this->content->rules);

@@ -9,6 +9,6 @@ if(@$content){
 }
 ?>
 <div class='form-group'>
-    {!! Form::label("setting[".$setting->orig_name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
-    {!! Form::textarea("setting[".$setting->orig_name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'form-control')) !!}
+    {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
+    {!! Form::textarea("setting[".$setting->name."][".get_class($setting)."][".$setting->id."]", $setting->value, array('class'=>'form-control')) !!}
 </div>

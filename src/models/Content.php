@@ -190,7 +190,7 @@ class Content extends \Baum\Node{ //Eloquent {status
         $template = Template::find($input['template_id']);
         
         $input['position'] = count($parent->children); //we always want to create this one at the end.
-
+        unset($input['orig_name']);
         unset($input['parent_id']);
         //SAVE CONTENT ITEM
         $saved = $parent->children()->create($input); 
@@ -452,27 +452,25 @@ class Content extends \Baum\Node{ //Eloquent {status
         //dd(Application::getApplication()->languages);
         //$this->language()->first();
         //dd($this->languages(\App::getLocale())->first()->id);
-
-        if(!isset($this->orig_name)){
-
-            if(config('bootlegcms.cms_languages')){
-
+        if(config('bootlegcms.cms_languages')){
+            if(!isset($this->orig_name)){
                 $this->language = $this->languages->first();
             }
+            $this->orig_name = $name;
         }
-        $this->orig_name = $name;
+
         return @$this->language->name?$this->language->name:$name;
     }
 
     public function getSlugAttribute($slug){
         //dd(Application::getApplication()->languages);
-
-        if(!isset($this->orig_slug)){
-            if(config('bootlegcms.cms_languages')){
+        if(config('bootlegcms.cms_languages')){
+            if(!isset($this->orig_slug)){
                 $this->language = $this->languages->first();
             }
+            $this->orig_slug = $slug;
         }
-        $this->orig_slug = $slug;
+
         return @$this->language->slug?$this->language->slug:$slug;
     }
 }
