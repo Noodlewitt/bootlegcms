@@ -75,7 +75,7 @@ class Permission extends Eloquent {
     public static function getPermission($controller_type, $controller_id = null, $return = false){
         //check permisssion against user
         if (Auth::guest()) {
-            $user = app('Bootleg\Cms\User')->find(1);  //select the guest row.
+            $user = app('\Bootleg\Cms\User')->find(1);  //select the guest row.
         } else {
             $user = Auth::user();
         }
