@@ -806,7 +806,7 @@ class ContentwrapperController extends CMSController
             $content_setting = \Contentsetting::find($id);
             if(!@$content_setting){
                 //this is probs being sent a specific file?
-                return (true);
+                return ('true');
             }
             $content_setting->delete();
             $delete = new \stdClass();
@@ -816,7 +816,7 @@ class ContentwrapperController extends CMSController
             $return->files[] = $delete;
             return response()->json($return);
         } else {
-            return (true);
+            return ('true');
         }
     }
 
