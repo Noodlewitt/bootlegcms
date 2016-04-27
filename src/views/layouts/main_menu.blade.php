@@ -26,13 +26,13 @@
             </li>
             @endif
         @endif
-        <?php
+                <?php
             $menuItems = Event::fire('menu.links', array());
         ?>
         @foreach($menuItems as $menuItem)
-            @if(Permission::getPermission($menuItem['location'],'')->result)
+            @if(Permission::getPermission($menuItem['controller'],'')->result)
             <li class="{{Request::is(config('bootlegcms.cms_route').$menuItem['activePattern'])?'active':''}}">
-                <a href="{{action($menuItem['location'])}}">
+                <a href="{!! $menuItem['location']!!}">
                     <i class="menu-icon glyphicon {{$menuItem['icon']}}"></i>
                     <span class="mm-text">{{$menuItem['title']}}</span>
                 </a>
