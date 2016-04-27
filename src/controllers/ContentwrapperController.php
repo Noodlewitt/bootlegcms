@@ -839,15 +839,29 @@ class ContentwrapperController extends CMSController
      */
     public function postUpload($id, $type = "Custom")
     {
-        $setting = $type::withTrashed()->find($id);
-        if (!$setting && $type == "Contentsetting") {
-            //if there's no setting and the field type is
-            //content - we can assume this is coming from
-            //a template instead - we can safely change
-            //this to template and continue
+        if($type != 'custom' && $type != 'Custom'){
+            $setting = $type::withTrashed()->find($id);
+            if (!$setting && $type == "Contentsetting") {
+                //if there's no setting and the field type is
+                //content - we can assume this is coming from
+                //a template instead - we can safely change
+                //this to template and continue
 
-            $setting = \Templatesetting::find($id);
+                $setting = \Templatesetting::find($id);
+            }
         }
+        else{
+            //custom setting - se make a fake one?
+            $setting = new \stdClass();
+            $setting->field_type = 'upload';
+            $setting->name = 'Image';
+            $setting->value = '';
+            $setting->id = 0;
+            $setting->content_id = 0;
+            $setting->section = 'content';
+            $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
+        }
+
 
         $params = \Contentsetting::parseParams($setting);
 
