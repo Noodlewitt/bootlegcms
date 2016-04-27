@@ -803,7 +803,11 @@ class ContentwrapperController extends CMSController
     public function getDeleteUpload($id = '')
     {
         if ($id) {
-            $content_setting = \Contentsetting::findOrFail($id);
+            $content_setting = \Contentsetting::find($id);
+            if(!@$content_setting){
+                //this is probs being sent a specific file?
+                return (true);
+            }
             $content_setting->delete();
             $delete = new \stdClass();
             $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
