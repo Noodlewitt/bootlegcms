@@ -804,7 +804,7 @@ class ContentwrapperController extends CMSController
     {
         if ($id) {
             $content_setting = \Contentsetting::find($id);
-            if(!@$content_setting){
+            if(!$content_setting){
                 //this is probs being sent a specific file?
                 return ('true');
             }
@@ -823,13 +823,14 @@ class ContentwrapperController extends CMSController
 
     public function anyInlineUpload()
     {
+
         //$setting = array();
-        $setting = new \Illuminate\Database\Eloquent\Collection;
-        $setting->add(new \Contentsetting());
-        $setting[0]->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
-        $setting[0]->name = '_inline';
-        $setting[0]->field_type = '_inline';
-        $setting[0]->id = 0;
+        //$setting = new \Illuminate\Database\Eloquent\Collection;
+        $setting = new \stdClass();
+        $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
+        $setting->name = 'custom';
+        $setting->field_type = 'custom';
+        $setting->id = 0;
 
         return $this->render('contents.inline-upload', compact('setting'));
     }
@@ -839,31 +840,25 @@ class ContentwrapperController extends CMSController
      */
     public function postUpload($id, $type = "Custom")
     {
-        if($type != 'custom' && $type != 'Custom'){
+        if($type != 'Custom'){
             $setting = $type::withTrashed()->find($id);
-            if (!$setting && $type == "Contentsetting") {
-                //if there's no setting and the field type is
-                //content - we can assume this is coming from
-                //a template instead - we can safely change
-                //this to template and continue
+        }
 
-                $setting = \Templatesetting::find($id);
-            }
+        if (!@$setting && $type == "Contentsetting") {
+            //if there's no setting and the field type is
+            //content - we can assume this is coming from
+            //a template instead - we can safely change
+            //this to template and continue
+
+            $setting = \Templatesetting::find($id);
+        }
+        if(@$setting){
+            $params = \Contentsetting::parseParams($setting);
         }
         else{
-            //custom setting - se make a fake one?
-            $setting = new \stdClass();
-            $setting->field_type = 'upload';
-            $setting->name = 'Image';
-            $setting->value = '';
-            $setting->id = 0;
-            $setting->content_id = 0;
-            $setting->section = 'content';
-            $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
+            $params = \Contentsetting::DEFAULT_UPLOAD_JSON;
         }
 
-
-        $params = \Contentsetting::parseParams($setting);
 
         $input = array_except(\Input::all(), '_method');
 

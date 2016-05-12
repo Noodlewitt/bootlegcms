@@ -360,11 +360,10 @@ class Content extends \Baum\Node{ //Eloquent {status
             return null;
         }
         if($settings->count() > 1){
-        	
-	    if($settings->first()->index === NULL){
+
+            if($settings->first()->index === NULL){
                 return $settings->first()->value;
             }
-		
             $return = array();
             foreach($settings as $setting){
                 if($setting->languages->count()){

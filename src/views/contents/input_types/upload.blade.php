@@ -6,11 +6,12 @@ if(@$content){
         $setting = $settingAfterEvent;
     }
 }
+//dd('bum.');
 $params = Contentsetting::parseParams($setting);
 $niceName = preg_replace('/\s+/', '_', $setting->name);
 
 $files = array();
-    if(@$setting->name){
+    if(@$setting->name && $setting->name != 'custom'){
         
         $url = $setting->value;
 
@@ -41,6 +42,10 @@ if($content_mode == 'application'){
 if($content_mode == 'contents'){
     $contentItemType = 'Contentsetting';
 }
+if($setting->name == 'custom'){
+    $contentItemType = 'Custom';
+}
+
 ?>
 <div class='form-group'>
     <div class='upload {{$niceName}}-{{$unique}}' >
@@ -49,7 +54,7 @@ if($content_mode == 'contents'){
         {!! Form::label("setting[".$setting->name."][".$setting->id."]", ucfirst($setting->name.":")) !!}
         <p>{{@$params->text}}</p>
         @endif
-        
+
 
             <!-- The table listing the files available for upload/download -->
             <table id="{{uniqid()}}" role="presentation" class="table table-striped uploaded"><tbody class="files"></tbody></table>
@@ -225,11 +230,12 @@ if($content_mode == 'contents'){
                         //and add in the image preview
                         $input = $('input.upload-value', $container);
                         $input.val($('span.preview img', $container).attr('src'));
-                        window.parent.inline_image = $input.val();
+                        window.parent.inline_image = $input.val(); //for inline image uploading (if we need it)
                     }, 1000);
                 }).bind('fileuploaddestroyed', function (e, data) {     
                     //on deleted, we remove the input file
                     console.log(data);
+                    window.parent.inline_image = '';
                     var $input = $('input.upload-value', $(data.context).closest('tr')).val('');
                     //$input.clone().appendTo( $container);
                     

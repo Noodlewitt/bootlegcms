@@ -120,7 +120,7 @@ class Contentsetting extends Eloquent {
     
     public static function getDefaultParams($setting){
         //todo: there must be a nicer way than this..
-        
+
         if($setting->field_type == 'upload'){
             $params = self::DEFAULT_UPLOAD_JSON;
         }

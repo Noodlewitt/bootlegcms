@@ -30,7 +30,9 @@ $niceName = preg_replace('/\s+/', '', $setting->name);
                     // Open window
                     editor.windowManager.open({
                         title: 'Upload Image',
-                        url: '/cms/content/inline-upload',
+                        url: '/cms/contents/inline-upload',
+                        width:550,
+                        height:400,
                     //    body: [
                     //        {type: 'textbox', name: 'title', label: 'Title'}
                     //    ],

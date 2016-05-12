@@ -28,8 +28,12 @@
                     'Create':{
                         'label':'Create',
                         'action': function(d){
-                            $node = tree.create_node($node);
-                            tree.edit($node);
+                            console.log($node);
+                            tree.open_node($node, function(){
+                                $node = tree.create_node($node);
+                                tree.edit($node);
+                            });
+
                         }
                     },
                     'Delete':{

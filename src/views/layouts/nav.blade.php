@@ -69,9 +69,6 @@
                 $navItems = Event::fire('nav.links', array());
             ?>
             @foreach($navItems as $navItem)
-            <?php
-                    $navItem['location'] = @$navItem['href']?$navItem['href']:$navItem['location'];
-                ?>
                 <a href="{{action($navItem['location'])}}">{{$navItem['title']}}</a>
             @endforeach
         </ul> <!-- / .navbar-nav -->
