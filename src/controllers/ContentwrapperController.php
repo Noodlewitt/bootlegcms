@@ -317,6 +317,10 @@ class ContentwrapperController extends CMSController
                                     }
                                 }
                                 else {
+                                    if(is_array($setting)){
+                                        $setting = implode(',',$setting);
+                                        //dd($setting);
+                                    }
 
                                     if ($type != 'Templatesetting') {
                                         //dd($type);
