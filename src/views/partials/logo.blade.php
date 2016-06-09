@@ -8,8 +8,8 @@
         <img src="/vendor/bootleg/cms/img/cms.png"/>
 
         <div class="cms-logo-title">
-            <div>Native Laravel Open-Source</div>
-            <div>Content Management System</div>
+            <div>pharmacy.com.au</div>
+            <div>administration</div>
         </div>
     </div>
 @endif
