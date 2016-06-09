@@ -86,15 +86,22 @@
                         {!! Form::label('parent_id', 'Parent_id:') !!}
                         {!! Form::input('number', 'parent_id', null, array('class'=>'form-control')) !!}
                     </li>
-                    
+
+                    <li class="form-group">
+                        {!! Form::label('position', 'Position:') !!}
+                        {!! Form::input('text', 'position', null, array('class'=>'form-control')) !!}
+                    </li>
+
                     <li class="form-group">
                         {!! Form::label('package', 'Package:') !!}
                         {!! Form::input('text', 'package', null, array('class'=>'form-control')) !!}
                     </li>
+
                     <li class="form-group">
                         {!! Form::label('service_provider', 'Service Provider:') !!}
                         {!! Form::input('text', 'service_provider', null, array('class'=>'form-control')) !!}
                     </li>
+
                     <li class="form-group">
                         {!! Form::label('view', 'View:') !!}
                         {!! Form::input('text', 'view', null, array('class'=>'form-control')) !!}

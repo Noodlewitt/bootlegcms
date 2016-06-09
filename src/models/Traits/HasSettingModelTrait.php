@@ -42,7 +42,7 @@ trait HasSettingModelTrait
         else{
             $return = $settings->first();
         }
-        if(isset($options['return_object']) && $options['return_object']){
+        if((isset($options['return_object']) && $options['return_object']) || (isset($return) && is_array($return))){
             return $return;
         } elseif (isset($return) && isset($return->value)) {
             return $return->value;
