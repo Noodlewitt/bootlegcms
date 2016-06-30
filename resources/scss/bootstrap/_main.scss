@@ -240,6 +240,11 @@ input {
   }
 }
 
+.dropdown-menu{
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
 // Indicators =================================================================
 
 .close {
