@@ -20,7 +20,7 @@ gulp.task('compass', function() {
             image: 'public/images'
         }))
         .pipe(shell([
-            'php ../../../artisan asset:publish --bench="'+location+'"'
+            'php ../../../artisan vendor:publish'
         ]));
 });
 
@@ -31,7 +31,7 @@ gulp.task('uglify', function() {
     location = location.slice(-1)[0];
 
     gulp.src([
-        'public/components/jquery/jquery.js',
+        'public/components/jquery/dist/jquery.js',
         'public/components/jquery-ui/ui/jquery-ui.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
@@ -56,6 +56,7 @@ gulp.task('uglify', function() {
         'public/components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
         'public/components/bootstrap-sass-datepicker/js/bootstrap-sass-datepicker.js',
         'public/components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
+        'public/components/select2/dist/js/select2.full.js',
         ])
         .pipe(uglify('script.min.js', {
             mangle: true,
@@ -66,7 +67,7 @@ gulp.task('uglify', function() {
         }))
         .pipe(gulp.dest('public/js'))
         .pipe(shell([
-            'php ../../../artisan asset:publish --bench="'+location+'"'
+            'php ../../../artisan vendor:publish'
         ]));
 });
 

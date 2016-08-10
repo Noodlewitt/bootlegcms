@@ -76,6 +76,17 @@ class Contentsetting extends Eloquent {
         "tiny_parameters":{}
     }';
 
+    const DEFAULT_TAGS_JSON = '{
+        "values": {
+
+        },
+        "max_number":1,
+        "tooltip": {
+            "text":"",
+            "postion":"top"
+        }
+    }';
+
 
     public function content(){
         return($this->belongsTo('Content'));
@@ -127,6 +138,9 @@ class Contentsetting extends Eloquent {
             $params = self::DEFAULT_RELATIONSHIP_JSON;
         }
         else if($setting->field_type == 'radio'){
+            $params = self::DEFAULT_RADIO_JSON;
+        }
+        else if($setting->field_type == 'tags'){
             $params = self::DEFAULT_RADIO_JSON;
         }
         else{

@@ -1,38 +1,66 @@
 <?php
-$params = Contentsetting::parseParams($setting[0]);
-$niceName = preg_replace('/\s+/', '', $setting[0]->name);
-$field_title = isset($params->field_title) ? $params->field_title : $setting[0]->name;
-?>
-{!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($field_title.":")) !!}
-@if($params->max_number  && $params->max_number > 1)
-    <div class='text-fields'>
-        @foreach($setting as $field)
-        <div class='input-group text {{$niceName}}' >
-            {!! Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control tagsinput','data-role'=>'tagsinput')) !!}
-            <span class="input-group-btn">
-                <button class="del-row btn btn-danger" type="button"><span class='glyphicon glyphicon-remove'></span></button>
-            </span>
-        </div>
-        @endforeach
-    </div>
-    <button class='add-row btn btn-primary btn-sm pull-right'>Add Row</button>
 
-    <script>
-        $('.add-row').click(function(e){
-            e.preventDefault();
-            $('.text.{{$niceName}}').parent().append('<div class="input-group text"><input class="form-control tagsinput" name="setting[{{$setting[0]->name}}][Contentsetting][]" type="text"><span class="input-group-btn"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button></span></div>');
-        });
-        $('.del-row').click(function(e){
-            e.preventDefault();
-            var input_name = $('input',$(this).parent().parent()).attr('name');
-            $(this).parent().parent().remove();
-            $('.text-fields').append('<input class="hidden" type="hidden" name="'+input_name+'" value="">');
-        });
-    </script>
-@else
-<div class='text {{$niceName}}' >
-    @foreach($setting as $field)
-    {!! Form::text("setting[".$field->name."][".get_class($field)."][".$field->id."]", $field->value, array('class'=>'form-control tagsinput', 'data-role'=>'tagsinput')) !!}
-    @endforeach
+if(@$content){
+
+    $settingAfterEvent = \Event::fire('content.tags.draw', array('content'=>$content, 'setting'=>$setting[0]));    
+    $settingAfterEvent = reset($settingAfterEvent);
+    if(!empty($settingAfterEvent)){
+        $setting[0] = $settingAfterEvent;
+    }
+}
+
+$params = Contentsetting::parseParams($setting[0]);
+
+$niceName = preg_replace('/\s+/', '', $setting[0]->name);
+$unique = uniqid();     
+$values = (array)$params->values;
+
+$options = array('class'=>'form-control','style'=>'width: 100%');
+$options['multiple'] = 'multiple';
+if(!@$params->simple){
+    $options['class'] .= ' select2';
+}
+
+$tagsArr = explode(@$params->delimiter?$params->delimiter:',', $setting[0]->value);
+
+//we flip this arrout so we can have the defaults included into this but not selected.
+$tagsArr = array_flip($tagsArr);
+
+foreach($tagsArr as $key=>$tagArr){
+    $out[$key] = true;
+}
+
+$tagsArr = $out;
+
+if(isset($tagsArr[''])){
+    unset($tagsArr['']);
+}
+
+//we need to merge in any default values.
+foreach($params->values as $key=>$default){
+    if(!isset($tagsArr[$key])){
+        $tagsArr[$key] = $default;    
+    }
+}
+
+?>
+<div class='form-group'>
+    {!! Form::label("setting[".$setting[0]->name."][".$setting[0]->id."]", ucfirst($setting[0]->name.":")) !!}
+
+    <div class='text {{$niceName}} {{$unique}}' >   
+        <select id="{{$niceName}}{{$unique}}" name="setting[{{$setting[0]->name}}][{{get_class($setting[0])}}][{{$setting[0]->id}}][]" class="{{$options['class']}}" multiple="" tabindex="-1" aria-hidden="true">
+            @foreach($tagsArr as $key=>$tag)
+                <option {{$tag?'selected="selected"':''}}>{{$key}}</option>
+            @endforeach
+        </select>
+    </div>
 </div>
-@endif
+<script type="text/javascript">
+$(function () {
+    $('.{{$unique}} select').select2({
+        @if(!@$params->fixed)
+        tags:true,
+        @endif
+    });
+});
+</script>
