@@ -121,12 +121,11 @@
         $.post("{{ action("\\Bootleg\\Cms\\".$cm."Controller@anyUpdate") }}", {
             parent_id:data.parent,
             id:data.node.id,
-            position: data.position,
+            movement: data.position - (data.parent == data.old_parent ? data.old_position : 0),
             '_token':'{!!csrf_token()!!}'
         }).fail(function(){
             data.instance.refresh();
         });
-
     });
 
 
