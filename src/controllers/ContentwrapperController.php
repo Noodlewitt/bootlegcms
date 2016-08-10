@@ -253,40 +253,41 @@ class ContentwrapperController extends CMSController
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
 
-                $oldPosition = $content->position;
-                $content->update($input);
+                if(isset($input['movement'])){
+                    // How far to move the content item
+                    $movement = $input['movement'];
 
-                //position needs looking at too..
-                if(isset($input['position']) && $oldPosition != $input['position']){
+                    // Get out group of content and order it
+                    $siblings = $content->getSiblings();
+                    $siblings->push($content);
+                    $siblings = $siblings->sortBy('position')->values();
 
-                    $siblings = $content->getSiblingsAndSelf();
-
-                    foreach($siblings as $key=>$sibling){
-
-                        if($sibling->id == $content->id){
-                            if($oldPosition > $content->position){
-                                $siblings[$key]->position = $siblings[$key]->position-0.5;
-                            }
-                            else{
-                                $siblings[$key]->position = $siblings[$key]->position+0.5;
-                            }
-                        }
-                    }
-
-                    $ordered = $siblings->sortBy(function($sibling){
-                        return ($sibling->position);
+                    // Find the index of our content item in the sorted list
+                    $oldPosition = $siblings->search(function ($item) use ($content) {
+                        return $item->id == $content->id;
                     });
 
-                    $ordered->values();
-                    //this will leave us with 2 that are the same position.
-                    //we need to loop through and detect which ones to swap.
+                    // Determine what the new index should be
+                    $newPosition = $oldPosition + $movement;
 
-                    foreach($ordered as $key=>$sibling){
+                    // Cut out the item we're moving
+                    $moving = $siblings->splice($oldPosition, 1);
+
+                    // Cut out everything before its new position
+                    $start = $siblings->splice(0, $newPosition);
+
+                    // Place the item between our previous cut, and the remaining items
+                    $siblings = $start->merge($moving)->merge($siblings);
+
+                    // Order our content items numerically and save in the database
+                    foreach($siblings as $key => $sibling){
                         $sibling->position = $key;
                         $sibling->save();
                     }
-
+                    unset($input['position']);
                 }
+
+                $content->update($input);
 
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
                 //add any settings:
