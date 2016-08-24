@@ -1,0 +1,10 @@
+{
+  "name": "bootstrap-datetimepicker-sass",
+  "version": "3.0.3",
+  "main": ["build/css/bootstrap-datetimepicker.min.css","build/js/bootstrap-datetimepicker.min.js"],
+  "dependencies": {
+    "jquery" : ">=1.8.3",
+    "bootstrap-sass" : ">=3.0",
+    "moment": ">=2.4.0"
+  }
+}
