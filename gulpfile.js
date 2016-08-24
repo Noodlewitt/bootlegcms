@@ -31,7 +31,7 @@ gulp.task('uglify', function() {
     location = location.slice(-1)[0];
 
     gulp.src([
-        'public/components/jquery/dist/jquery.js',
+        'public/components/jquery/jquery.js',
         'public/components/jquery-ui/ui/jquery-ui.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap.js',
         'public/components/bootstrap-sass/assets/javascripts/bootstrap/alert.js',
@@ -52,11 +52,16 @@ gulp.task('uglify', function() {
         'public/components/blueimp-file-upload/js/jquery.fileupload-video.js',
         'public/components/blueimp-file-upload/js/jquery.fileupload-validate.js',
         'public/components/blueimp-file-upload/js/jquery.fileupload-ui.js',
-        'public/components/tinymce-builded/js/tinymce/tinymce.jquery.js',
+        'public/components/tinymce-builded/js/tinymce/tinymce.min.js',
+        'public/components/tinymce-builded/js/tinymce/jquery.tinymce.min.js',
         'public/components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
         'public/components/bootstrap-sass-datepicker/js/bootstrap-sass-datepicker.js',
         'public/components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
         'public/components/select2/dist/js/select2.full.js',
+        'public/components/moment/moment.js',
+        'public/components/moment-timezone/builds/moment-timezone-with-data.js',
+        'public/components/soundasleep-bootstrap-datetimepicker-sass/build/js/bootstrap-datetimepicker.min.js',
+        'public/components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
         ])
         .pipe(uglify('script.min.js', {
             mangle: true,
@@ -67,7 +72,7 @@ gulp.task('uglify', function() {
         }))
         .pipe(gulp.dest('public/js'))
         .pipe(shell([
-            'php ../../../artisan vendor:publish'
+            'php ../../../artisan vendor:publish --force'
         ]));
 });
 
