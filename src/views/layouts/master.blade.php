@@ -23,7 +23,7 @@
             $headerItems = Event::fire('html.master.header.end', array());
         ?>
         @foreach($headerItems as $headerItem)
-            {!!$headerItem!!}
+            {!! $headerItem !!}
         @endforeach
     </head>
 
