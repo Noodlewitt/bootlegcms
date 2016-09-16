@@ -24,14 +24,13 @@ class ContentwrapperController extends CMSController
 
     public $policy, $signature;
 
-
-
     /**
      * main content view.
      *
      * @return Response
      */
-    public function anyIndex(){
+    public function anyIndex()
+    {
         //dd('here');
         $this->content = $this->content->with(array('template_setting', 'setting'))->fromApplication()->whereNull('parent_id')->first();
 
@@ -40,32 +39,41 @@ class ContentwrapperController extends CMSController
         $allPermissions = \Permission::getControllerPermission($this->content->id, \Route::currentRouteAction());
 
         //foreach template setting we want to add a setting for this row..
-        if(!empty($content->template_setting)){
+        if(!empty($content->template_setting))
+        {
             //TODO: There has to be a cleaner way of doing this.
             $all_settings = new \Illuminate\Database\Eloquent\Collection;
 
-            foreach($content->template_setting as $template_setting){
+            foreach($content->template_setting as $template_setting)
+            {
 
-                $fl = $content->setting->filter(function($setting) use ($template_setting){
-                    return($template_setting->name===$setting->name);
+                $fl = $content->setting->filter(function ($setting) use ($template_setting)
+                {
+                    return ($template_setting->name === $setting->name);
                 });
-                if(($fl->count())){
-                    foreach($fl as $f){
+                if(($fl->count()))
+                {
+                    foreach($fl as $f)
+                    {
                         //if it's fount int content_settings and template_settings, use
                         $all_settings->push($f);
                     }
                 }
-                else{
+                else
+                {
                     $all_settings->push($template_setting);
                 }
             }
 
-            foreach($content->setting as $setting){
+            foreach($content->setting as $setting)
+            {
 
-                $fl = $content->template_setting->filter(function($template_setting) use ($setting){
-                    return($setting->name===$template_setting->name);
+                $fl = $content->template_setting->filter(function ($template_setting) use ($setting)
+                {
+                    return ($setting->name === $template_setting->name);
                 });
-                if(($fl->count() == 0)){
+                if(($fl->count() == 0))
+                {
                     $all_settings->push($setting);
                 }
             }
@@ -77,18 +85,18 @@ class ContentwrapperController extends CMSController
         return $this->render('layouts.tree', compact('content', 'content_defaults', 'settings', 'allPermissions'));
     }
 
-
     /**
      * Show the form for creating a new resource.
      *
      * @return Response
      */
-    public function anyCreate($parent_id=null){
-        $content = new \Content;
+    public function anyCreate($parent_id = NULL)
+    {
+        $content            = new \Content;
         $content->parent_id = $parent_id;
 
-
-        if($content){
+        if($content)
+        {
             $tree = $content->getDescendantsAndSelf(config('bootlegcms.cms_tree_descendents'));
         }
 
@@ -97,47 +105,48 @@ class ContentwrapperController extends CMSController
         return $this->render('contents.create', compact('content', 'content_settings', 'tree'));
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
-    public function anyStore($json = false){
+    public function anyStore($json = FALSE)
+    {
 
-
-
-        $input = \Input::all();
+        $input      = \Input::all();
         $validation = \Validator::make($input, $this->content->rules);
 
-        if(!isset($input['parent_id']) || $input['parent_id'] == '#'){
+        if(!isset($input['parent_id']) || $input['parent_id'] == '#')
+        {
             //we ar not allowed to create a new root node like this.. so set it to the current root.
             //unset($input['parent_id']); //test
             $input['parent_id'] = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
-        if ($validation->passes()){
+        if($validation->passes())
+        {
 
             \Event::fire('content.create', array($this->content));
             \Event::fire('content.update', array($this->content));
             $tree = $this->content->superSave($input);
             \Event::fire('content.created', array($this->content));
             \Event::fire('content.updated', array($this->content));
-          //  dd($tree);
 
+            //  dd($tree);
 
             return response()->json($this->renderTree($tree));
 
-           // return Redirect::action('ContentsController@anyIndex');
+            // return Redirect::action('ContentsController@anyIndex');
         }
 
         return \Redirect::action('\Bootleg\Cms\ContentsController@anyCreate')
-            ->withInput()
-            ->withErrors($validation)
-            ->with('message', 'There were validation errors.');
+                        ->withInput()
+                        ->withErrors($validation)
+                        ->with('message', 'There were validation errors.');
     }
 
     //fixes tree based off parent_id
-    public function anyFixtree(){
+    public function anyFixtree()
+    {
         set_time_limit(-1);
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '2048M');
@@ -146,29 +155,30 @@ class ContentwrapperController extends CMSController
     }
 
     //fixes slugs based off depth
-    public function anyFixslug(){
-        $Content = \Content::where('depth','=','5')->get();
-        foreach($Content as $cont){
-            $input = array();
+    public function anyFixslug()
+    {
+        $Content = \Content::where('depth', '=', '5')->get();
+        foreach($Content as $cont)
+        {
+            $input         = array();
             $input['name'] = $cont->name;
-            $parent = \Content::find($cont->parent_id);
-            $slug = \Content::createSlug($input,$parent,true);
-            $cont->slug = $slug;
+            $parent        = \Content::find($cont->parent_id);
+            $slug          = \Content::createSlug($input, $parent, TRUE);
+            $cont->slug    = $slug;
             var_dump($slug);
             $cont->save();
         }
         dd('done');
     }
 
-
-
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
-    public function anyEdit($id = false){
+    public function anyEdit($id = FALSE)
+    {
 
         $content = $this->content->with(array('template_setting', 'setting'))->findOrFail($id);
 
@@ -179,32 +189,41 @@ class ContentwrapperController extends CMSController
 
         //foreach template setting we want to add a setting for this row..
         //dd($content->template_setting);
-        if(!empty($content->template_setting)){
+        if(!empty($content->template_setting))
+        {
             //TODO: There has to be a cleaner way of doing this.
             $all_settings = new \Illuminate\Database\Eloquent\Collection;
 
-            foreach($content->template_setting as $template_setting){
+            foreach($content->template_setting as $template_setting)
+            {
 
-                $fl = $content->setting->filter(function($setting) use ($template_setting){
-                    return($template_setting->name===$setting->name);
+                $fl = $content->setting->filter(function ($setting) use ($template_setting)
+                {
+                    return ($template_setting->name === $setting->name);
                 });
-                if(($fl->count())){
-                    foreach($fl as $f){
+                if(($fl->count()))
+                {
+                    foreach($fl as $f)
+                    {
                         //if it's fount int content_settings and template_settings, use
                         $all_settings->push($f);
                     }
                 }
-                else{
+                else
+                {
                     $all_settings->push($template_setting);
                 }
             }
 
-            foreach($content->setting as $setting){
+            foreach($content->setting as $setting)
+            {
 
-                $fl = $content->template_setting->filter(function($template_setting) use ($setting){
-                    return($setting->name===$template_setting->name);
+                $fl = $content->template_setting->filter(function ($template_setting) use ($setting)
+                {
+                    return ($setting->name === $template_setting->name);
                 });
-                if(($fl->count() == 0)){
+                if(($fl->count() == 0))
+                {
                     $all_settings->push($setting);
                 }
             }
@@ -217,43 +236,52 @@ class ContentwrapperController extends CMSController
         $content = \Content::setDefaults($content);
 
         //dd($content->edit_package.'::'.$content->edit_view);
-        if (\Request::ajax()) {
-            return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
-        } else {
+        if(\Request::ajax())
+        {
+            return $this->render($content->edit_view, compact('content', 'content_defaults', 'settings', 'allPermissions'));
+        }
+        else
+        {
             $tree = $content->getDescendants(config('bootlegcms.cms_tree_descendents'));
-            return $this->render('layouts.tree',  compact('content', 'content_defaults', 'settings', 'allPermissions'));
+
+            return $this->render('layouts.tree', compact('content', 'content_defaults', 'settings', 'allPermissions'));
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
-    public function anyUpdate($id = false)
+    public function anyUpdate($id = FALSE)
     {
-        if (!@$id) {
+        if(!@$id)
+        {
             $input = array_except(\Input::all(), '_method');
-            $id = $input['id'];
+            $id    = $input['id'];
         }
-        if ($id !== false) {
+        if($id !== FALSE)
+        {
 
             $input = array_except(\Input::all(), '_method');
 
             $validation = \Validator::make($input, $this->content->rules);
-            if ($validation->passes()) {
+            if($validation->passes())
+            {
                 //we need to update the settings too:
                 $content = $this->content->find($id);
                 //TODO: care with Template settings.
                 \Event::fire('content.edit', array($content));
                 \Event::fire('content.update', array($content));
 
-                if (@$input['parent_id'] == '#') {
+                if(@$input['parent_id'] == '#')
+                {
                     $input['parent_id'] = $this->content->getMainRoot();
                 }
 
-                if(isset($input['movement'])){
+                if(isset($input['movement']))
+                {
                     // How far to move the content item
                     $movement = $input['movement'];
 
@@ -263,7 +291,8 @@ class ContentwrapperController extends CMSController
                     $siblings = $siblings->sortBy('position')->values();
 
                     // Find the index of our content item in the sorted list
-                    $oldPosition = $siblings->search(function ($item) use ($content) {
+                    $oldPosition = $siblings->search(function ($item) use ($content)
+                    {
                         return $item->id == $content->id;
                     });
 
@@ -280,7 +309,8 @@ class ContentwrapperController extends CMSController
                     $siblings = $start->merge($moving)->merge($siblings);
 
                     // Order our content items numerically and save in the database
-                    foreach($siblings as $key => $sibling){
+                    foreach($siblings as $key => $sibling)
+                    {
                         $sibling->position = $key;
                         $sibling->save();
                     }
@@ -291,49 +321,61 @@ class ContentwrapperController extends CMSController
 
                 //TODO: take another look at a better way of doing this vv ..also VALIDATION!
                 //add any settings:
-                if (isset($input['setting'])) {
-                    foreach ($input['setting'] as $name => $settingGroup) {
-                        foreach ($settingGroup as $type => $setGrp) {
-                            foreach ($setGrp as $key => $setting) {
+                if(isset($input['setting']))
+                {
+                    foreach($input['setting'] as $name => $settingGroup)
+                    {
+                        foreach($settingGroup as $type => $setGrp)
+                        {
+                            foreach($setGrp as $key => $setting)
+                            {
                                 //we want to delete this setting.
 
                                 $toDel = \Bootleg\Cms\Utils::recursive_array_search('deleted', $setGrp);
-                                if (is_array($setGrp) && @$toDel) {
+                                if(is_array($setGrp) && @$toDel)
+                                {
                                     $contentSetting = \Contentsetting::destroy($toDel);
                                 }
-                                else if(is_array($setting) && @$setting['deleted']){
+                                else if(is_array($setting) && @$setting['deleted'])
+                                {
                                     //THIS IS AN UPLOAD CONTENT ITEM.
                                     //we need to count if there are others.. if so we need to remove this item.
                                     //otherwise we need to set it to blank.
                                     $thisSetting = \ContentSetting::find($key);
 
-                                    $otherSettings = \Contentsetting::where('name', $thisSetting->name)->where('content_id',$content->id)->get();
-                                    if(count($otherSettings) > 1){
+                                    $otherSettings = \Contentsetting::where('name', $thisSetting->name)->where('content_id', $content->id)->get();
+                                    if(count($otherSettings) > 1)
+                                    {
                                         $contentSetting = \Contentsetting::destroy($key);
                                     }
-                                    else{
+                                    else
+                                    {
                                         //we jsut want to set it to blank.
                                         $thisSetting->value = '';
                                         $thisSetting->save();
                                     }
                                 }
-                                else {
-                                    if(is_array($setting)){
-                                        $setting = implode(',',$setting);
+                                else
+                                {
+                                    if(is_array($setting))
+                                    {
+                                        $setting = implode(',', $setting);
                                         //dd($setting);
                                     }
 
-                                    if ($type != 'Templatesetting') {
+                                    if($type != 'Templatesetting')
+                                    {
                                         //dd($type);
                                         //dd($name . $content->id . $key);
                                         $contentSetting = \Contentsetting::withTrashed()
-                                            ->where('name', '=', $name)
-                                            ->where('content_id', '=', $content->id)
-                                            ->where('id', '=', $key)->first();
+                                                                         ->where('name', '=', $name)
+                                                                         ->where('content_id', '=', $content->id)
+                                                                         ->where('id', '=', $key)->first();
                                     }
                                     //if it's not found (even in trashed) then we need to make a new field.
                                     //if it's contentdefault, we need to create it too since it doesn't exist!
-                                    if ($type == 'Templatesetting' || is_null($contentSetting)) {
+                                    if($type == 'Templatesetting' || is_null($contentSetting))
+                                    {
                                         //TODO: Do we want protection in there so there has to be a
                                         //template setting in her for this?
 
@@ -342,35 +384,36 @@ class ContentwrapperController extends CMSController
 
                                         $defaultContentSetting = \Templatesetting::find($key);
 
-                                        if(!$defaultContentSetting){
-                                            $defaultContentSetting = \Templatesetting::where('name','=',$name)
-                                                                    ->where('template_id', '=', $content->template_id)
-                                                                    ->first();
+                                        if(!$defaultContentSetting)
+                                        {
+                                            $defaultContentSetting = \Templatesetting::where('name', '=', $name)
+                                                                                     ->where('template_id', '=', $content->template_id)
+                                                                                     ->first();
                                         }
 
-                                        $contentSetting = new \Contentsetting();
-                                        $contentSetting->name = @$defaultContentSetting->name?@$defaultContentSetting->name:$name;
-                                        $contentSetting->value = $setting;
-                                        $contentSetting->content_id = $content->id;
+                                        $contentSetting                   = new \Contentsetting();
+                                        $contentSetting->name             = @$defaultContentSetting->name ? @$defaultContentSetting->name : $name;
+                                        $contentSetting->value            = $setting;
+                                        $contentSetting->content_id       = $content->id;
                                         $contentSetting->field_parameters = @$defaultContentSetting->field_parameters;
-                                        $contentSetting->field_type = @$defaultContentSetting->field_type;
-                                        $contentSetting->section = @$defaultContentSetting->section;
+                                        $contentSetting->field_type       = @$defaultContentSetting->field_type;
+                                        $contentSetting->section          = @$defaultContentSetting->section;
 
-                                    } else {
+                                    }
+                                    else
+                                    {
 
                                         //otherwise this field exists.. we can overwrite it' settings.
-                                        $contentSetting->name = $name;
-                                        $contentSetting->value = $setting;
+                                        $contentSetting->name       = $name;
+                                        $contentSetting->value      = $setting;
                                         $contentSetting->content_id = $content->id;
-                                        $contentSetting->field_type = @$contentSetting->field_type?$contentSetting->field_type:'text';
+                                        $contentSetting->field_type = @$contentSetting->field_type ? $contentSetting->field_type : 'text';
 
                                     }
                                     //dd($contentSetting);
 
-                                        //dd($contentSetting);
-                                        $contentSetting->save();
-
-
+                                    //dd($contentSetting);
+                                    $contentSetting->save();
 
                                     $contentSetting->restore();     //TODO: do we always want to restore the deleted field here?
                                 }
@@ -383,78 +426,96 @@ class ContentwrapperController extends CMSController
                 \Event::fire('content.edited', array($content));
                 \Event::fire('content.updated', array($content));
 
-                if($this->content_mode == 'template'){
+                if($this->content_mode == 'template')
+                {
                     return redirect()->action('\Bootleg\Cms\TemplateController@anyEdit', $id)
-                    ->with('success', 'Success, saved correctly');
+                                     ->with('success', 'Success, saved correctly');
                 }
-                else{
+                else
+                {
                     return redirect()->action('\Bootleg\Cms\ContentsController@anyEdit', $id)
-                    ->with('success', 'Success, saved correctly');
+                                     ->with('success', 'Success, saved correctly');
                 }
 
             }
-        } else {
+        }
+        else
+        {
             //TODO:
             $validation = 'no id';
         }
+
         return redirect()->action('\Bootleg\Cms\ContentsController@anyEdit', $id)
-            ->withInput()
-            ->withErrors($validation)
-            ->with('danger', 'There were validation errors.');
+                         ->withInput()
+                         ->withErrors($validation)
+                         ->with('danger', 'There were validation errors.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
-    public function anyDestroy($id = null)
+    public function anyDestroy($id = NULL)
     {
-        if (!$id) {
+        if(!$id)
+        {
             $id = \Input::all();
-            if (@$id['id'] == '#') {
+            if(@$id['id'] == '#')
+            {
                 $id = '';
-            } else {
+            }
+            else
+            {
                 $id = @$id['id'];
             }
         }
         $this->content->find($id)->delete();
 
-        if (!\Request::ajax()) {
+        if(!\Request::ajax())
+        {
             return redirect()->action('\Bootleg\Cms\ContentsController@anyIndex');
         }
     }
 
-        //requests imediate descendents for given node
+    //requests imediate descendents for given node
     //TODO: recursive.
     public function anyTree()
     {
 
         $id = \Input::all();
-        if (@$id['id'] == '#') {
+        if(@$id['id'] == '#')
+        {
             $id = '';
-        } else {
+        }
+        else
+        {
             $id = @$id['id'];
         }
 
-        if (!$id) {
+        if(!$id)
+        {
             $id = $this->content->fromApplication()->whereNull('parent_id')->first()->id;
         }
 
-        $config =\Config::get('bootlegcms.cms_tree_descendents');
-        $tree = $this->content->where('id','=',$id)->first();
-        $tree = $config != null ? $tree->getDescendants($config) : $tree->getDescendants();
-        $tree = $tree->toHierarchy();
+        $config = \Config::get('bootlegcms.cms_tree_descendents');
+        $tree   = $this->content->where('id', '=', $id)->first();
+        $tree   = $config != NULL ? $tree->getDescendants($config) : $tree->getDescendants();
+        $tree   = $tree->toHierarchy();
 
-        if(count($tree)){
-            foreach($tree as $t){
+        if(count($tree))
+        {
+            foreach($tree as $t)
+            {
                 $treeOut[] = $this->renderTree($t);
 
             }
+
             return response()->json($treeOut);
         }
-        else{
+        else
+        {
             return response()->json();
         }
 
@@ -468,19 +529,23 @@ class ContentwrapperController extends CMSController
      */
     public function renderTree($tree, $depth = 0)
     {
-        $depth ++;
-        $branch = new \stdClass();
-        $branch->id = $tree->id;
-        $branch->text = $tree->name;
+        $depth++;
+        $branch         = new \stdClass();
+        $branch->id     = $tree->id;
+        $branch->text   = $tree->name;
         $branch->a_attr = new \stdClass();
-        if($tree->edit_action){
+        if($tree->edit_action)
+        {
             $branch->a_attr->href = action($tree->edit_action, array($tree->id));
         }
-        else{
-            if($this->content_mode == 'contents'){
+        else
+        {
+            if($this->content_mode == 'contents')
+            {
                 $branch->a_attr->href = action('\Bootleg\Cms\ContentsController@anyEdit', array($tree->id));
             }
-            else{
+            else
+            {
                 $branch->a_attr->href = action('\Bootleg\Cms\TemplateController@anyEdit', array($tree->id));
             }
 
@@ -488,52 +553,58 @@ class ContentwrapperController extends CMSController
 
         $branch->children = array();
         //$branch->children = ($tree->rgt - $tree->lft > 1);
-        if(count($tree->children)){
-            foreach($tree->children as $child){
+        if(count($tree->children))
+        {
+            foreach($tree->children as $child)
+            {
 
                 $c = $this->renderTree($child, $depth);
 
                 $branch->children[] = $c;
             }
         }
-        else{
-            if($depth <= config('bootlegcms.cms_tree_descendents')){
+        else
+        {
+            if($depth <= config('bootlegcms.cms_tree_descendents'))
+            {
                 //we don't know if there's anymore children.. so assume there is
-                $branch->children = true;
+                $branch->children = TRUE;
             }
         }
 
-
-        return($branch);
+        return ($branch);
     }
 
     /*delete uploaded file(s)*/
-    public function deleteUpload($id = ''){
-        if($id){
+    public function deleteUpload($id = '')
+    {
+        if($id)
+        {
             $content_setting = \Contentsetting::findOrFail($id);
             //$content_setting->delete(); //we don't actually want to delete here since we wait for the update button to do it's job.
-            $delete = new \stdClass();
+            $delete   = new \stdClass();
             $fileName = pathinfo($content_setting->value, PATHINFO_FILENAME);
 
-            $delete->{$fileName} = true;
-            $return->files[] = $delete;
+            $delete->{$fileName} = TRUE;
+            $return->files[]     = $delete;
         }
-        else{
-            return(true);
+        else
+        {
+            return (TRUE);
         }
-
 
         return response()->json($return);
     }
 
-    public function anyInlineUpload(){
+    public function anyInlineUpload()
+    {
         //$setting = array();
         $setting = new \Illuminate\Database\Eloquent\Collection;
         $setting->add(new \Contentsetting());
         $setting[0]->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
-        $setting[0]->name = '_inline';
-        $setting[0]->field_type = '_inline';
-        $setting[0]->id = 0;
+        $setting[0]->name             = '_inline';
+        $setting[0]->field_type       = '_inline';
+        $setting[0]->id               = 0;
 
         return $this->render('contents.inline-upload', compact('setting'));
 
@@ -542,19 +613,20 @@ class ContentwrapperController extends CMSController
     /*
      * pass in a content_setting id to upload to.
      */
-    public function postUpload($id){
+    public function postUpload($id)
+    {
 
         $input = array_except(\Input::all(), '_method');
 
         $u = [
             'local' => [
-                'folder' => trim(@$this->application->getSetting('Upload Folder'),'/\ '),
+                'folder'         => trim(@$this->application->getSetting('Upload Folder'), '/\ '),
                 'delete_uploads' => @$this->application->getSetting('deleteUploads'),
             ],
-            's3' => [
-                'enabled' => $input['s3_enabled'] ? @$this->application->getSetting('Enable s3') : false,
-                'folder' => trim(@$this->application->getSetting('s3 Folder'),'/\ '),
-                'bucket' => @$this->application->getSetting('s3 Bucket'),
+            's3'    => [
+                'enabled'        => $input['s3_enabled'] ? @$this->application->getSetting('Enable s3') : FALSE,
+                'folder'         => trim(@$this->application->getSetting('s3 Folder'), '/\ '),
+                'bucket'         => @$this->application->getSetting('s3 Bucket'),
                 'cloudfront_url' => trim(@$this->application->getSetting('s3 Cloudfront Url'), " /"),
             ]
         ];
@@ -571,132 +643,223 @@ class ContentwrapperController extends CMSController
             ]
         ];
 
-        $inline = false;
+        $inline = FALSE;
 
         $type = $input['type'];
         //dd($type);
-        if($type == 'Contentsetting' || $type == 'Templatesetting'){
+        if($type == 'Contentsetting' || $type == 'Templatesetting')
+        {
             $setting = @$type::withTrashed()->find($id);
 
-            if(!$setting){
+            if(!$setting)
+            {
                 //there's no setting in here already - so we can make one.
                 $setting = new $type;
 
                 //we can try and find it in the template?
-                if(@$this->content_mode == 'contents' && $id){
-                    $templateSetting = \Templatesetting::findOrFail($id);
-                    $setting->name = $templateSetting->name;
-                    $setting->field_type = $templateSetting->field_type;
+                if(@$this->content_mode == 'contents' && $id)
+                {
+                    $templateSetting           = \Templatesetting::findOrFail($id);
+                    $setting->name             = $templateSetting->name;
+                    $setting->field_type       = $templateSetting->field_type;
                     $setting->field_parameters = $templateSetting->field_parameters;
                 }
 
                 //otherwise maybe it's custom.
-                $setting = new $type;
-                $setting->name = '_custom'; //just dummy stuff for now..
-                $setting->field_type = 'upload';
+                $setting                   = new $type;
+                $setting->name             = '_custom'; //just dummy stuff for now..
+                $setting->field_type       = 'upload';
                 $setting->field_parameters = \Contentsetting::DEFAULT_UPLOAD_JSON;
             }
 
-            if($setting->name == '_custom'){
+            if($setting->name == '_custom')
+            {
                 $niceName = preg_replace('/\s+/', '', $setting->name);
-                $f = \Input::file();
-                $files = (\Input::file(key($f)));
+                $f        = \Input::file();
+                $files    = (\Input::file(key($f)));
             }
-            else{
+            else
+            {
                 $niceName = preg_replace('/\s+/', '_', $setting->name);
-                $files = \Input::file($niceName);
+                $files    = \Input::file($niceName);
             }
 
             $params = json_decode($setting->field_parameters);
-        } else {
-            $f = \Input::file();
+        }
+        else
+        {
+            $f     = \Input::file();
             $files = (\Input::file(key($f)));
         }
 
-        if(!empty($files)){
+        if(!empty($files))
+        {
 
-            foreach($files as $file) {
+            foreach($files as $file)
+            {
 
-                $rules = array(
+                $rules     = array(
                     // @todo.
                     'file' => 'required|mimes:'.$input['mimes'].'|max:'.$input['maxsize']
                 );
-                $validator = \Validator::make(array('file'=> $file), $rules);
+                $validator = \Validator::make(array('file' => $file), $rules);
 
-                if($validator->passes()){
+                if($validator->passes())
+                {
 
-                    $f = [
+                    $f                = [
                         //@todo validate
-                        'mime'          =>  $file->getMimeType(),
-                        'size'          =>  $file->getSize(),
-                        'name'          =>  trim(uniqid() . '.' . $file->getClientOriginalExtension(), '/\ '),
-                        'original_name' =>  $file->getClientOriginalName(),
-                        'upload_path'   =>  trim('uploads/'.$u['local']['folder'],'/\ ')
+                        'mime'          => $file->getMimeType(),
+                        'size'          => $file->getSize(),
+                        'name'          => trim(uniqid().'.'.$file->getClientOriginalExtension(), '/\ '),
+                        'original_name' => $file->getClientOriginalName(),
+                        'upload_path'   => trim('uploads/'.$u['local']['folder'], '/\ ')
                     ];
                     $f['upload_full'] = $f['upload_path'].'/'.$f['name'];
-                    try {
-                        $upload_success     = $file->move(public_path($f['upload_path']), $f['name']);
-                    } catch(\Exception $e) {
+                    try
+                    {
+                        $upload_success = $file->move(public_path($f['upload_path']), $f['name']);
+                    }
+                    catch(\Exception $e)
+                    {
                         dd($e->getMessage());
                         //TODO: proper error handling should really take place here..
                         //in the mean time we'll make do with a dd.
                     }
-
                     $f['url'] = '/'.$f['upload_full'];
+                    //dd($f, $file);
 
-                    dd('here');
+                    $folder        = trim(@$this->application->getSetting('Upload Folder'), '/\ ');
+                    $file_path     = public_path('/'.$folder ? $folder : 'uploads').'/';
+                    $file_name     = uniqid().'.'.$file->getClientOriginalExtension();
+                    $tmp_file_name = uniqid().'__.'.$file->getClientOriginalExtension();
+
+                    //$file->move($f['name'], $tmp_file_name);
+                    $full_path = public_path(preg_replace('/^\//', '', $f['url']));
+
+                    switch($file->getClientOriginalExtension())
+                    {
+                        case 'jpg':   //   jpeg -> jpg
+                        case'jpeg':
+                            $image = imagecreatefromjpeg($full_path);
+                            break;
+
+                        case 'png':  //   png -> jpg
+                            $image = imagecreatefrompng($full_path);
+                            break;
+                        default:
+                            $image = imagecreatefromjpeg($full_path);
+                            break;
+                    }
+                    // IOS Camera rotation shit
+                    if($file->getClientOriginalExtension() == "jpg" || $file->getClientOriginalExtension() == "jpeg")
+                    {
+
+                        $exif = exif_read_data($full_path); //
+
+                        // retarded iphone orientation fix
+                        if(!empty($exif['Orientation']))
+                        {
+
+                            // open file correctly (maybe other formats here eventually
+
+                            $image = imagecreatefromjpeg($full_path); // make image resource from filepath
+                            switch($exif['Orientation']) // from http://stackoverflow.com/questions/7489742/php-read-exif-data-and-adjust-orientation#answer-13963783
+                            {
+                                case 3:
+                                    $image = imagerotate($image, 180, 0);
+                                    break;
+
+                                case 6:
+                                    $image = imagerotate($image, -90, 0);
+                                    break;
+
+                                case 8:
+                                    $image = imagerotate($image, 90, 0);
+                                    break;
+                            }
+                        }
+                    }
+                    $info = getimagesize($full_path);
+
+                    if($info['mime'] == 'image/jpeg')
+                    {
+                        $image = imagecreatefromjpeg($full_path);
+                    }
+                    elseif($info['mime'] == 'image/gif')
+                    {
+                        $image = imagecreatefromgif($full_path);
+                    }
+                    elseif($info['mime'] == 'image/png')
+                    {
+                        $image = imagecreatefrompng($full_path);
+                    }
+                    else
+                    {
+                        error_log('Unknown image file format');
+                    }
+
+                    //compress and save file to jpg
+                    imagejpeg($image, $full_path, 80);
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
-                    if($u['s3']['enabled']){
+                    if($u['s3']['enabled'])
+                    {
 
                         //file and folder need to be concated and checked.
                         $upload_path = $u['local']['folder'].'/'.$f['name'];
 
                         //prepend S3 folder if set
-                        if($u['s3']['folder']){
+                        if($u['s3']['folder'])
+                        {
                             $upload_path = $u['s3']['folder'].'/'.$upload_path;
                         }
 
                         //strip excess slashes
-                        $upload_path = trim($upload_path,'/\ ');
+                        $upload_path = trim($upload_path, '/\ ');
 
                         $aws = \Aws\Common\Aws::factory($a);
-                        $s3 = $aws->get('s3');
+                        $s3  = $aws->get('s3');
                         $s3->putObject([
-                            'Bucket'     =>     $u['s3']['bucket'],
-                            'Key'        =>     $upload_path,
-                            'SourceFile' =>     public_path($f['upload_full']),
-                            'ACL'        =>     'public-read' //todo: check this would be standard - would we ever need to have something else in here?
+                            'Bucket'     => $u['s3']['bucket'],
+                            'Key'        => $upload_path,
+                            'SourceFile' => $full_path,
+                            'ACL'        => 'public-read' //todo: check this would be standard - would we ever need to have something else in here?
                         ]);
-                        if($u['s3']['cloudfront_url']) {
+                        if($u['s3']['cloudfront_url'])
+                        {
                             $f['url'] = '//'.$u['s3']['cloudfront_url'].'/'.$upload_path;
-                        } elseif($u['s3']['bucket']){
+                        }
+                        elseif($u['s3']['bucket'])
+                        {
                             $f['url'] = '//'.$u['s3']['bucket'].'/'.$upload_path;
                         }
 
                         //todo: remove old file in /uploads?
-                        if ($u['local']['delete_uploads'] && \File::exists($f['upload_full'])) {
+                        if($u['local']['delete_uploads'] && \File::exists($f['upload_full']))
+                        {
                             \File::delete($f['upload_full']);
                         }
 
                     }
 
                     //and we need to build the json response.
-                    $fileObj = new \stdClass();
-                    $fileObj->name = $f['name'];
+                    $fileObj                = new \stdClass();
+                    $fileObj->name          = $f['name'];
                     $fileObj->original_name = $f['original_name'];
-                    $fileObj->id = $id;
-                    $fileObj->thumbnailUrl = $f['url']; //@todo
-                    $fileObj->size = $f['size'];
-                    $fileObj->url = $f['url'];
+                    $fileObj->id            = $id;
+                    $fileObj->thumbnailUrl  = $f['url']; //@todo
+                    $fileObj->size          = $f['size'];
+                    $fileObj->url           = $f['url'];
 
                     //is this stuff still needed?
-                    $fileObj->deleteUrl = url($f['upload_full']); //todo
+                    $fileObj->deleteUrl  = url($f['upload_full']); //todo
                     $fileObj->deleteType = "DELETE";
 
                     $return->files[] = $fileObj;
                 }
-                else{
+                else
+                {
                     //TODO:validation failure messages.
                     echo('val fail');
                     exit();
@@ -704,6 +867,7 @@ class ContentwrapperController extends CMSController
 
                 \Event::fire('upload.complete', array($f['url']));
             }
+
             return response()->json($return);
 
         }
