@@ -644,6 +644,7 @@ class ContentwrapperController extends CMSController
 
                     $f['url'] = '/'.$f['upload_full'];
 
+                    dd('here');
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
                     if($u['s3']['enabled']){
