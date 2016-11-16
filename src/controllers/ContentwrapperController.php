@@ -1,5 +1,6 @@
 <?php namespace Bootleg\Cms;
 
+use Exception;
 use \Validator;
 use \Input;
 use \Event;
@@ -616,6 +617,9 @@ class ContentwrapperController extends CMSController
     public function postUpload($id)
     {
 
+        $gif_to_jpeg = \Application::getApplication()->setting->keyBy('name')->get('GIF to JPEG');
+        $gif_to_jpeg = $gif_to_jpeg && isset($gif_to_jpeg->value) ? $gif_to_jpeg->value == 'true' : true; // default to true
+
         $input = array_except(\Input::all(), '_method');
 
         $u = [
@@ -692,53 +696,46 @@ class ContentwrapperController extends CMSController
             $files = (\Input::file(key($f)));
         }
 
-        if(!empty($files))
-        {
+        if(!empty($files)) {
 
-            foreach($files as $file)
-            {
+            foreach ($files as $file) {
 
-                $rules     = array(
+                $rules = [
                     // @todo.
-                    'file' => 'required|mimes:'.$input['mimes'].'|max:'.$input['maxsize']
-                );
-                $validator = \Validator::make(array('file' => $file), $rules);
+                    'file' => 'required|mimes:' . $input['mimes'] . '|max:' . $input['maxsize']
+                ];
+                $validator = \Validator::make(['file' => $file], $rules);
 
-                if($validator->passes())
-                {
+                if ($validator->passes()) {
 
-                    $f                = [
+                    $f = [
                         //@todo validate
                         'mime'          => $file->getMimeType(),
                         'size'          => $file->getSize(),
-                        'name'          => trim(uniqid().'.'.$file->getClientOriginalExtension(), '/\ '),
+                        'name'          => trim(uniqid() . '.' . $file->getClientOriginalExtension(), '/\ '),
                         'original_name' => $file->getClientOriginalName(),
-                        'upload_path'   => trim('uploads/'.$u['local']['folder'], '/\ ')
+                        'upload_path'   => trim('uploads/' . $u['local']['folder'], '/\ ')
                     ];
-                    $f['upload_full'] = $f['upload_path'].'/'.$f['name'];
-                    try
-                    {
+                    $f['upload_full'] = $f['upload_path'] . '/' . $f['name'];
+                    try {
                         $upload_success = $file->move(public_path($f['upload_path']), $f['name']);
-                    }
-                    catch(\Exception $e)
-                    {
+                    } catch (\Exception $e) {
                         dd($e->getMessage());
                         //TODO: proper error handling should really take place here..
                         //in the mean time we'll make do with a dd.
                     }
-                    $f['url'] = '/'.$f['upload_full'];
+                    $f['url'] = '/' . $f['upload_full'];
                     //dd($f, $file);
 
-                    $folder        = trim(@$this->application->getSetting('Upload Folder'), '/\ ');
-                    $file_path     = public_path('/'.$folder ? $folder : 'uploads').'/';
-                    $file_name     = uniqid().'.'.$file->getClientOriginalExtension();
-                    $tmp_file_name = uniqid().'__.'.$file->getClientOriginalExtension();
+                    $folder = trim(@$this->application->getSetting('Upload Folder'), '/\ ');
+                    $file_path = public_path('/' . $folder ? $folder : 'uploads') . '/';
+                    $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
+                    $tmp_file_name = uniqid() . '__.' . $file->getClientOriginalExtension();
 
                     //$file->move($f['name'], $tmp_file_name);
                     $full_path = public_path(preg_replace('/^\//', '', $f['url']));
 
-                    switch($file->getClientOriginalExtension())
-                    {
+                    switch ($file->getClientOriginalExtension()) {
                         case 'jpg':   //   jpeg -> jpg
                         case'jpeg':
                             $image = imagecreatefromjpeg($full_path);
@@ -747,24 +744,29 @@ class ContentwrapperController extends CMSController
                         case 'png':  //   png -> jpg
                             $image = imagecreatefrompng($full_path);
                             break;
+
+                        case 'gif':  //   gif
+                            if( $gif_to_jpeg ){
+                                $image = imagecreatefromgif($full_path);
+                            }
+                            break;
+
                         default:
                             $image = imagecreatefromjpeg($full_path);
                             break;
                     }
                     // IOS Camera rotation shit
-                    if($file->getClientOriginalExtension() == "jpg" || $file->getClientOriginalExtension() == "jpeg")
-                    {
+                    if ($file->getClientOriginalExtension() == "jpg" || $file->getClientOriginalExtension() == "jpeg") {
 
                         $exif = exif_read_data($full_path); //
 
                         // retarded iphone orientation fix
-                        if(!empty($exif['Orientation']))
-                        {
+                        if ( ! empty($exif['Orientation'])) {
 
                             // open file correctly (maybe other formats here eventually
 
                             $image = imagecreatefromjpeg($full_path); // make image resource from filepath
-                            switch($exif['Orientation']) // from http://stackoverflow.com/questions/7489742/php-read-exif-data-and-adjust-orientation#answer-13963783
+                            switch ($exif['Orientation']) // from http://stackoverflow.com/questions/7489742/php-read-exif-data-and-adjust-orientation#answer-13963783
                             {
                                 case 3:
                                     $image = imagerotate($image, 180, 0);
@@ -782,94 +784,87 @@ class ContentwrapperController extends CMSController
                     }
                     $info = getimagesize($full_path);
 
-                    if($info['mime'] == 'image/jpeg')
-                    {
+                    if ($info['mime'] == 'image/jpeg') {
                         $image = imagecreatefromjpeg($full_path);
-                    }
-                    elseif($info['mime'] == 'image/gif')
-                    {
-                        $image = imagecreatefromgif($full_path);
-                    }
-                    elseif($info['mime'] == 'image/png')
-                    {
+
+                        //compress and save file to jpg
+                        imagejpeg($image, $full_path, 80);
+                    } elseif ($info['mime'] == 'image/png') {
                         $image = imagecreatefrompng($full_path);
-                    }
-                    else
-                    {
+
+                        //compress and save file to jpg
+                        imagejpeg($image, $full_path, 80);
+                    } elseif ($info['mime'] == 'image/gif') {
+                        if( $gif_to_jpeg ){
+                            $image = imagecreatefromgif($full_path);
+
+                            //compress and save file to jpg
+                            imagegif($image, $full_path, 80);
+                        }
+                    } else {
                         error_log('Unknown image file format');
                     }
 
-                    //compress and save file to jpg
-                    imagejpeg($image, $full_path, 80);
                     //if s3 is enabled, we can upload to s3!
                     //TODO: should this be shifted to some sort of plugin?
-                    if($u['s3']['enabled'])
-                    {
+                    if ($u['s3']['enabled']) {
 
                         //file and folder need to be concated and checked.
-                        $upload_path = $u['local']['folder'].'/'.$f['name'];
+                        $upload_path = $u['local']['folder'] . '/' . $f['name'];
 
                         //prepend S3 folder if set
-                        if($u['s3']['folder'])
-                        {
-                            $upload_path = $u['s3']['folder'].'/'.$upload_path;
+                        if ($u['s3']['folder']) {
+                            $upload_path = $u['s3']['folder'] . '/' . $upload_path;
                         }
 
                         //strip excess slashes
                         $upload_path = trim($upload_path, '/\ ');
 
                         $aws = \Aws\Common\Aws::factory($a);
-                        $s3  = $aws->get('s3');
+                        $s3 = $aws->get('s3');
                         $s3->putObject([
                             'Bucket'     => $u['s3']['bucket'],
                             'Key'        => $upload_path,
                             'SourceFile' => $full_path,
                             'ACL'        => 'public-read' //todo: check this would be standard - would we ever need to have something else in here?
                         ]);
-                        if($u['s3']['cloudfront_url'])
-                        {
-                            $f['url'] = '//'.$u['s3']['cloudfront_url'].'/'.$upload_path;
-                        }
-                        elseif($u['s3']['bucket'])
-                        {
-                            $f['url'] = '//'.$u['s3']['bucket'].'/'.$upload_path;
+                        if ($u['s3']['cloudfront_url']) {
+                            $f['url'] = '//' . $u['s3']['cloudfront_url'] . '/' . $upload_path;
+                        } elseif ($u['s3']['bucket']) {
+                            $f['url'] = '//' . $u['s3']['bucket'] . '/' . $upload_path;
                         }
 
                         //todo: remove old file in /uploads?
-                        if($u['local']['delete_uploads'] && \File::exists($f['upload_full']))
-                        {
+                        if ($u['local']['delete_uploads'] && \File::exists($f['upload_full'])) {
                             \File::delete($f['upload_full']);
                         }
 
                     }
 
                     //and we need to build the json response.
-                    $fileObj                = new \stdClass();
-                    $fileObj->name          = $f['name'];
+                    $fileObj = new \stdClass();
+                    $fileObj->name = $f['name'];
                     $fileObj->original_name = $f['original_name'];
-                    $fileObj->id            = $id;
-                    $fileObj->thumbnailUrl  = $f['url']; //@todo
-                    $fileObj->size          = $f['size'];
-                    $fileObj->url           = $f['url'];
+                    $fileObj->id = $id;
+                    $fileObj->thumbnailUrl = $f['url']; //@todo
+                    $fileObj->size = $f['size'];
+                    $fileObj->url = $f['url'];
 
                     //is this stuff still needed?
-                    $fileObj->deleteUrl  = url($f['upload_full']); //todo
+                    $fileObj->deleteUrl = url($f['upload_full']); //todo
                     $fileObj->deleteType = "DELETE";
 
                     $return->files[] = $fileObj;
-                }
-                else
-                {
+                } else {
                     //TODO:validation failure messages.
                     echo('val fail');
                     exit();
                 }
 
-                \Event::fire('upload.complete', array($f['url']));
+                \Event::fire('upload.complete', [$f['url']]);
             }
 
             return response()->json($return);
-
         }
     }
 }
