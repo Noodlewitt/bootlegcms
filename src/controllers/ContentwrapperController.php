@@ -758,7 +758,7 @@ class ContentwrapperController extends CMSController
                     // IOS Camera rotation shit
                     if ($file->getClientOriginalExtension() == "jpg" || $file->getClientOriginalExtension() == "jpeg") {
 
-                        $exif = exif_read_data($full_path); //
+                        $exif = @exif_read_data($full_path); //
 
                         // retarded iphone orientation fix
                         if ( ! empty($exif['Orientation'])) {
