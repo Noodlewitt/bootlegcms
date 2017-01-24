@@ -38,6 +38,6 @@
     </div>
 
     <div class="col-sm-offset-3 col-md-offset-4 col-md-8 main-content">
-        @include('cms::contents.edit', compact('content', 'content_defaults', 'settings', 'allPermissions'))
+        @include(($content->edit_package ?: 'cms') . '::' . ($content->edit_view ?: 'contents.edit'), compact('content', 'content_defaults', 'settings', 'allPermissions'))
     </div>
 @stop

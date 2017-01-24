@@ -218,7 +218,7 @@ class ContentwrapperController extends CMSController
 
         //dd($content->edit_package.'::'.$content->edit_view);
         if (\Request::ajax()) {
-            return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'));
+            return $this->render($content->edit_view,  compact('content', 'content_defaults', 'settings', 'allPermissions'), $content->edit_package ?: 'cms');
         } else {
             $tree = $content->getDescendants(config('bootlegcms.cms_tree_descendents'));
             return $this->render('layouts.tree',  compact('content', 'content_defaults', 'settings', 'allPermissions'));
