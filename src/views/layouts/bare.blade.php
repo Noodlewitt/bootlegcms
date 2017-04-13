@@ -20,12 +20,12 @@ $cms_title = $application->name ? $application->name : ($application->getSetting
     @section('main-head')
         <title>{{ $cms_title }}</title>
     @show
-    <script type="text/javascript" src="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/js/scripts.min.js"></script>
+    <script type="text/javascript" src="/vendor/bootleg/cms/js/scripts.min.js"></script>
 
     @if($application->getSetting('theme_file'))
         <link rel="stylesheet" href="{{ $application->getSetting('theme_file') }}" />
     @else
-        <link rel="stylesheet" href="{{ Applicationurl::getBaseUrl() }}vendor/bootleg/cms/css/application.min.css" />
+        <link rel="stylesheet" href="/vendor/bootleg/cms/css/application.min.css" />
     @endif
 
     @foreach($html_head_end as $html_head_end_item)
