@@ -16,7 +16,7 @@
         @show
         <script type="text/javascript" src="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/js/script.min.js"></script>
         <link rel="stylesheet" href="{{Applicationurl::getBaseUrl()}}vendor/bootleg/cms/css/application.css" />
-        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
         <?php
             $headerItems = Event::fire('html.master.header.end', array());
         ?>
