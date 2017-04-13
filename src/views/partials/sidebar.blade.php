@@ -8,7 +8,7 @@
     <div class="sidebar-header row">
         <div class="sidebar-avatar-image">
             --><!-- <img src="/vendor/bootleg/cms/img/madeinkatana.png" />--><!--
-            <img src="{{ 'http://www.gravatar.com/avatar/'.md5(strtolower(trim(@Auth::user()->email))).'jpg?d=identicon' }}" />
+            <img src="{{ 'https://www.gravatar.com/avatar/'.md5(strtolower(trim(@Auth::user()->email))).'jpg?d=identicon' }}" />
         </div>
         <div class="sidebar-user-summary">
             <div class="text-bold">Welcome</div>
