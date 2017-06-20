@@ -127,11 +127,11 @@ class Permission extends Eloquent {
         $return = new stdClass();
         $return->result = false;
         foreach ($perm as $p) {
-            if ($p->x === 1) {
+            if ($p->x == 1) {
                 $return->result = true;
                 $return->picked = $p;
                 break;
-            } elseif ($p->x === 0) {
+            } elseif ($p->x == 0) {
                 $return->result = false;
                 $return->picked = $p;
                 break;
